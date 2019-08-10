@@ -14,14 +14,13 @@
 </template>
 
 <script>
-import data from '@/data'
-import store from '@/store'
-import Todo from '@/models/Todo'
-import AppHeader from './AppHeader'
-import AppDescription from './AppDescription'
-import UsersSection from './UsersSection'
-import TodosSection from './TodosSection'
-import AppFooter from './AppFooter'
+import store from "@/store";
+import Todo from "@/models/Todo";
+import AppHeader from "./AppHeader";
+import AppDescription from "./AppDescription";
+import UsersSection from "./UsersSection";
+import TodosSection from "./TodosSection";
+import AppFooter from "./AppFooter";
 
 export default {
   store,
@@ -34,20 +33,15 @@ export default {
     AppFooter
   },
 
-  data () {
+  data() {
     return {
-      yay: 'Hello!'
-    }
+      yay: "Hello!"
+    };
   },
 
-  created () {
-    // Here we are stubbing the initial data. In the real world, this
-    // should be the response from the API Backend.
-    const initialData = data
-
-    Todo.insert({ data: initialData })
+  created() {
   }
-}
+};
 </script>
 
 <style src="../styles/bootstrap.css"></style>

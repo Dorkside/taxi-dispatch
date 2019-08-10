@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import Todo from '@/models/Todo'
-import TodoList from './TodoList'
+import Todo from "@/models/Todo";
+import TodoList from "./TodoList";
 
 export default {
   components: {
@@ -21,16 +21,16 @@ export default {
   },
 
   methods: {
-    add () {
-      Todo.insert({
-        data: { title: '' }
-      })
+    add() {
+      Todo.$create({
+        data: { title: "Nouvelle course" }
+      });
     }
   }
-}
+};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @import "styles/variables";
 
 .container {
@@ -59,7 +59,7 @@ export default {
   line-height: 30px;
   font-size: 12px;
   color: var(--c-gray);
-  transition: all .3s;
+  transition: all 0.3s;
 
   &:hover {
     border-color: var(--c-gray);

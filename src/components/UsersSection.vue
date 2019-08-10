@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import User from '@/models/User'
-import UserList from './UserList'
+import User from "@/models/User";
+import UserList from "./UserList";
 
 export default {
   components: {
@@ -21,13 +21,13 @@ export default {
   },
 
   methods: {
-    add () {
-      User.insert({
-        data: { name: '' }
-      })
+    add() {
+      User.$create({
+        data: { name: "Nouveau chauffeur" }
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -59,7 +59,7 @@ export default {
   line-height: 30px;
   font-size: 12px;
   color: var(--c-gray);
-  transition: all .3s;
+  transition: all 0.3s;
 
   &:hover {
     border-color: var(--c-gray);

@@ -1,6 +1,11 @@
 <template>
   <div class="TodosList">
-    <div class="todo" :class="{ done: todo.done }" :key="todo.id" v-for="todo in todos">
+    <div
+      class="todo"
+      :class="{ done: todo.done }"
+      :key="todo.id"
+      v-for="todo in todos"
+    >
       <button class="icon" @click="toggle(todo)">
         <IconCheckCircle class="svg check" />
       </button>
@@ -9,8 +14,12 @@
         class="input"
         :value="todo.title"
         placeholder="Type in the title of the task!"
-        @input="e => { update(todo, e.target.value) }"
-      >
+        @input="
+          e => {
+            update(todo, e.target.value);
+          }
+        "
+      />
 
       <TodoListAssignee :todoId="todo.id" />
 
@@ -22,10 +31,10 @@
 </template>
 
 <script>
-import Todo from '@/models/Todo'
-import IconCheckCircle from './icons/IconCheckCircle'
-import IconTrash from './icons/IconTrash'
-import TodoListAssignee from './TodoListAssignee'
+import Todo from "@/models/Todo";
+import IconCheckCircle from "./icons/IconCheckCircle";
+import IconTrash from "./icons/IconTrash";
+import TodoListAssignee from "./TodoListAssignee";
 
 export default {
   components: {
@@ -35,28 +44,35 @@ export default {
   },
 
   computed: {
-    todos () {
-      return Todo.query().orderBy('id', 'desc').get()
+    todos() {
+      return Todo.query()
+        .orderBy("id", "desc")
+        .get();
     }
   },
 
   methods: {
-    toggle (todo) {
-      todo.$update({ done: !todo.done })
+    toggle(todo) {
+      todo.$update({ done: !todo.done });
     },
 
-    update (todo, title) {
-      todo.$update({ title })
+    update(todo, title) {
+      todo.$update({ title });
     },
 
-    destroy (todo) {
-      todo.$delete()
+    async destroy(todo) {
+      await Todo.$delete({
+        params: {
+          _id: todo._id
+        }
+      });
+      todo.$delete();
     }
   }
-}
+};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @import "styles/variables";
 
 .todo {
@@ -90,7 +106,7 @@ export default {
   padding: 12px 24px 12px 0;
   width: 100%;
   background-color: transparent;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .icon {
@@ -111,7 +127,7 @@ export default {
   height: 14px;
   opacity: 0;
   transform: translateY(2px);
-  transition: all .3s;
+  transition: all 0.3s;
   fill: var(--c-gray);
 }
 

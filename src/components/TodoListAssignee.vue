@@ -2,7 +2,11 @@
   <div class="TodosAssignee">
     <IconUser class="user" />
 
-    <select class="select" :class="{ selected: !!todo.assignee }" @change="update">
+    <select
+      class="select"
+      :class="{ selected: !!todo.assignee }"
+      @change="update"
+    >
       <option class="option" value="">Choose assignee</option>
       <option
         class="option"
@@ -20,10 +24,10 @@
 </template>
 
 <script>
-import User from '@/models/User'
-import Todo from '@/models/Todo'
-import IconUser from './icons/IconUser'
-import IconChevronDown from './icons/IconChevronDown'
+import User from "@/models/User";
+import Todo from "@/models/Todo";
+import IconUser from "./icons/IconUser";
+import IconChevronDown from "./icons/IconChevronDown";
 
 export default {
   components: {
@@ -32,28 +36,32 @@ export default {
   },
 
   props: {
-    todoId: { type: Number, required: true }
+    todoId: { type: String, required: true }
   },
 
   computed: {
-    users () {
-      return User.query().orderBy('name').get()
+    users() {
+      return User.query()
+        .orderBy("name")
+        .get();
     },
 
-    todo () {
-      return Todo.query().with('assignee').find(this.todoId)
+    todo() {
+      return Todo.query()
+        .with("assignee")
+        .find(this.todoId);
     }
   },
 
   methods: {
-    update (e) {
+    update(e) {
       Todo.update({
         id: this.todoId,
         user_id: e.target.value
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>
