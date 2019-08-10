@@ -41,7 +41,7 @@ export default {
 
   methods: {
     update(user, name) {
-      user.update({ name });
+      user.$update({ name });
     },
 
     destroy(user) {

@@ -3,11 +3,10 @@ import User from "./User";
 
 export default class Todo extends Model {
   static entity = "todos";
-  static primaryKey = "_id";
 
   static fields() {
     return {
-      _id: this.attr(null),
+      id: this.increment(),
       user_id: this.number(0),
       title: this.string(""),
       done: this.boolean(false),

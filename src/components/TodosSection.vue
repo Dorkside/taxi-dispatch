@@ -24,7 +24,9 @@ export default {
 
   methods: {
     add() {
-      Todo.new();
+      Todo.insert({
+        data: { title: "" }
+      });
     }
   }
 };

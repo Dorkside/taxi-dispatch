@@ -53,11 +53,11 @@ export default {
 
   methods: {
     toggle(todo) {
-      todo.update({ done: !todo.done });
+      todo.$update({ done: !todo.done });
     },
 
     update(todo, title) {
-      todo.update({ title });
+      todo.$update({ title });
     },
 
     async destroy(todo) {

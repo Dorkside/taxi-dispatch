@@ -36,7 +36,7 @@ export default {
   },
 
   props: {
-    todoId: { type: String, required: true }
+    todoId: { type: Number, required: true }
   },
 
   computed: {
@@ -47,9 +47,11 @@ export default {
     },
 
     todo() {
-      return Todo.query()
-        .with("assignee")
-        .find(this.todoId);
+      return (
+        Todo.query()
+          .with("assignee")
+          .find(this.todoId) || {}
+      );
     }
   },
 
