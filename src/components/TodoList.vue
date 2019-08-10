@@ -1,10 +1,10 @@
 <template>
   <div class="TodosList">
     <div
+      v-for="todo in todos"
+      :key="todo.id"
       class="todo"
       :class="{ done: todo.done }"
-      :key="todo.id"
-      v-for="todo in todos"
     >
       <button class="icon" @click="toggle(todo)">
         <IconCheckCircle class="svg check" />
@@ -21,7 +21,7 @@
         "
       />
 
-      <TodoListAssignee :todoId="todo.id" />
+      <TodoListAssignee :todo-id="todo.id" />
 
       <button class="icon" @click="destroy(todo)">
         <IconTrash class="svg" />

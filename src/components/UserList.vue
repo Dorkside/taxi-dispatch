@@ -1,6 +1,6 @@
 <template>
   <div class="UsersList">
-    <div class="user" :key="user.id" v-for="user in users">
+    <div v-for="user in users" :key="user.id" class="user">
       <input
         class="input"
         :value="user.name"

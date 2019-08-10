@@ -9,11 +9,11 @@
     >
       <option class="option" value="">Choose assignee</option>
       <option
+        v-for="user in users"
+        :key="user.id"
         class="option"
         :value="user.id"
         :selected="todo.user_id == user.id"
-        :key="user.id"
-        v-for="user in users"
       >
         {{ user.name }}
       </option>

@@ -1,8 +1,6 @@
 <template>
-  <div class="App">
+  <v-app>
     <AppHeader />
-
-    <AppDescription />
 
     <div class="container">
       <div class="users"><UsersSection /></div>
@@ -10,14 +8,12 @@
     </div>
 
     <AppFooter />
-  </div>
+  </v-app>
 </template>
 
 <script>
 import store from "@/store";
-import Todo from "@/models/Todo";
 import AppHeader from "./AppHeader";
-import AppDescription from "./AppDescription";
 import UsersSection from "./UsersSection";
 import TodosSection from "./TodosSection";
 import AppFooter from "./AppFooter";
@@ -27,7 +23,6 @@ export default {
 
   components: {
     AppHeader,
-    AppDescription,
     UsersSection,
     TodosSection,
     AppFooter
@@ -39,12 +34,9 @@ export default {
     };
   },
 
-  created() {
-  }
+  created() {}
 };
 </script>
-
-<style src="../styles/bootstrap.css"></style>
 
 <style scoped>
 .App {
