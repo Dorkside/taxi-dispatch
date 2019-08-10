@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import App from './components/App'
+import Vue from "vue";
+import App from "./components/App";
 
-const app = new Vue(App)
+const app = new Vue(App);
 
-app.$mount('#app')
+app.$mount("#app");

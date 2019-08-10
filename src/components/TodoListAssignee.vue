@@ -65,8 +65,6 @@ export default {
 </script>
 
 <style scoped>
-@import "styles/variables";
-
 .TodosAssignee {
   position: relative;
   display: flex;
@@ -76,7 +74,6 @@ export default {
 .user {
   width: 14px;
   height: 14px;
-  fill: var(--c-gray);
 }
 
 .select {
@@ -85,19 +82,10 @@ export default {
   border: 0;
   padding-right: 16px;
   padding-left: 12px;
-  color: var(--c-gray);
   background-color: transparent;
   outline: none;
   cursor: pointer;
   -webkit-appearance: none;
-}
-
-.select.selected {
-  color: var(--c-black);
-}
-
-.option {
-  color: var(--c-gray-dark);
 }
 
 .down {
@@ -106,6 +94,5 @@ export default {
   right: 0;
   width: 8px;
   height: 8px;
-  fill: var(--c-gray);
 }
 </style>

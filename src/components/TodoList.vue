@@ -53,32 +53,28 @@ export default {
 
   methods: {
     toggle(todo) {
-      todo.$update({ done: !todo.done });
+      todo.update({ done: !todo.done });
     },
 
     update(todo, title) {
-      todo.$update({ title });
+      todo.update({ title });
     },
 
     async destroy(todo) {
-      await Todo.$delete({
+      await Todo.delete({
         params: {
           _id: todo._id
         }
       });
-      todo.$delete();
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-@import "styles/variables";
-
 .todo {
   display: flex;
   align-items: center;
-  border-top: 1px solid var(--c-divider);
 }
 
 .todo:hover {
@@ -92,7 +88,6 @@ export default {
 .todo.done {
   .input {
     text-decoration: line-through;
-    color: var(--c-gray);
   }
 
   .icon .svg.check {
@@ -114,25 +109,15 @@ export default {
   padding: 12px 24px;
 }
 
-.icon:hover .svg {
-  fill: var(--c-black);
-}
-
-.icon:hover .svg.check {
-  fill: var(--c-black);
-}
-
 .svg {
   width: 14px;
   height: 14px;
   opacity: 0;
   transform: translateY(2px);
   transition: all 0.3s;
-  fill: var(--c-gray);
 }
 
 .svg.check {
   opacity: 1;
-  fill: var(--c-gray-light);
 }
 </style>

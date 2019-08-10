@@ -22,22 +22,17 @@ export default {
 
   methods: {
     add() {
-      User.$create({
-        data: { name: "Nouveau chauffeur" }
-      });
+      User.new();
     }
   }
 };
 </script>
 
-<style scoped>
-@import "styles/variables";
-
+<style scoped lang="scss">
 .container {
   border-radius: 4px;
   background-color: #fff;
   overflow: hidden;
-  box-shadow: var(--shadow-depth-3);
 }
 
 .header {
@@ -49,21 +44,13 @@ export default {
 .title {
   line-height: 32px;
   font-size: 16px;
-  color: var(--c-gray);
 }
 
 .button {
-  border: 1px solid var(--c-gray-light);
   border-radius: 2px;
   padding: 0 16px;
   line-height: 30px;
   font-size: 12px;
-  color: var(--c-gray);
   transition: all 0.3s;
-
-  &:hover {
-    border-color: var(--c-gray);
-    color: var(--c-black);
-  }
 }
 </style>

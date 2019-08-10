@@ -1,14 +1,14 @@
-import { Model } from '@vuex-orm/core'
-import Todo from './Todo'
+import { Model } from "@vuex-orm/core";
+import Todo from "./Todo";
 
 export default class User extends Model {
-  static entity = 'users'
+  static entity = "users";
 
-  static fields () {
+  static fields() {
     return {
       id: this.increment(),
-      name: this.string(''),
-      todos: this.hasMany(Todo, 'user_id')
-    }
+      name: this.string(""),
+      todos: this.hasMany(Todo, "user_id")
+    };
   }
 }

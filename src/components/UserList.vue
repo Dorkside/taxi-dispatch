@@ -5,8 +5,12 @@
         class="input"
         :value="user.name"
         placeholder="Type in user's name!"
-        @input="e => { update(user, e.target.value) }"
-      >
+        @input="
+          e => {
+            update(user, e.target.value);
+          }
+        "
+      />
 
       <p class="tasks">{{ user.todos.length }} Tasks</p>
 
@@ -18,8 +22,8 @@
 </template>
 
 <script>
-import User from '@/models/User'
-import IconTrash from './icons/IconTrash'
+import User from "@/models/User";
+import IconTrash from "./icons/IconTrash";
 
 export default {
   components: {
@@ -27,30 +31,30 @@ export default {
   },
 
   computed: {
-    users () {
-      return User.query().with('todos').orderBy('id', 'desc').get()
+    users() {
+      return User.query()
+        .with("todos")
+        .orderBy("id", "desc")
+        .get();
     }
   },
 
   methods: {
-    update (user, name) {
-      user.$update({ name })
+    update(user, name) {
+      user.update({ name });
     },
 
-    destroy (user) {
-      user.$delete()
+    destroy(user) {
+      user.delete();
     }
   }
-}
+};
 </script>
 
 <style scoped>
-@import "styles/variables";
-
 .user {
   display: flex;
   align-items: center;
-  border-top: 1px solid var(--c-divider);
 }
 
 .user:hover {
@@ -67,13 +71,12 @@ export default {
   padding: 12px 24px;
   width: 100%;
   background-color: transparent;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .tasks {
   font-size: 12px;
   white-space: nowrap;
-  color: var(--c-gray);
 }
 
 .icon {
@@ -81,16 +84,11 @@ export default {
   padding: 12px 24px;
 }
 
-.icon:hover .trash {
-  fill: var(--c-black);
-}
-
 .trash {
   width: 14px;
   height: 14px;
   opacity: 0;
   transform: translateY(2px);
-  transition: all .3s;
-  fill: var(--c-gray);
+  transition: all 0.3s;
 }
 </style>
