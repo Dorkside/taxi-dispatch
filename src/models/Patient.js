@@ -8,11 +8,21 @@ export default class Patient extends Model {
   static fields() {
     return {
       id: this.increment(),
-      name: this.number(0),
+      name: this.string(""),
       title: this.string(""),
+      type: this.string(""),
       done: this.boolean(false),
       assignee: this.belongsTo(User, "user_id"),
       courses: this.hasMany(Course, "patient_id")
     };
+  }
+
+  color() {
+    switch (this.type) {
+      case "Dialyse":
+        return "blue";
+      default:
+        return "green";
+    }
   }
 }

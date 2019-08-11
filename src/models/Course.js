@@ -10,6 +10,7 @@ export default class Course extends Model {
       id: this.increment(),
       chauffeur_id: this.number(0),
       chauffeur: this.belongsTo(Chauffeur, "chauffeur_id"),
+      patient_id: this.number(0),
       patient: this.belongsTo(Patient, "patient_id"),
       time: this.string()
     };

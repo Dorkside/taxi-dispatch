@@ -1,60 +1,41 @@
 <template>
   <v-app>
-    <AppHeader />
+    <v-navigation-drawer app>
+      <v-date-picker full-width v-model="picker"></v-date-picker>
+    </v-navigation-drawer>
 
-    <div class="container">
-      <div class="users"><UsersSection /></div>
-      <div class="todos"><TodosSection /></div>
-    </div>
-
-    <AppFooter />
+    <v-content>
+      <v-container>
+        <router-view></router-view>
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
 <script>
 import store from "@/store";
-import AppHeader from "./AppHeader";
-import UsersSection from "./UsersSection";
-import TodosSection from "./TodosSection";
-import AppFooter from "./AppFooter";
+import data from "@/data";
+import Course from "@/models/Course";
+import Journee from "./journee/Journee.vue";
 
 export default {
   store,
-
-  components: {
-    AppHeader,
-    UsersSection,
-    TodosSection,
-    AppFooter
-  },
-
   data() {
     return {
-      yay: "Hello!"
+      picker: new Date().toISOString().substr(0, 10)
     };
   },
 
-  created() {}
+  components: {
+    Journee
+  },
+
+  created() {
+    const initialData = data;
+    Course.insert({ data: initialData });
+  }
 };
 </script>
 
 <style scoped>
-.App {
-  padding: 96px 48px 128px;
-}
-
-.container {
-  display: flex;
-  margin: 0 auto;
-  width: 960px;
-}
-
-.users {
-  padding-right: 48px;
-  width: calc(100% / 3);
-}
-
-.todos {
-  width: calc((100% / 3) * 2);
-}
 </style>
