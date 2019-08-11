@@ -1,5 +1,4 @@
 import { Model } from "@vuex-orm/core";
-import User from "./User";
 import Course from "./Course";
 
 export default class Patient extends Model {
@@ -9,10 +8,7 @@ export default class Patient extends Model {
     return {
       id: this.increment(),
       name: this.string(""),
-      title: this.string(""),
-      type: this.string(""),
-      done: this.boolean(false),
-      assignee: this.belongsTo(User, "user_id"),
+      type: this.string("Consultation"),
       courses: this.hasMany(Course, "patient_id")
     };
   }

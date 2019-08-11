@@ -8,11 +8,24 @@ export default class Course extends Model {
   static fields() {
     return {
       id: this.increment(),
-      chauffeur_id: this.number(0),
+      chauffeur_id: this.number(1),
       chauffeur: this.belongsTo(Chauffeur, "chauffeur_id"),
-      patient_id: this.number(0),
+      patient_id: this.number(1),
       patient: this.belongsTo(Patient, "patient_id"),
-      time: this.string()
+      date: this.string(new Date().toISOString().substring(0, 10)),
+      time: this.string("")
     };
+  }
+
+  get prettyDay() {
+    return new Date(this.date).toLocaleDateString("fr-FR", {
+      weekday: "long",
+      month: "long",
+      day: "numeric"
+    });
+  }
+
+  get prettyTime() {
+    return this.time || "--:--";
   }
 }

@@ -9,6 +9,14 @@ VuexORM.use(VuexORMGraphQL, { database });
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
+  state: {
+    currentDate: new Date()
+  },
+  mutations: {
+    setDate(state, date) {
+      state.currentDate = date;
+    }
+  },
   plugins: [VuexORM.install(database)]
 });
 
