@@ -1,7 +1,11 @@
+import Calendar from "@/components/Calendar.vue";
 import Journee from "@/components/journee/Journee.vue";
 
 const routes = [
-  { path: "*", redirect: "/journee" },
-  { path: "/journee", component: Journee }
+  {
+    path: "/",
+    component: Calendar,
+    children: [{ path: "journee", component: Journee }]
+  }
 ];
 export default routes;

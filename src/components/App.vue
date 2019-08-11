@@ -1,9 +1,5 @@
 <template>
   <v-app>
-    <v-navigation-drawer app>
-      <v-date-picker full-width v-model="picker"></v-date-picker>
-    </v-navigation-drawer>
-
     <v-content>
       <v-container>
         <router-view></router-view>
@@ -20,11 +16,6 @@ import Journee from "./journee/Journee.vue";
 
 export default {
   store,
-  data() {
-    return {
-      picker: new Date().toISOString().substr(0, 10)
-    };
-  },
 
   components: {
     Journee
