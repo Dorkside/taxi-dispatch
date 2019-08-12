@@ -35,11 +35,6 @@ export default {
         return this.courses.filter(course => course.date === this.date);
       }
     }
-  },
-  watch: {
-    courses() {
-      console.log(this.courses);
-    }
   }
 };
 </script>

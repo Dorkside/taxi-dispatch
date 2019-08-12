@@ -9,16 +9,47 @@ export default class Patient extends Model {
       id: this.increment(),
       name: this.string(""),
       type: this.string("Consultation"),
-      courses: this.hasMany(Course, "patient_id")
+      courses: this.hasMany(Course, "patient_id"),
+      lundi: this.string(""),
+      mardi: this.string(""),
+      mercredi: this.string(""),
+      jeudi: this.string(""),
+      vendredi: this.string(""),
+      samedi: this.string("")
     };
   }
 
-  color() {
+  get color() {
     switch (this.type) {
       case "Dialyse":
         return "blue";
-      default:
+      case "HDJ":
+        return "red";
+      case "Kiné / Rééducation":
+        return "black";
+      case "Consultation":
         return "green";
+      default:
+        return "grey";
     }
+  }
+
+  get shortType() {
+    switch (this.type) {
+      case "Dialyse":
+        return "D";
+      case "HDJ":
+        return "HDJ";
+      case "Kiné / Rééducation":
+        return "K";
+      case "Consultation":
+        return "C";
+      default:
+        return "?";
+    }
+  }
+
+  prettyTime(day) {
+    return this[day.toLowerCase()] || "--:--";
   }
 }

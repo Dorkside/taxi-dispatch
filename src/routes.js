@@ -1,5 +1,6 @@
 import Calendar from "@/components/Calendar.vue";
 import Journee from "@/components/journee/Journee.vue";
+import Semaine from "@/components/semaine/Semaine.vue";
 
 const routes = [
   { path: "*", redirect: "/cal" },
@@ -10,6 +11,10 @@ const routes = [
       { path: "", redirect: "journee" },
       { path: "journee", component: Journee }
     ]
+  },
+  {
+    path: "/semaine",
+    component: Semaine
   }
 ];
 export default routes;

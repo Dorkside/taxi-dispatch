@@ -2,7 +2,7 @@
   <v-layout>
     <v-flex xs3>
       <v-date-picker full-width :value="date" @input="setDate"></v-date-picker>
-      <v-btn @click="addCourse()">
+      <v-btn block @click="addCourse()">
         Ajouter course
       </v-btn>
     </v-flex>

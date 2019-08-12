@@ -1,5 +1,5 @@
 <template>
-  <v-timeline-item :color="course.patient.color()" small fill-dot>
+  <v-timeline-item :color="course.patient.color" small fill-dot>
     <v-layout row justify-center align-center>
       <v-flex mr-4 shrink text-center>
         <v-dialog v-model="dialog" width="unset" persistent>
@@ -7,7 +7,7 @@
             <v-btn text v-on="on" @click="newTime = course.time">
               <span
                 :class="
-                  `subtitle-1 font-weight-bold ${course.patient.color()}--text`
+                  `subtitle-1 font-weight-bold ${course.patient.color}--text`
                 "
               >
                 {{ course.prettyTime }}
@@ -16,6 +16,7 @@
           </template>
           <v-card>
             <v-time-picker
+              v-if="dialog"
               v-model="newTime"
               landscape
               format="24hr"
