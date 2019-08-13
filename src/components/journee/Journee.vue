@@ -11,10 +11,27 @@
 
 <script>
 import Course from "@/models/Course";
+import Patient from "@/models/Patient";
 import CourseTimelineItem from "./CourseTimelineItem";
 import { mapState } from "vuex";
 export default {
   name: "Journee",
+  data() {
+    return {
+      days: [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+      ]
+    };
+  },
+  mounted() {
+    console.log(this.autoCourses);
+  },
   components: {
     CourseTimelineItem
   },
@@ -30,10 +47,32 @@ export default {
         .orderBy("time", "asc")
         .get();
     },
+    patients() {
+      return Patient.query().get();
+    },
     coursesToday() {
       if (this.currentDate) {
-        return this.courses.filter(course => course.date === this.date);
+        return this.courses
+          .filter(course => course.date === this.date)
+          .concat(this.autoCourses);
       }
+    },
+    autoCourses() {
+      let day = new Date(this.currentDate).getDay();
+      return this.patients
+        .filter(patient => {
+          return patient[this.currentDay];
+        })
+        .map(patient => {
+          return new Course({
+            date: this.date,
+            time: patient[this.currentDay],
+            patient: patient
+          });
+        });
+    },
+    currentDay() {
+      return this.days[new Date(this.currentDate).getDay()].toLowerCase();
     }
   }
 };
