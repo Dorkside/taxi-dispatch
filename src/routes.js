@@ -13,7 +13,7 @@ const routes = [
     ]
   },
   {
-    path: "/semaine",
+    path: "/patients",
     component: Semaine
   }
 ];
