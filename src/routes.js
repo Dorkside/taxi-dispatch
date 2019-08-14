@@ -9,12 +9,12 @@ const routes = [
     component: Calendar,
     children: [
       { path: "", redirect: "journee" },
-      { path: "journee", component: Journee }
+      { path: "journee", component: Journee },
+      {
+        path: "patients",
+        component: Semaine
+      }
     ]
-  },
-  {
-    path: "/patients",
-    component: Semaine
   }
 ];
 export default routes;
