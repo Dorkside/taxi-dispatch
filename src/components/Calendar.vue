@@ -61,10 +61,16 @@ export default {
     setDate(event) {
       this.$store.commit("setDate", new Date(event));
     },
-    addCourse() {
-      let course = new Course();
-      course.date = this.date;
-      course.$save();
+    async addCourse() {
+      try {
+        let course = await Course.insert({
+          data: {
+            date: this.date
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
     },
     addChauffeur() {
       let chauffeur = new Chauffeur();

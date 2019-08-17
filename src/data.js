@@ -1,23 +1,62 @@
-export default [
-  {
-    id: 1,
-    patient: { id: 1, name: "Jean Bave", type: "Dialyse" },
-    date: new Date().toISOString().substring(0, 10),
-    time: "07:15",
-    chauffeur: { id: 1, name: "John Doe" }
-  },
-  {
-    id: 2,
-    patient: { id: 1, name: "Jean Bave", type: "Dialyse" },
-    date: new Date().toISOString().substring(0, 10),
-    time: "19:15",
-    chauffeur: { id: 1, name: "John Doe" }
-  },
-  {
-    id: 3,
-    patient: { id: 1, name: "Jean Bave", type: "Dialyse" },
-    date: new Date().toISOString().substring(0, 10),
-    time: "12:30",
-    chauffeur: { id: 2, name: "Jane Doe" }
-  }
-];
+export default {
+  patients: [
+    {
+      id: 1,
+      name: "Jean Bave",
+      type: "Dialyse",
+      lundi: "07:00",
+      mardi: "07:00",
+      mercredi: "07:00",
+      jeudi: "07:00",
+      vendredi: "07:00",
+      samedi: "07:00"
+    },
+    {
+      id: 2,
+      name: "Hure Ticaire",
+      type: "HDJ",
+      lundi: "07:00",
+      mardi: "07:00",
+      mercredi: "07:00",
+      jeudi: "07:00",
+      vendredi: "07:00",
+      samedi: "07:00"
+    },
+    {
+      id: 3,
+      name: "Geoffroy Auxpieds",
+      type: "Consultation",
+      lundi: "07:00",
+      mardi: "07:00",
+      mercredi: "07:00",
+      jeudi: "07:00",
+      vendredi: "07:00",
+      samedi: "07:00"
+    },
+    {
+      id: 4,
+      name: "Axel Erration",
+      type: "Kiné / Rééducation",
+      lundi: "08:00",
+      mardi: "08:00",
+      mercredi: "08:00",
+      jeudi: "08:00",
+      vendredi: "08:00",
+      samedi: "08:00"
+    }
+  ],
+  chauffeurs: [
+    {
+      id: 1,
+      name: "Jean Dujardin"
+    },
+    {
+      id: 2,
+      name: "Jacques Dutronc"
+    },
+    {
+      id: 3,
+      name: "Elie Semoun"
+    }
+  ]
+};

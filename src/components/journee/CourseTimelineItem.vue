@@ -1,6 +1,6 @@
 <template>
-  <v-timeline-item :color="course.color" small fill-dot>
-    <v-layout row justify-center align-center>
+  <v-timeline-item v-if="course" :color="course.color" small fill-dot>
+    <v-layout row flex-no-wrap justify-center align-center>
       <v-flex mr-4 shrink text-center>
         <v-dialog v-model="dialog" width="unset" persistent>
           <template v-slot:activator="{ on }">
@@ -33,30 +33,47 @@
         </v-dialog>
       </v-flex>
       <v-flex>
-        <v-card>
-          <v-card-text>
-            <v-layout row>
-              <v-flex>
-                <v-combobox
-                  :value="course.patient"
-                  @change="changePatient($event, course)"
-                  :items="patients"
-                  item-text="name"
-                  label="Nom du patient"
-                ></v-combobox>
-              </v-flex>
-              <v-flex>
-                <v-combobox
-                  :value="course.chauffeur"
-                  @change="changeChauffeur($event, course)"
-                  :items="chauffeurs"
-                  item-text="name"
-                  label="Chauffeur"
-                ></v-combobox>
-              </v-flex>
-            </v-layout>
-          </v-card-text>
-        </v-card>
+        <v-badge color="grey" left overlap>
+          <template v-if="course.direction" v-slot:badge>
+            <v-icon dark>
+              {{
+                course.direction === "Aller"
+                  ? "mdi-arrow-right"
+                  : "mdi-arrow-left"
+              }}
+            </v-icon>
+            {{ course.direction === "Aller" ? "A" : "R" }}
+          </template>
+          <v-card>
+            <v-card-text class="pa-0 px-4">
+              <v-layout row justify-center align-center>
+                <span v-if="course.generated">
+                  {{ course.patient.name }}
+                </span>
+                <v-flex v-else>
+                  <v-combobox
+                    :value="course.patient"
+                    @change="changePatient($event, course)"
+                    :items="patients"
+                    item-text="name"
+                    label="Nom du patient"
+                    class="mx-2"
+                  ></v-combobox>
+                </v-flex>
+                <v-flex>
+                  <v-combobox
+                    :value="course.chauffeur"
+                    @change="changeChauffeur($event, course)"
+                    :items="chauffeurs"
+                    item-text="name"
+                    label="Chauffeur"
+                    class="mx-2"
+                  ></v-combobox>
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+          </v-card>
+        </v-badge>
       </v-flex>
     </v-layout>
   </v-timeline-item>
@@ -65,6 +82,7 @@
 
 <script>
 import Patient from "@/models/Patient";
+import Course from "@/models/Course";
 import Chauffeur from "@/models/Chauffeur";
 export default {
   name: "CourseTimelineItem",
@@ -75,7 +93,7 @@ export default {
   data() {
     return {
       dialog: false,
-      newTime: this.course.time
+      newTime: this.course ? this.course.time : ""
     };
   },
   methods: {
@@ -88,23 +106,26 @@ export default {
       });
       this.dialog = false;
     },
-    changePatient($event, course) {
+    async changePatient($event, course) {
       if ($event) {
         let patient = $event;
         if (typeof patient === "string") {
-          patient = new Patient({ name: patient });
-          patient.$save();
+          patient = await Patient.insert({
+            name: patient
+          });
         }
-        course.patient = patient;
-        course.$save();
+        course.$update({
+          patient_id: patient.id
+        });
       }
     },
     changeChauffeur($event, course) {
       if ($event) {
         let chauffeur = $event;
         if (typeof chauffeur !== "string") {
-          course.chauffeur = chauffeur;
-          course.$save();
+          course.$update({
+            chauffeur_id: chauffeur.id
+          });
         }
       }
     }

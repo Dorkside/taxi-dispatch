@@ -1,12 +1,29 @@
 <template>
-  <v-timeline dense>
-    <course-timeline-item
-      v-for="(course, index) in coursesToday"
-      :key="index"
-      :course="course"
-      :index="index"
-    ></course-timeline-item>
-  </v-timeline>
+  <v-container>
+    <v-row>
+      <v-col>
+        <v-timeline dense>
+          <course-timeline-item
+            v-for="(course, index) in coursesTodayPlanified"
+            :key="`${course.ref}-${course.id}`"
+            :course="course"
+            :index="index"
+          ></course-timeline-item>
+        </v-timeline>
+      </v-col>
+      <v-col>
+        <v-list dense>
+          <v-list-item
+            v-for="(course, index) in coursesTodayUnplanified"
+            :key="`${course.ref}-${course.id}`"
+            :index="index"
+          >
+            {{ course.patient.name }}
+          </v-list-item>
+        </v-list>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -29,11 +46,11 @@ export default {
       ]
     };
   },
-  mounted() {
-    console.log(this.autoCourses);
-  },
   components: {
     CourseTimelineItem
+  },
+  created() {
+    this.initTodayCourses();
   },
   computed: {
     ...mapState(["currentDate"]),
@@ -52,27 +69,54 @@ export default {
     },
     coursesToday() {
       if (this.currentDate) {
-        return this.courses
-          .filter(course => course.date === this.date)
-          .concat(this.autoCourses);
+        return this.courses.filter(course => course.date === this.date);
       }
+      return [];
     },
-    autoCourses() {
-      let day = new Date(this.currentDate).getDay();
-      return this.patients
-        .filter(patient => {
-          return patient[this.currentDay];
-        })
-        .map(patient => {
-          return new Course({
-            date: this.date,
-            time: patient[this.currentDay],
-            patient: patient
-          });
-        });
+    coursesTodayPlanified() {
+      return this.coursesToday.filter(course => course.time !== "");
+    },
+    coursesTodayUnplanified() {
+      return this.coursesToday.filter(course => course.time === "");
     },
     currentDay() {
       return this.days[new Date(this.currentDate).getDay()].toLowerCase();
+    }
+  },
+  methods: {
+    initTodayCourses() {
+      let _courses = this.patients
+        .filter(patient => {
+          return patient[this.currentDay];
+        })
+        .reduce((result, patient) => {
+          result.push({
+            ref: `${this.date}.${patient.id}.Aller`,
+            date: this.date,
+            time: patient[this.currentDay],
+            patient_id: patient.id,
+            generated: true
+          });
+          result.push({
+            ref: `${this.date}.${patient.id}.Retour`,
+            date: this.date,
+            patient_id: patient.id,
+            generated: true
+          });
+          return result;
+        }, []);
+      Course.insert({
+        data: _courses.filter(
+          _course =>
+            !this.courses.map(course => course.ref).includes(_course.ref)
+        )
+      });
+    }
+  },
+  watch: {
+    currentDate() {
+      console.log(this.currentDate);
+      this.initTodayCourses();
     }
   }
 };

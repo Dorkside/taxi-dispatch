@@ -50,7 +50,6 @@
 <script>
 import Patient from "@/models/Patient";
 import PatientDayCell from "@/components/semaine/PatientDayCell.vue";
-import { mapState } from "vuex";
 export default {
   name: "Semaine",
   components: {

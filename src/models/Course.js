@@ -1,7 +1,6 @@
 import { Model } from "@vuex-orm/core";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
-import { grey } from "ansi-colors";
 
 export default class Course extends Model {
   static entity = "courses";
@@ -9,13 +8,23 @@ export default class Course extends Model {
   static fields() {
     return {
       id: this.increment(),
+      ref: this.string(),
       chauffeur_id: this.number(),
       chauffeur: this.belongsTo(Chauffeur, "chauffeur_id"),
       patient_id: this.number(),
       patient: this.belongsTo(Patient, "patient_id"),
       date: this.string(new Date().toISOString().substring(0, 10)),
-      time: this.string("")
+      time: this.string(""),
+      generated: this.boolean(false)
     };
+  }
+
+  get direction() {
+    if (this.ref) {
+      let _ref = this.ref.split(".");
+      return _ref[_ref.length - 1];
+    }
+    return "";
   }
 
   get prettyDay() {

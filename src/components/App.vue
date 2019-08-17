@@ -9,6 +9,8 @@
 <script>
 import store from "@/store";
 import data from "@/data";
+import Patient from "@/models/Patient";
+import Chauffeur from "@/models/Chauffeur";
 import Course from "@/models/Course";
 import Journee from "./journee/Journee.vue";
 
@@ -21,7 +23,9 @@ export default {
 
   created() {
     const initialData = data;
-    Course.insert({ data: initialData });
+    console.log(data);
+    Patient.insert({ data: initialData.patients });
+    Chauffeur.insert({ data: initialData.chauffeurs });
   }
 };
 </script>
