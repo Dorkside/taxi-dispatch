@@ -1,24 +1,39 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
+  <v-container class="pa-0" fill-height>
+    <v-row class="ma-0 max-height max-width">
+      <v-col class="pa-0 pr-2 max-height scroll">
         <v-timeline dense>
-          <course-timeline-item
+          <v-timeline-item
             v-for="(course, index) in coursesTodayPlanified"
             :key="`${course.ref}-${course.id}`"
-            :course="course"
-            :index="index"
-          ></course-timeline-item>
+            :color="course.color"
+            small
+            fill-dot
+          >
+            <template v-slot:icon dark>
+              <v-icon dark>
+                {{
+                  course.direction === "Aller"
+                    ? "mdi-arrow-right"
+                    : "mdi-arrow-left"
+                }}
+              </v-icon>
+            </template>
+            <course-item :course="course" :index="index"></course-item>
+          </v-timeline-item>
         </v-timeline>
       </v-col>
-      <v-col>
+      <v-col class="pa-0 pr-2 max-height scroll">
         <v-list dense>
           <v-list-item
             v-for="(course, index) in coursesTodayUnplanified"
             :key="`${course.ref}-${course.id}`"
             :index="index"
+            class="ma-2"
           >
-            {{ course.patient.name }}
+            <v-list-item-content class="show-overflow">
+              <course-item :course="course" :index="index"></course-item>
+            </v-list-item-content>
           </v-list-item>
         </v-list>
       </v-col>
@@ -29,7 +44,7 @@
 <script>
 import Course from "@/models/Course";
 import Patient from "@/models/Patient";
-import CourseTimelineItem from "./CourseTimelineItem";
+import CourseItem from "./CourseItem";
 import { mapState } from "vuex";
 export default {
   name: "Journee",
@@ -47,7 +62,7 @@ export default {
     };
   },
   components: {
-    CourseTimelineItem
+    CourseItem
   },
   created() {
     this.initTodayCourses();
@@ -123,4 +138,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.show-overflow {
+  overflow: visible;
+}
+.max-width {
+  max-width: 100%;
+}
+.max-height {
+  height: 100%;
+  max-height: 100%;
+  &.scroll {
+    overflow-y: auto;
+  }
+}
 </style>

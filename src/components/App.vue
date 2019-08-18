@@ -23,7 +23,6 @@ export default {
 
   created() {
     const initialData = data;
-    console.log(data);
     Patient.insert({ data: initialData.patients });
     Chauffeur.insert({ data: initialData.chauffeurs });
   }
