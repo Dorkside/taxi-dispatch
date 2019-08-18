@@ -25,16 +25,26 @@
       </v-col>
       <v-col class="pa-0 pr-2 max-height scroll">
         <v-list dense>
-          <v-list-item
-            v-for="(course, index) in coursesTodayUnplanified"
-            :key="`${course.ref}-${course.id}`"
-            :index="index"
-            class="ma-2"
+          <draggable
+            v-model="coursesTodayUnplanified"
+            group="courses"
+            ghost-class="ghost"
+            @start="drag = true"
+            @end="drag = false"
           >
-            <v-list-item-content class="show-overflow">
-              <course-item :course="course" :index="index"></course-item>
-            </v-list-item-content>
-          </v-list-item>
+            <transition-group>
+              <v-list-item
+                v-for="(course, index) in coursesTodayUnplanified"
+                :key="`${course.ref}-${course.id}`"
+                :index="index"
+                class="ma-2"
+              >
+                <v-list-item-content class="show-overflow">
+                  <course-item :course="course" :index="index"></course-item>
+                </v-list-item-content>
+              </v-list-item>
+            </transition-group>
+          </draggable>
         </v-list>
       </v-col>
     </v-row>
@@ -42,6 +52,8 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
+
 import Course from "@/models/Course";
 import Patient from "@/models/Patient";
 import CourseItem from "./CourseItem";
@@ -62,6 +74,7 @@ export default {
     };
   },
   components: {
+    draggable,
     CourseItem
   },
   created() {
@@ -76,7 +89,6 @@ export default {
       return Course.query()
         .with("chauffeur")
         .with("patient")
-        .orderBy("time", "asc")
         .get();
     },
     patients() {
@@ -89,10 +101,35 @@ export default {
       return [];
     },
     coursesTodayPlanified() {
-      return this.coursesToday.filter(course => course.time !== "");
+      return this.coursesToday
+        .filter(course => course.time !== "")
+        .sort((a, b) => {
+          if (a.time === "") return 0;
+          if (b.time === "") return 0;
+          if (a.time < b.time) return -1;
+          return 1;
+        });
     },
-    coursesTodayUnplanified() {
-      return this.coursesToday.filter(course => course.time === "");
+    coursesTodayUnplanified: {
+      get() {
+        return this.coursesToday
+          .filter(course => course.time === "")
+          .sort((a, b) => {
+            if (a.priority === "") return 0;
+            if (b.priority === "") return 0;
+            if (a.priority < b.priority) return -1;
+            return 1;
+          });
+      },
+      set(value) {
+        console.log("updateunplanified", value);
+        Course.update({
+          data: value.map((course, index) => {
+            course.priority = index;
+            return course;
+          })
+        });
+      }
     },
     currentDay() {
       return this.days[new Date(this.currentDate).getDay()].toLowerCase();
@@ -138,6 +175,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.ghost {
+  opacity: 0.5;
+}
 .show-overflow {
   overflow: visible;
 }

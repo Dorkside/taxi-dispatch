@@ -1,5 +1,5 @@
 <template>
-  <v-card class="thin-card">
+  <v-card>
     <v-card-text fill-height class="pa-0 px-4">
       <v-layout fill-height row justify-center align-center>
         <v-flex mr-2 shrink text-center>

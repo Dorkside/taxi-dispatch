@@ -15,6 +15,7 @@ export default class Course extends Model {
       patient: this.belongsTo(Patient, "patient_id"),
       date: this.string(new Date().toISOString().substring(0, 10)),
       time: this.string(""),
+      priority: this.number(Infinity),
       generated: this.boolean(false)
     };
   }
