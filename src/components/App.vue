@@ -29,5 +29,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.z-index-10 {
+  z-index: 10;
+}
 </style>

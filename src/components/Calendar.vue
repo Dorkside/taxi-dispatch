@@ -1,6 +1,6 @@
 <template>
   <v-layout fill-height>
-    <v-flex xs3>
+    <v-flex xs3 class="elevation-8 z-index-10">
       <v-list>
         <v-list-item>
           <v-date-picker

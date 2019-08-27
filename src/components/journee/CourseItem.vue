@@ -43,12 +43,12 @@
             dense
             :value="course.patient"
             height="24"
-            @change="changePatient($event, course)"
             :items="patients"
             item-text="name"
             label="Nom du patient"
             class="mx-2"
             autocomplete="off"
+            @change="changePatient($event, course)"
           ></v-combobox>
         </v-flex>
         <v-flex>
@@ -56,19 +56,18 @@
             dense
             :value="course.chauffeur"
             height="24"
-            @change="changeChauffeur($event, course)"
             :items="chauffeurs"
             item-text="name"
             label="Chauffeur"
             class="mx-2"
             autocomplete="off"
+            @change="changeChauffeur($event, course)"
           ></v-combobox>
         </v-flex>
       </v-layout>
     </v-card-text>
   </v-card>
 </template>
-
 
 <script>
 import Patient from "@/models/Patient";
@@ -77,14 +76,22 @@ import Chauffeur from "@/models/Chauffeur";
 export default {
   name: "CourseItem",
   props: {
-    course: { type: Object },
-    index: { type: Number }
+    course: { type: Object, default: undefined },
+    index: { type: Number, default: undefined }
   },
   data() {
     return {
       dialog: false,
       newTime: this.course ? this.course.time : ""
     };
+  },
+  computed: {
+    patients() {
+      return Patient.query().get();
+    },
+    chauffeurs() {
+      return Chauffeur.query().get();
+    }
   },
   methods: {
     cancel() {
@@ -118,14 +125,6 @@ export default {
           });
         }
       }
-    }
-  },
-  computed: {
-    patients() {
-      return Patient.query().get();
-    },
-    chauffeurs() {
-      return Chauffeur.query().get();
     }
   }
 };

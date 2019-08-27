@@ -1,53 +1,66 @@
 <template>
-  <v-container class="pa-0" fill-height>
-    <v-row class="ma-0 max-height max-width">
-      <v-col class="pa-0 pr-2 max-height scroll">
-        <v-timeline dense>
-          <v-timeline-item
-            v-for="(course, index) in coursesTodayPlanified"
-            :key="`${course.ref}-${course.id}`"
-            :color="course.color"
-            small
-            fill-dot
-          >
-            <template v-slot:icon dark>
-              <v-icon dark>
-                {{
-                  course.direction === "Aller"
-                    ? "mdi-arrow-right"
-                    : "mdi-arrow-left"
-                }}
-              </v-icon>
-            </template>
-            <course-item :course="course" :index="index"></course-item>
-          </v-timeline-item>
-        </v-timeline>
-      </v-col>
-      <v-col class="pa-0 pr-2 max-height scroll">
-        <v-list dense>
-          <draggable
-            v-model="coursesTodayUnplanified"
-            group="courses"
-            ghost-class="ghost"
-            @start="drag = true"
-            @end="drag = false"
-          >
-            <transition-group>
-              <v-list-item
-                v-for="(course, index) in coursesTodayUnplanified"
-                :key="`${course.ref}-${course.id}`"
-                :index="index"
-                class="ma-2"
-              >
-                <v-list-item-content class="show-overflow">
-                  <course-item :course="course" :index="index"></course-item>
-                </v-list-item-content>
-              </v-list-item>
-            </transition-group>
-          </draggable>
-        </v-list>
-      </v-col>
-    </v-row>
+  <v-container class="pa-0 ma-0 page " fill-height>
+    <v-container class="pa-0 ma-0 z-index-10 elevation-4">
+      <v-row class="ma-0 ">
+        <v-col class="text-center">
+          Courses
+        </v-col>
+        <v-col class="text-center">
+          Courses à planifier
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container class="pa-0" fill-height>
+      <v-row class="ma-0 max-height max-width">
+        <v-col class="pa-0 max-height scroll">
+          <v-timeline dense>
+            <v-timeline-item
+              v-for="(course, index) in coursesTodayPlanified"
+              :key="`${course.ref}-${course.id}`"
+              :color="course.color"
+              class="pr-2"
+              small
+              fill-dot
+            >
+              <template v-slot:icon dark>
+                <v-icon dark>
+                  {{
+                    course.direction === "Aller"
+                      ? "mdi-arrow-right"
+                      : "mdi-arrow-left"
+                  }}
+                </v-icon>
+              </template>
+              <course-item :course="course" :index="index"></course-item>
+            </v-timeline-item>
+          </v-timeline>
+        </v-col>
+        <v-col class="pa-0 pr-2 max-height scroll">
+          <v-list dense>
+            <draggable
+              v-model="coursesTodayUnplanified"
+              group="courses"
+              ghost-class="ghost"
+              @start="drag = true"
+              @end="drag = false"
+            >
+              <transition-group>
+                <v-list-item
+                  v-for="(course, index) in coursesTodayUnplanified"
+                  :key="`${course.ref}-${course.id}`"
+                  :index="index"
+                  class="ma-2"
+                >
+                  <v-list-item-content class="show-overflow">
+                    <course-item :course="course" :index="index"></course-item>
+                  </v-list-item-content>
+                </v-list-item>
+              </transition-group>
+            </draggable>
+          </v-list>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-container>
 </template>
 
@@ -60,6 +73,10 @@ import CourseItem from "./CourseItem";
 import { mapState } from "vuex";
 export default {
   name: "Journee",
+  components: {
+    draggable,
+    CourseItem
+  },
   data() {
     return {
       days: [
@@ -72,10 +89,6 @@ export default {
         "Samedi"
       ]
     };
-  },
-  components: {
-    draggable,
-    CourseItem
   },
   created() {
     this.initTodayCourses();
@@ -175,6 +188,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.page {
+  flex-flow: column;
+}
 .ghost {
   opacity: 0.5;
 }
@@ -187,6 +203,13 @@ export default {
 .max-height {
   height: 100%;
   max-height: 100%;
+  &.scroll {
+    overflow-y: auto;
+  }
+}
+.max-height-48 {
+  height: 100%;
+  max-height: calc(100% - 48px);
   &.scroll {
     overflow-y: auto;
   }
