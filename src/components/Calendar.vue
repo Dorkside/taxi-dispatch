@@ -38,6 +38,11 @@
               <v-icon left>mdi-calendar-week</v-icon>
               Patients
             </v-tab>
+
+            <v-tab to="chauffeurs">
+              <v-icon left>mdi-calendar-week</v-icon>
+              Chauffeurs
+            </v-tab>
           </v-tabs>
         </v-flex>
         <v-flex shrink fill-height class="max-height">

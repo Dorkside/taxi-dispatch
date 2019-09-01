@@ -8,24 +8,9 @@
 
 <script>
 import store from "@/store";
-import data from "@/data";
-import Patient from "@/models/Patient";
-import Chauffeur from "@/models/Chauffeur";
-import Course from "@/models/Course";
-import Journee from "./journee/Journee.vue";
 
 export default {
-  store,
-
-  components: {
-    Journee
-  },
-
-  created() {
-    const initialData = data;
-    Patient.insert({ data: initialData.patients });
-    Chauffeur.insert({ data: initialData.chauffeurs });
-  }
+  store
 };
 </script>
 
