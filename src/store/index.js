@@ -3,6 +3,18 @@ import Vuex from "vuex";
 import VuexORM from "@vuex-orm/core";
 import database from "@/database";
 
+VuexORM.use(VuexORMAxios, {
+  database,
+  http: {
+    baseURL: "https://jsonplaceholder.typicode.com",
+    url: "/",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    }
+  }
+});
+
 Vue.use(Vuex);
 
 const store = new Vuex.Store({

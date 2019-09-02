@@ -10,7 +10,8 @@
 import store from "@/store";
 
 export default {
-  store
+  store,
+  async mounted() {}
 };
 </script>
 
