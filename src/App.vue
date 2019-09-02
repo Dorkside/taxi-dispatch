@@ -8,10 +8,13 @@
 
 <script>
 import store from "@/store";
+import Chauffeur from "./models/Chauffeur";
 
 export default {
   store,
-  async mounted() {}
+  mounted() {
+    Chauffeur.$fetch();
+  }
 };
 </script>
 

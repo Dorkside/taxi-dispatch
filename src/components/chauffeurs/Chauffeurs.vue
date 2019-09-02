@@ -15,7 +15,6 @@
             :value="chauffeur.name"
             placeholder="Nom"
             @change="changeName($event, chauffeur)"
-            @blur="commitName(chauffeur)"
           ></v-text-field>
         </td>
       </tr>
@@ -36,10 +35,17 @@ export default {
   },
   methods: {
     changeName($event, chauffeur) {
-      chauffeur.name = $event;
-    },
-    commitName(chauffeur) {
-      chauffeur.$save();
+      console.log(chauffeur);
+      Chauffeur.$update({
+        params: {
+          id: chauffeur.id
+        },
+        data: {
+          fields: {
+            name: { stringValue: $event }
+          }
+        }
+      });
     }
   }
 };

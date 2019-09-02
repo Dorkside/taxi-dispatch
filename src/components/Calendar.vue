@@ -82,8 +82,9 @@ export default {
       }
     },
     addChauffeur() {
-      let chauffeur = new Chauffeur();
-      chauffeur.$save();
+      Chauffeur.$create({
+        data: {}
+      });
     },
     addPatient() {
       let patient = new Patient();
