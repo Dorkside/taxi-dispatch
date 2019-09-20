@@ -2,16 +2,43 @@
   <td>
     <v-dialog v-model="dialog" width="unset" persistent>
       <template v-slot:activator="{ on }">
-        <v-btn text v-on="on" @click="newTime = patient[day.toLowerCase()]">
-          <span :class="`subtitle-1 font-weight-bold ${patient.color}--text`">
-            <v-icon>mdi-arrow-right</v-icon> {{ patient.prettyTime(day) }}
-          </span>
-        </v-btn>
-        <v-btn text v-on="on" @click="newTime = patient[day.toLowerCase()]">
-          <span :class="`subtitle-1 font-weight-bold ${patient.color}--text`">
-            <v-icon>mdi-arrow-left</v-icon> {{ patient.prettyTime(day) }}
-          </span>
-        </v-btn>
+        <v-container>
+          <v-row>
+            <v-btn
+              text
+              block
+              v-on="on"
+              @click="
+                newTime = patient[day.toLowerCase()];
+                r = false;
+              "
+            >
+              <span
+                :class="`subtitle-1 font-weight-bold ${patient.color}--text`"
+              >
+                <v-icon>mdi-arrow-right</v-icon> {{ patient.prettyTime(day) }}
+              </span>
+            </v-btn>
+          </v-row>
+          <v-row>
+            <v-btn
+              text
+              block
+              v-on="on"
+              @click="
+                newTime = patient[day.toLowerCase() + 'Retour'];
+                r = true;
+              "
+            >
+              <span
+                :class="`subtitle-1 font-weight-bold ${patient.color}--text`"
+              >
+                <v-icon>mdi-arrow-left</v-icon>
+                {{ patient.prettyTime(day, true) }}
+              </span>
+            </v-btn>
+          </v-row>
+        </v-container>
       </template>
       <v-card>
         <v-time-picker
@@ -39,6 +66,7 @@
 </template>
 
 <script>
+import Patient from "../../models/Patient";
 export default {
   name: "PatientDayCell",
   props: {
@@ -48,22 +76,23 @@ export default {
   data() {
     return {
       dialog: false,
-      newTime: this.patient[this.day.toLowerCase()]
+      newTime: this.patient[this.day.toLowerCase()],
+      r: false
     };
   },
   methods: {
-    remove() {
-      this.patient.$update({
-        [this.day.toLowerCase()]: ""
+    async remove() {
+      await this.patient.update({
+        [this.day.toLowerCase() + (this.r ? "Retour" : "")]: ""
       });
       this.dialog = false;
     },
     cancel() {
       this.dialog = false;
     },
-    changeTime() {
-      this.patient.$update({
-        [this.day.toLowerCase()]: this.newTime
+    async changeTime() {
+      await this.patient.update({
+        [this.day.toLowerCase() + (this.r ? "Retour" : "")]: this.newTime
       });
       this.dialog = false;
     }

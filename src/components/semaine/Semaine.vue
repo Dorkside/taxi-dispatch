@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0 ma-0 z-index-8 ">
+  <v-container class="pa-0 ma-0 z-index-8" fluid>
     <v-simple-table>
       <thead>
         <tr>
@@ -68,19 +68,12 @@ export default {
       this.dialog = false;
     },
     changeType($event, patient) {
-      patient.$update({
+      patient.update({
         type: $event
       });
     },
-    changeName($event, patient) {
-      patient.name = $event;
-    },
-    commitName(patient) {
-      patient.$save();
-    },
     addPatient() {
-      let patient = new Patient();
-      patient.$save();
+      Patient.create();
     }
   }
 };

@@ -1,41 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexORM from "@vuex-orm/core";
-import VuexORMAxios from "@vuex-orm/plugin-axios";
 import database from "@/database";
-import * as FireStoreParser from "firestore-parser";
 
-VuexORM.use(VuexORMAxios, {
-  database,
-  http: {
-    baseURL:
-      "https://firestore.googleapis.com/v1/projects/taxi-oka/databases/(default)/documents/",
-    url: "/",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    onResponse(response) {
-      let { data } = response;
-      if (data.documents) {
-        const result = FireStoreParser(data.documents).map(document => ({
-          id: document.name.split("/").pop(),
-          ...document.fields
-        }));
-        return result;
-      } else {
-        const document = FireStoreParser(data);
-        if (document.name && document.fields) {
-          return {
-            id: document.name.split("/").pop(),
-            ...document.fields
-          };
-        }
-      }
-      return response;
-    }
-  }
-});
+import { db } from "./db";
+import Chauffeur from "../models/Chauffeur";
+import Patient from "../models/Patient";
+import Course from "../models/Course";
 
 Vue.use(Vuex);
 
@@ -49,6 +20,63 @@ const store = new Vuex.Store({
     }
   },
   plugins: [VuexORM.install(database)]
+});
+
+db.collection("chauffeurs").onSnapshot(function(querySnapshot) {
+  querySnapshot.docChanges().forEach(function(change) {
+    if (change.type === "added") {
+      Chauffeur.insert({
+        data: {
+          ...change.doc.data(),
+          id: change.doc.id
+        }
+      });
+    }
+    if (change.type === "modified") {
+      Chauffeur.update({ where: change.doc.id, data: change.doc.data() });
+    }
+    if (change.type === "removed") {
+      Chauffeur.delete(change.doc.id);
+    }
+  });
+});
+
+db.collection("patients").onSnapshot(function(querySnapshot) {
+  querySnapshot.docChanges().forEach(function(change) {
+    if (change.type === "added") {
+      Patient.insert({
+        data: {
+          ...change.doc.data(),
+          id: change.doc.id
+        }
+      });
+    }
+    if (change.type === "modified") {
+      Patient.update({ where: change.doc.id, data: change.doc.data() });
+    }
+    if (change.type === "removed") {
+      Patient.delete(change.doc.id);
+    }
+  });
+});
+
+db.collection("courses").onSnapshot(function(querySnapshot) {
+  querySnapshot.docChanges().forEach(function(change) {
+    if (change.type === "added") {
+      Course.insert({
+        data: {
+          ...change.doc.data(),
+          id: change.doc.id
+        }
+      });
+    }
+    if (change.type === "modified") {
+      Course.update({ where: change.doc.id, data: change.doc.data() });
+    }
+    if (change.type === "removed") {
+      Course.delete(change.doc.id);
+    }
+  });
 });
 
 export default store;

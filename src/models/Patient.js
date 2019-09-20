@@ -1,67 +1,50 @@
 import { Model } from "@vuex-orm/core";
 import Course from "./Course";
-import v4 from "uuid";
+import { db } from "../store/db";
 
 export default class Patient extends Model {
   static entity = "patients";
 
   static fields() {
     return {
-      id: this.string(v4()),
+      id: this.string(""),
       name: this.string(""),
       type: this.string("Consultation"),
       courses: this.hasMany(Course, "patient_id"),
       lundi: this.string(""),
+      lundiRetour: this.string(""),
       mardi: this.string(""),
+      mardiRetour: this.string(""),
       mercredi: this.string(""),
+      mercrediRetour: this.string(""),
       jeudi: this.string(""),
+      jeudiRetour: this.string(""),
       vendredi: this.string(""),
-      samedi: this.string("")
+      vendrediRetour: this.string(""),
+      samedi: this.string(""),
+      samediRetour: this.string("")
     };
   }
 
-  static methodConf = {
-    http: {
-      url: "/patients"
-    },
-    methods: {
-      $fetch: {
-        name: "fetch",
-        http: {
-          url: "",
-          method: "get"
-        }
-      },
-      $get: {
-        name: "get",
-        http: {
-          url: "/:id",
-          method: "get"
-        }
-      },
-      $create: {
-        name: "create",
-        http: {
-          url: "/:id",
-          method: "post"
-        }
-      },
-      $update: {
-        name: "update",
-        http: {
-          url: "/:id",
-          method: "patch"
-        }
-      },
-      $delete: {
-        name: "delete",
-        http: {
-          url: "/:id",
-          method: "delete"
-        }
-      }
-    }
-  };
+  static new() {
+    db.collection("patients").doc();
+  }
+
+  static create() {
+    db.collection("patients").add({ name: "Nouveau patient" });
+  }
+
+  update(data) {
+    db.collection("patients")
+      .doc(this.id)
+      .update(data);
+  }
+
+  delete() {
+    db.collection("patients")
+      .doc(this.id)
+      .delete();
+  }
 
   get color() {
     switch (this.type) {
@@ -93,7 +76,7 @@ export default class Patient extends Model {
     }
   }
 
-  prettyTime(day) {
-    return this[day.toLowerCase()] || "--:--";
+  prettyTime(day, r = false) {
+    return this[day.toLowerCase() + (r ? "Retour" : "")] || "--:--";
   }
 }

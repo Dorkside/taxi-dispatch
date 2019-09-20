@@ -4,7 +4,7 @@
       <tr>
         <th class="text-left">Chauffeur</th>
         <th>
-          <v-btn @click="addChauffeur()">
+          <v-btn @click="createChauffeur()">
             <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
           </v-btn>
         </th>
@@ -33,6 +33,7 @@
 
 <script>
 import Chauffeur from "@/models/Chauffeur";
+import { db } from "../../store/db";
 export default {
   name: "Chauffeurs",
   computed: {
@@ -43,28 +44,14 @@ export default {
     }
   },
   methods: {
+    createChauffeur() {
+      Chauffeur.create();
+    },
     changeName($event, chauffeur) {
-      Chauffeur.$update({
-        params: {
-          id: chauffeur.id
-        },
-        data: {
-          fields: {
-            name: { stringValue: $event }
-          }
-        }
-      });
+      chauffeur.update({ name: $event });
     },
     deleteChauffeur(chauffeur) {
-      Chauffeur.$delete({
-        params: {
-          id: chauffeur.id
-        }
-      });
-      chauffeur.$delete();
-    },
-    addChauffeur() {
-      Chauffeur.new();
+      chauffeur.delete();
     }
   }
 };

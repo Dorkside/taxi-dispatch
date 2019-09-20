@@ -165,23 +165,32 @@ export default {
           result.push({
             ref: `${this.date}.${patient.id}.Retour`,
             date: this.date,
+            time: patient[this.currentDay + "Retour"],
             patient_id: patient.id,
             generated: true
           });
           return result;
         }, []);
-      Course.insert({
-        data: _courses.filter(
+      _courses
+        .filter(
           _course =>
             !this.courses.map(course => course.ref).includes(_course.ref)
         )
-      });
+        .forEach(course => {
+          Course.create(course);
+        });
     }
   },
   watch: {
     currentDate() {
-      console.log(this.currentDate);
-      this.initTodayCourses();
+      if (this.courses ? this.courses.length : false) {
+        this.initTodayCourses();
+      }
+    },
+    patients() {
+      if (this.courses ? this.courses.length : false) {
+        this.initTodayCourses();
+      }
     }
   }
 };

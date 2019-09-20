@@ -44,27 +44,13 @@ export default {
   },
   methods: {
     changeName($event, patient) {
-      Patient.$update({
-        params: {
-          id: patient.id
-        },
-        data: {
-          fields: {
-            name: { stringValue: $event }
-          }
-        }
-      });
+      patient.update({ name: $event });
     },
     deletePatient(patient) {
-      Patient.$delete({
-        params: {
-          id: patient.id
-        }
-      });
-      patient.$delete();
+      patient.delete();
     },
     addPatient() {
-      Patient.new();
+      Patient.create();
     }
   }
 };

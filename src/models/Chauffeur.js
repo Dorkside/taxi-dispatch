@@ -1,58 +1,31 @@
 import { Model } from "@vuex-orm/core";
 import Course from "./Course";
-import v4 from "uuid";
+import { db } from "../store/db";
 
 export default class Chauffeur extends Model {
   static entity = "chauffeurs";
 
   static fields() {
     return {
-      id: this.string(v4()),
+      id: this.string(""),
       name: this.string(""),
       courses: this.hasMany(Course, "chauffeur_id")
     };
   }
 
-  static methodConf = {
-    http: {
-      url: "/chauffeurs"
-    },
-    methods: {
-      $fetch: {
-        name: "fetch",
-        http: {
-          url: "",
-          method: "get"
-        }
-      },
-      $get: {
-        name: "get",
-        http: {
-          url: "/:id",
-          method: "get"
-        }
-      },
-      $create: {
-        name: "create",
-        http: {
-          url: "/:id",
-          method: "post"
-        }
-      },
-      $update: {
-        name: "update",
-        http: {
-          url: "/:id",
-          method: "patch"
-        }
-      },
-      $delete: {
-        name: "delete",
-        http: {
-          url: "/:id",
-          method: "delete"
-        }
-      }
-    }
-  };
+  static create() {
+    db.collection("chauffeurs").add({ name: "Nouveau chauffeur" });
+  }
+
+  update(data) {
+    db.collection("chauffeurs")
+      .doc(this.id)
+      .update(data);
+  }
+
+  delete() {
+    db.collection("chauffeurs")
+      .doc(this.id)
+      .delete();
+  }
 }

@@ -26,15 +26,9 @@
 
 <script>
 import store from "@/store";
-import Chauffeur from "./models/Chauffeur";
-import Patient from "./models/Patient";
 
 export default {
-  store,
-  mounted() {
-    Chauffeur.$fetch();
-    Patient.$fetch();
-  }
+  store
 };
 </script>
 

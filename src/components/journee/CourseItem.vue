@@ -98,7 +98,7 @@ export default {
       this.dialog = false;
     },
     changeTime() {
-      this.course.$update({
+      this.course.update({
         time: this.newTime
       });
       this.dialog = false;
@@ -111,7 +111,7 @@ export default {
             name: patient
           });
         }
-        course.$update({
+        course.update({
           patient_id: patient.id
         });
       }
@@ -120,7 +120,7 @@ export default {
       if ($event) {
         let chauffeur = $event;
         if (typeof chauffeur !== "string") {
-          course.$update({
+          course.update({
             chauffeur_id: chauffeur.id
           });
         }
