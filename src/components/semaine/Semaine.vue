@@ -1,48 +1,43 @@
 <template>
-  <v-simple-table>
-    <thead>
-      <tr>
-        <th></th>
-        <th class="text-left">Patient</th>
-        <th>Type</th>
-        <th v-for="day of days" :key="day">{{ day }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="patient in patients" :key="patient.id">
-        <td>
-          <v-avatar :color="patient.color" size="36" class="white--text">
-            {{ patient.shortType }}
-          </v-avatar>
-        </td>
-        <td>
-          <v-text-field
-            label="Regular"
-            single-line
-            :value="patient.name"
-            @change="changeName($event, patient)"
-            placeholder="Nom"
-            @blur="commitName(patient)"
-          ></v-text-field>
-        </td>
-        <td>
-          <v-select
-            :items="types"
-            :value="patient.type"
-            label="Type"
-            @change="changeType($event, patient)"
-            dense
-          ></v-select>
-        </td>
-        <patient-day-cell
-          v-for="day of days"
-          :patient="patient"
-          :key="day"
-          :day="day"
-        />
-      </tr>
-    </tbody>
-  </v-simple-table>
+  <v-container class="pa-0 ma-0 z-index-8 ">
+    <v-simple-table>
+      <thead>
+        <tr>
+          <th></th>
+          <th class="text-left">Patient</th>
+          <th>Type</th>
+          <th v-for="day of days" :key="day">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="patient in patients" :key="patient.id">
+          <td>
+            <v-avatar :color="patient.color" size="36" class="white--text">
+              {{ patient.shortType }}
+            </v-avatar>
+          </td>
+          <td>
+            <span> {{ patient.name }}</span>
+          </td>
+          <td>
+            <v-select
+              :items="types"
+              :value="patient.type"
+              label="Type"
+              dense
+              @change="changeType($event, patient)"
+            ></v-select>
+          </td>
+          <patient-day-cell
+            v-for="day of days"
+            :key="day"
+            :patient="patient"
+            :day="day"
+          />
+        </tr>
+      </tbody>
+    </v-simple-table>
+  </v-container>
 </template>
 
 <script>

@@ -2,27 +2,27 @@
   <v-simple-table>
     <thead>
       <tr>
-        <th class="text-left">Chauffeur</th>
+        <th class="text-left">Patient</th>
         <th>
-          <v-btn @click="addChauffeur()">
-            <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
+          <v-btn @click="addPatient()">
+            <v-icon>mdi-plus-circle</v-icon> Ajouter patient
           </v-btn>
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="chauffeur of chauffeurs" :key="chauffeur.id">
+      <tr v-for="patient of patients" :key="patient.id">
         <td>
           <v-text-field
             label="Regular"
             single-line
-            :value="chauffeur.name"
+            :value="patient.name"
             placeholder="Nom"
-            @change="changeName($event, chauffeur)"
+            @change="changeName($event, patient)"
           ></v-text-field>
         </td>
         <td>
-          <v-btn text outlined color="red" @click="deleteChauffeur(chauffeur)">
+          <v-btn text outlined color="red" @click="deletePatient(patient)">
             <v-icon>mdi-delete-forever</v-icon> Supprimer
           </v-btn>
         </td>
@@ -32,21 +32,21 @@
 </template>
 
 <script>
-import Chauffeur from "@/models/Chauffeur";
+import Patient from "@/models/Patient";
 export default {
-  name: "Chauffeurs",
+  name: "Patients",
   computed: {
-    chauffeurs() {
-      return Chauffeur.query()
+    patients() {
+      return Patient.query()
         .orderBy("name", "asc")
         .get();
     }
   },
   methods: {
-    changeName($event, chauffeur) {
-      Chauffeur.$update({
+    changeName($event, patient) {
+      Patient.$update({
         params: {
-          id: chauffeur.id
+          id: patient.id
         },
         data: {
           fields: {
@@ -55,16 +55,16 @@ export default {
         }
       });
     },
-    deleteChauffeur(chauffeur) {
-      Chauffeur.$delete({
+    deletePatient(patient) {
+      Patient.$delete({
         params: {
-          id: chauffeur.id
+          id: patient.id
         }
       });
-      chauffeur.$delete();
+      patient.$delete();
     },
-    addChauffeur() {
-      Chauffeur.new();
+    addPatient() {
+      Patient.new();
     }
   }
 };

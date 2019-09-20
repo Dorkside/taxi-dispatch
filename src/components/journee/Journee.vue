@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-0 ma-0 page " fill-height>
-    <v-container class="pa-0 ma-0 z-index-10 elevation-4">
+    <v-container class="pa-0 ma-0 z-index-8 elevation-4">
       <v-row class="ma-0 ">
         <v-col class="text-center">
           Courses

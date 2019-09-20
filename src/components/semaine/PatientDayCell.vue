@@ -4,7 +4,12 @@
       <template v-slot:activator="{ on }">
         <v-btn text v-on="on" @click="newTime = patient[day.toLowerCase()]">
           <span :class="`subtitle-1 font-weight-bold ${patient.color}--text`">
-            {{ patient.prettyTime(day) }}
+            <v-icon>mdi-arrow-right</v-icon> {{ patient.prettyTime(day) }}
+          </span>
+        </v-btn>
+        <v-btn text v-on="on" @click="newTime = patient[day.toLowerCase()]">
+          <span :class="`subtitle-1 font-weight-bold ${patient.color}--text`">
+            <v-icon>mdi-arrow-left</v-icon> {{ patient.prettyTime(day) }}
           </span>
         </v-btn>
       </template>

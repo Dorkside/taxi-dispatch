@@ -25,11 +25,14 @@ VuexORM.use(VuexORMAxios, {
         return result;
       } else {
         const document = FireStoreParser(data);
-        return {
-          id: document.name.split("/").pop(),
-          ...document.fields
-        };
+        if (document.name && document.fields) {
+          return {
+            id: document.name.split("/").pop(),
+            ...document.fields
+          };
+        }
       }
+      return response;
     }
   }
 });

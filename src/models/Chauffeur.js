@@ -35,7 +35,7 @@ export default class Chauffeur extends Model {
       $create: {
         name: "create",
         http: {
-          url: "",
+          url: "/:id",
           method: "post"
         }
       },
