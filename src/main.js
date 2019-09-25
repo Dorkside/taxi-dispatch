@@ -5,7 +5,6 @@ import VueRouter from "vue-router";
 import routes from "@/routes";
 
 import firebase from "firebase";
-import db from "./store/db";
 
 Vue.use(VueRouter);
 

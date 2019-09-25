@@ -32,6 +32,7 @@
     "@vuex-orm/core": "^0.32.1",
     "@vuex-orm/plugin-axios": "^0.5.1",
     "firebase": "^6.6.2",
+    "firebaseui": "^4.2.0",
     "firestore-parser": "^0.8.9",
     "vue-router": "^3.1.2",
     "vuedraggable": "^2.23.0",

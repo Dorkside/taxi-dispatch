@@ -3,7 +3,7 @@
 </template>
 <script>
 import firebase from "firebase";
-import firebaseui from "../../plugins/npm__fr";
+import firebaseui from "../../../lib/npm__fr";
 export default {
   name: "Auth",
   mounted() {
