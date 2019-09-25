@@ -9,12 +9,16 @@ export default class Chauffeur extends Model {
     return {
       id: this.string(""),
       name: this.string(""),
-      courses: this.hasMany(Course, "chauffeur_id")
+      courses: this.hasMany(Course, "chauffeur_id"),
+      deleted: this.string("")
     };
   }
 
   static create() {
-    db.collection("chauffeurs").add({ name: "Nouveau chauffeur" });
+    db.collection("chauffeurs").add({
+      name: "Nouveau chauffeur",
+      deleted: ""
+    });
   }
 
   update(data) {
@@ -26,6 +30,6 @@ export default class Chauffeur extends Model {
   delete() {
     db.collection("chauffeurs")
       .doc(this.id)
-      .delete();
+      .update({ deleted: new Date().toISOString() });
   }
 }

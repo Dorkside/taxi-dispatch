@@ -17,14 +17,16 @@ export default class Course extends Model {
       date: this.string(new Date().toISOString().substring(0, 10)),
       time: this.string(""),
       priority: this.number(Infinity),
-      generated: this.boolean(false)
+      generated: this.boolean(false),
+      deleted: this.string("")
     };
   }
 
   static create(data) {
     db.collection("courses").add(
       data || {
-        date: this.string(new Date().toISOString().substring(0, 10))
+        date: this.string(new Date().toISOString().substring(0, 10)),
+        deleted: ""
       }
     );
   }
@@ -38,7 +40,7 @@ export default class Course extends Model {
   delete() {
     db.collection("courses")
       .doc(this.id)
-      .delete();
+      .update({ deleted: new Date().toISOString() });
   }
 
   get direction() {

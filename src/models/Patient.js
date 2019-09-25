@@ -22,7 +22,8 @@ export default class Patient extends Model {
       vendredi: this.string(""),
       vendrediRetour: this.string(""),
       samedi: this.string(""),
-      samediRetour: this.string("")
+      samediRetour: this.string(""),
+      deleted: this.string("")
     };
   }
 
@@ -31,7 +32,7 @@ export default class Patient extends Model {
   }
 
   static create() {
-    db.collection("patients").add({ name: "Nouveau patient" });
+    db.collection("patients").add({ name: "Nouveau patient", deleted: "" });
   }
 
   update(data) {
@@ -43,7 +44,7 @@ export default class Patient extends Model {
   delete() {
     db.collection("patients")
       .doc(this.id)
-      .delete();
+      .update({ deleted: new Date().toISOString() });
   }
 
   get color() {
