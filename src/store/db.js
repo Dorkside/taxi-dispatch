@@ -2,7 +2,7 @@ const firebase = require("firebase");
 // Required for side-effects
 require("firebase/firestore");
 
-var firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyCRNvQRCDe12pOHJCNHsocWXcZAyrHD7-E",
   authDomain: "taxi-oka.firebaseapp.com",
   databaseURL: "https://taxi-oka.firebaseio.com",

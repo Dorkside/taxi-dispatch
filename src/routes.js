@@ -5,8 +5,13 @@ import Semaine from "@/components/semaine/Semaine.vue";
 import Patients from "@/components/patients/Patients.vue";
 import Chauffeurs from "@/components/chauffeurs/Chauffeurs.vue";
 
+import Auth from "./components/auth/Auth.vue";
+import AuthSuccess from "./components/auth/AuthSuccess.vue";
+
 const routes = [
-  { path: "*", redirect: "/cal" },
+  { path: "/", component: Auth },
+  { path: "/auth", component: Auth },
+  { path: "/success", component: AuthSuccess },
   {
     path: "/cal",
     component: Calendar,
