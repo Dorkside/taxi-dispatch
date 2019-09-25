@@ -7,7 +7,8 @@ module.exports = {
   parserOptions: {
     parser: "babel-eslint",
     // specifying a module sourcetype prevent eslint from marking import statements as errors
-    sourceType: "module"
+    sourceType: "module",
+    ignore: ["./src/lib/npm__fr.js"]
   },
   extends: ["plugin:vue/recommended", "@vue/prettier"],
   rules: {

@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-content>
-      <v-flex class="elevation-8 z-index-10">
-        <v-tabs background-color="blue accent-4" dark>
+      <v-flex class="d-flex elevation-8 z-index-10 align-center">
+        <v-tabs background-color="blue accent-4" dark class="flex-grow-1">
           <v-tab to="/cal/journee">
             <v-icon left>mdi-view-day</v-icon>
             Journée
@@ -16,6 +16,17 @@
             Annuaire
           </v-tab>
         </v-tabs>
+        <v-btn
+          absolute
+          bottom
+          dark
+          right
+          fab
+          @click="logOut"
+          color="red accent-4"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-flex>
       <v-flex shrink fill-height class="max-height">
         <router-view></router-view>
@@ -25,10 +36,16 @@
 </template>
 
 <script>
+import firebase from "firebase";
 import store from "@/store";
 
 export default {
-  store
+  store,
+  methods: {
+    logOut() {
+      firebase.auth().signOut();
+    }
+  }
 };
 </script>
 

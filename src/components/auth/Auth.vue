@@ -1,9 +1,11 @@
 <template lang="html">
-  <div id="firebaseui-auth-container"></div>
+  <v-container align="center" justify="center">
+    <div id="firebaseui-auth-container"></div>
+  </v-container>
 </template>
 <script>
 import firebase from "firebase";
-import firebaseui from "../../../lib/npm__fr";
+import firebaseui from "../../lib/npm__fr";
 export default {
   name: "Auth",
   mounted() {
