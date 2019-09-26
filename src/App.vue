@@ -1,7 +1,10 @@
 <template>
   <v-app>
-    <v-content>
-      <v-flex class="d-flex elevation-8 z-index-10 align-center">
+    <v-container fluid fill-height class="d-flex flex-column pa-0">
+      <v-container
+        fluid
+        class="d-flex elevation-8 pa-0 z-index-10 align-center"
+      >
         <v-tabs background-color="blue accent-4" dark class="flex-grow-1">
           <v-tab to="/cal/journee">
             <v-icon left>mdi-view-sequential</v-icon>
@@ -31,11 +34,11 @@
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
-      </v-flex>
-      <v-flex shrink fill-height class="max-height">
+      </v-container>
+      <v-container fluid fill-height class="flex-grow-1 pa-0">
         <router-view></router-view>
-      </v-flex>
-    </v-content>
+      </v-container>
+    </v-container>
   </v-app>
 </template>
 

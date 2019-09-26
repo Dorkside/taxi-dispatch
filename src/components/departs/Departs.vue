@@ -1,47 +1,36 @@
 <template>
-  <!-- <v-timeline dense>
-          <v-timeline-item
-            v-for="(course, index) in coursesTodayPlanified"
-            :key="`${course.ref}-${course.id}`"
-            :color="course.color"
-            class="pr-2"
-            small
-            fill-dot
-          >
-            <template v-slot:icon dark>
-              <v-icon dark>
-                {{
-                  course.direction === "Aller"
-                    ? "mdi-arrow-right"
-                    : "mdi-arrow-left"
-                }}
-              </v-icon>
-            </template>
-            <depart-item :course="course" :index="index"></depart-item>
-          </v-timeline-item>
-        </v-timeline> -->
-  <v-list dense>
-    <draggable
-      v-model="coursesTodayUnplanified"
-      group="courses"
-      ghost-class="ghost"
-      @start="drag = true"
-      @end="drag = false"
-    >
-      <transition-group>
-        <v-list-item
-          v-for="(course, index) in coursesTodayUnplanified"
-          :key="`${course.ref}-${course.id}`"
-          :index="index"
-          class="ma-2"
-        >
-          <v-list-item-content class="show-overflow">
-            <course-item :course="course" :index="index"></course-item>
-          </v-list-item-content>
-        </v-list-item>
-      </transition-group>
-    </draggable>
-  </v-list>
+  <v-container class="d-flex align-stretch pa-0" fluid fill-height>
+    <template v-for="chauffeur of chauffeurs">
+      <v-card :key="chauffeur.id" outlined tile flat class="chauffeur">
+        <v-card-title>
+          {{ chauffeur.name }}
+        </v-card-title>
+        <v-card-text>
+          <v-timeline dense>
+            <v-timeline-item
+              v-for="(course, index) in coursesTodayPlanified"
+              :key="`${course.ref}-${course.id}`"
+              :color="course.color"
+              class="pr-2"
+              small
+              fill-dot
+            >
+              <template v-slot:icon dark>
+                <v-icon dark>
+                  {{
+                    course.direction === "Aller"
+                      ? "mdi-arrow-right"
+                      : "mdi-arrow-left"
+                  }}
+                </v-icon>
+              </template>
+              <depart-item :course="course" :index="index"></depart-item>
+            </v-timeline-item>
+          </v-timeline>
+        </v-card-text>
+      </v-card>
+    </template>
+  </v-container>
 </template>
 
 <script>
@@ -78,6 +67,7 @@ export default {
     ...mapState(["currentDate"]),
     chauffeurs() {
       return Chauffeur.query()
+        .with("courses")
         .orderBy("name", "asc")
         .get();
     },
@@ -185,30 +175,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.page {
-  flex-flow: column;
-}
-.ghost {
-  opacity: 0.5;
-}
-.show-overflow {
-  overflow: visible;
-}
-.max-width {
-  max-width: 100%;
-}
-.max-height {
-  height: 100%;
-  max-height: 100%;
-  &.scroll {
-    overflow-y: auto;
-  }
-}
-.max-height-48 {
-  height: 100%;
-  max-height: calc(100% - 48px);
-  &.scroll {
-    overflow-y: auto;
-  }
+.chauffeur {
+  min-width: 300px;
 }
 </style>

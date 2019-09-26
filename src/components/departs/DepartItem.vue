@@ -1,68 +1,16 @@
 <template>
   <v-card>
-    <v-card-text fill-height class="pa-0 px-4">
+    <v-card-text fill-height class="pa-2 px-4">
       <v-layout fill-height row justify-center align-center>
         <v-flex mr-2 shrink text-center>
-          <v-dialog v-model="dialog" width="unset" persistent>
-            <template v-slot:activator="{ on }">
-              <v-btn text v-on="on" @click="newTime = course.time">
-                <span
-                  :class="`subtitle-1 font-weight-bold ${course.color}--text`"
-                >
-                  {{ course.prettyTime }}
-                </span>
-              </v-btn>
-            </template>
-            <v-card>
-              <v-time-picker
-                v-if="dialog"
-                v-model="newTime"
-                landscape
-                format="24hr"
-              ></v-time-picker>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn align-end color="orange" text @click="cancel()">
-                  Annuler
-                </v-btn>
-                <v-btn align-end color="green" text @click="changeTime()">
-                  Valider
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          <span :class="`subtitle-1 font-weight-bold ${course.color}--text`">
+            {{ course.prettyTime }}
+          </span>
         </v-flex>
-        <v-flex v-if="course.generated">
+        <v-flex>
           <span>
             {{ course.patient.name }}
           </span>
-        </v-flex>
-        <v-flex v-else>
-          <v-combobox
-            dense
-            :value="course.patient"
-            height="24"
-            :items="patients"
-            item-text="name"
-            label="Nom du patient"
-            class="mx-2"
-            autocomplete="off"
-            @change="changePatient($event, course)"
-          ></v-combobox>
-        </v-flex>
-        <v-flex>
-          <v-combobox
-            dense
-            :value="course.chauffeur"
-            height="24"
-            :items="chauffeurs"
-            item-text="name"
-            label="Chauffeur"
-            class="mx-2"
-            autocomplete="off"
-            @change="changeChauffeur($event, course)"
-          ></v-combobox>
         </v-flex>
       </v-layout>
     </v-card-text>
@@ -94,28 +42,6 @@ export default {
     }
   },
   methods: {
-    cancel() {
-      this.dialog = false;
-    },
-    changeTime() {
-      this.course.update({
-        time: this.newTime
-      });
-      this.dialog = false;
-    },
-    async changePatient($event, course) {
-      if ($event) {
-        let patient = $event;
-        if (typeof patient === "string") {
-          patient = await Patient.insert({
-            name: patient
-          });
-        }
-        course.update({
-          patient_id: patient.id
-        });
-      }
-    },
     changeChauffeur($event, course) {
       if ($event) {
         let chauffeur = $event;
