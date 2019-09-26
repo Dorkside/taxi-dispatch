@@ -8,7 +8,7 @@
           </span>
         </v-flex>
         <v-flex>
-          <span>
+          <span v-if="course.patient">
             {{ course.patient.name }}
           </span>
         </v-flex>
@@ -32,14 +32,6 @@ export default {
       dialog: false,
       newTime: this.course ? this.course.time : ""
     };
-  },
-  computed: {
-    patients() {
-      return Patient.query().get();
-    },
-    chauffeurs() {
-      return Chauffeur.query().get();
-    }
   },
   methods: {
     changeChauffeur($event, course) {

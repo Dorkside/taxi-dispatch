@@ -1,35 +1,73 @@
 <template>
   <v-container class="d-flex align-stretch pa-0" fluid fill-height>
-    <template v-for="chauffeur of chauffeurs">
-      <v-card :key="chauffeur.id" outlined tile flat class="chauffeur">
-        <v-card-title>
-          {{ chauffeur.name }}
-        </v-card-title>
-        <v-card-text class="pa-0">
-          <v-timeline dense>
-            <v-timeline-item
-              v-for="(course, index) in coursesTodayPlanified"
-              :key="`${course.ref}-${course.id}`"
-              :color="course.color"
-              class="pr-2"
-              small
-              fill-dot
+    <v-list
+      width="200px"
+      class="flex-shrink-0 elevation-8"
+      :style="{ 'z-index': 1 }"
+    >
+      <draggable
+        :value="coursesTodayUnplanified"
+        :sort="true"
+        group="courses"
+        fill-height
+        :style="{ height: '100%' }"
+        @change="moveCourse($event, null)"
+      >
+        <v-list-item
+          v-for="(course, index) in coursesTodayUnplanified"
+          :key="`${course.ref}-${course.id}`"
+        >
+          <depart-item :course="course" :index="index"></depart-item>
+        </v-list-item>
+      </draggable>
+    </v-list>
+    <v-container
+      class="d-flex flex-grow-1 align-stretch pa-0"
+      fluid
+      fill-height
+    >
+      <template v-for="chauffeur of chauffeurs">
+        <v-card
+          :key="chauffeur.id"
+          flat
+          class="chauffeur pa-0"
+          :style="{ position: 'relative' }"
+        >
+          <v-chip class="subtitle-1 ml-4 mt-4">{{ chauffeur.name }}</v-chip>
+
+          <v-timeline dense :style="{ height: '100%' }">
+            <draggable
+              :value="chauffeur.courses"
+              :sort="true"
+              group="courses"
+              fill-height
+              :style="{ height: '100%' }"
+              @change="moveCourse($event, chauffeur)"
             >
-              <template v-slot:icon dark>
-                <v-icon dark>
-                  {{
-                    course.direction === "Aller"
-                      ? "mdi-arrow-right"
-                      : "mdi-arrow-left"
-                  }}
-                </v-icon>
-              </template>
-              <depart-item :course="course" :index="index"></depart-item>
-            </v-timeline-item>
+              <v-timeline-item
+                v-for="(course, index) in chauffeur.courses"
+                :key="`${course.ref}-${course.id}`"
+                :color="course.color"
+                class="pr-2"
+                small
+                fill-dot
+              >
+                <template v-slot:icon dark>
+                  <v-icon dark>
+                    {{
+                      course.direction === "Aller"
+                        ? "mdi-arrow-right"
+                        : "mdi-arrow-left"
+                    }}
+                  </v-icon>
+                </template>
+                <depart-item :course="course" :index="index"></depart-item>
+              </v-timeline-item>
+            </draggable>
           </v-timeline>
-        </v-card-text>
-      </v-card>
-    </template>
+        </v-card>
+      </template>
+    </v-container>
   </v-container>
 </template>
 
@@ -67,7 +105,10 @@ export default {
     ...mapState(["currentDate"]),
     chauffeurs() {
       return Chauffeur.query()
-        .with("courses")
+        .with("courses", query => {
+          query.where("date", this.date);
+        })
+        .with("courses.patient")
         .orderBy("name", "asc")
         .get();
     },
@@ -80,51 +121,36 @@ export default {
         .with("patient")
         .get();
     },
-    patients() {
-      return Patient.query().get();
-    },
     coursesToday() {
       if (this.currentDate) {
         return this.courses.filter(course => course.date === this.date);
       }
       return [];
     },
-    coursesTodayPlanified() {
+    coursesTodayUnplanified() {
       return this.coursesToday
         .filter(course => course.time !== "")
+        .filter(course => !course.chauffeur_id)
         .sort((a, b) => {
-          if (a.time === "") return 0;
-          if (b.time === "") return 0;
-          if (a.time < b.time) return -1;
+          if (a.priority === "") return 0;
+          if (b.priority === "") return 0;
+          if (a.priority < b.priority) return -1;
           return 1;
         });
     },
-    coursesTodayUnplanified: {
-      get() {
-        return this.coursesToday
-          .filter(course => course.time === "")
-          .sort((a, b) => {
-            if (a.priority === "") return 0;
-            if (b.priority === "") return 0;
-            if (a.priority < b.priority) return -1;
-            return 1;
-          });
-      },
-      set(value) {
-        console.log("updateunplanified", value);
-        Course.update({
-          data: value.map((course, index) => {
-            course.priority = index;
-            return course;
-          })
-        });
-      }
+    patients() {
+      return Patient.query().get();
     },
     currentDay() {
       return this.days[new Date(this.currentDate).getDay()].toLowerCase();
     }
   },
   methods: {
+    moveCourse(event, chauffeur) {
+      if (event.added) {
+        event.added.element.update({ chauffeur_id: chauffeur.id });
+      }
+    },
     initTodayCourses() {
       let _courses = this.patients
         .filter(patient => {
@@ -176,6 +202,6 @@ export default {
 
 <style scoped lang="scss">
 .chauffeur {
-  min-width: 300px;
+  min-width: 250px;
 }
 </style>
