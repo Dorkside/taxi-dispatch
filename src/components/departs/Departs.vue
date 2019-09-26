@@ -5,7 +5,7 @@
         <v-card-title>
           {{ chauffeur.name }}
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="pa-0">
           <v-timeline dense>
             <v-timeline-item
               v-for="(course, index) in coursesTodayPlanified"
