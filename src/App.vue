@@ -4,15 +4,19 @@
       <v-flex class="d-flex elevation-8 z-index-10 align-center">
         <v-tabs background-color="blue accent-4" dark class="flex-grow-1">
           <v-tab to="/cal/journee">
-            <v-icon left>mdi-view-day</v-icon>
+            <v-icon left>mdi-view-sequential</v-icon>
             Journée
+          </v-tab>
+          <v-tab to="/cal/departs">
+            <v-icon left>mdi-view-parallel</v-icon>
+            Départs
           </v-tab>
           <v-tab to="/series">
             <v-icon left>mdi-calendar-week</v-icon>
             Séries
           </v-tab>
           <v-tab to="/annuaire">
-            <v-icon left>mdi-medical-bag</v-icon>
+            <v-icon left>mdi-contacts</v-icon>
             Annuaire
           </v-tab>
         </v-tabs>
@@ -22,8 +26,8 @@
           dark
           right
           fab
-          @click="logOut"
           color="red accent-4"
+          @click="logOut"
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>

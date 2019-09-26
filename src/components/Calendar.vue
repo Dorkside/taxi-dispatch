@@ -40,10 +40,9 @@ export default {
       this.$store.commit("setDate", new Date(event));
     },
     addCourse() {
-      Course.insert({
-        data: {
-          date: this.date
-        }
+      Course.create({
+        date: this.date,
+        deleted: ""
       });
     }
   }

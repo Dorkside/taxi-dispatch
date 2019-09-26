@@ -42,6 +42,12 @@ export default class Patient extends Model {
   }
 
   delete() {
+    Course.query()
+      .where("patient_id", this.$id)
+      .get()
+      .forEach(course => {
+        course.delete();
+      });
     db.collection("patients")
       .doc(this.id)
       .update({ deleted: new Date().toISOString() });

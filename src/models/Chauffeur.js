@@ -28,6 +28,12 @@ export default class Chauffeur extends Model {
   }
 
   delete() {
+    Course.query()
+      .where("chauffeur_id", this.$id)
+      .get()
+      .forEach(course => {
+        course.update({ chauffeur_id: null });
+      });
     db.collection("chauffeurs")
       .doc(this.id)
       .update({ deleted: new Date().toISOString() });

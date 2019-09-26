@@ -1,81 +1,62 @@
 <template>
-  <v-container class="pa-0 ma-0 page " fill-height>
-    <v-container class="pa-0 ma-0 z-index-8 elevation-4">
-      <v-row class="ma-0 ">
-        <v-col class="text-center">
-          Courses
-        </v-col>
-        <v-col class="text-center">
-          Courses à planifier
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-container class="pa-0" fill-height>
-      <v-row class="ma-0 max-height max-width">
-        <v-col class="pa-0 max-height scroll">
-          <v-timeline dense>
-            <v-timeline-item
-              v-for="(course, index) in coursesTodayPlanified"
-              :key="`${course.ref}-${course.id}`"
-              :color="course.color"
-              class="pr-2"
-              small
-              fill-dot
-            >
-              <template v-slot:icon dark>
-                <v-icon dark>
-                  {{
-                    course.direction === "Aller"
-                      ? "mdi-arrow-right"
-                      : "mdi-arrow-left"
-                  }}
-                </v-icon>
-              </template>
-              <course-item :course="course" :index="index"></course-item>
-            </v-timeline-item>
-          </v-timeline>
-        </v-col>
-        <v-col class="pa-0 pr-2 max-height scroll">
-          <v-list dense>
-            <draggable
-              v-model="coursesTodayUnplanified"
-              group="courses"
-              ghost-class="ghost"
-              @start="drag = true"
-              @end="drag = false"
-            >
-              <transition-group>
-                <v-list-item
-                  v-for="(course, index) in coursesTodayUnplanified"
-                  :key="`${course.ref}-${course.id}`"
-                  :index="index"
-                  class="ma-2"
-                >
-                  <v-list-item-content class="show-overflow">
-                    <course-item :course="course" :index="index"></course-item>
-                  </v-list-item-content>
-                </v-list-item>
-              </transition-group>
-            </draggable>
-          </v-list>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-container>
+  <!-- <v-timeline dense>
+          <v-timeline-item
+            v-for="(course, index) in coursesTodayPlanified"
+            :key="`${course.ref}-${course.id}`"
+            :color="course.color"
+            class="pr-2"
+            small
+            fill-dot
+          >
+            <template v-slot:icon dark>
+              <v-icon dark>
+                {{
+                  course.direction === "Aller"
+                    ? "mdi-arrow-right"
+                    : "mdi-arrow-left"
+                }}
+              </v-icon>
+            </template>
+            <depart-item :course="course" :index="index"></depart-item>
+          </v-timeline-item>
+        </v-timeline> -->
+  <v-list dense>
+    <draggable
+      v-model="coursesTodayUnplanified"
+      group="courses"
+      ghost-class="ghost"
+      @start="drag = true"
+      @end="drag = false"
+    >
+      <transition-group>
+        <v-list-item
+          v-for="(course, index) in coursesTodayUnplanified"
+          :key="`${course.ref}-${course.id}`"
+          :index="index"
+          class="ma-2"
+        >
+          <v-list-item-content class="show-overflow">
+            <course-item :course="course" :index="index"></course-item>
+          </v-list-item-content>
+        </v-list-item>
+      </transition-group>
+    </draggable>
+  </v-list>
 </template>
 
 <script>
 import draggable from "vuedraggable";
 
 import Course from "@/models/Course";
+import Chauffeur from "@/models/Chauffeur";
 import Patient from "@/models/Patient";
-import CourseItem from "./CourseItem";
+import DepartItem from "./DepartItem";
 import { mapState } from "vuex";
 export default {
-  name: "Journee",
+  name: "Departs",
   components: {
     draggable,
-    CourseItem
+    DepartItem
   },
   data() {
     return {
@@ -95,6 +76,11 @@ export default {
   },
   computed: {
     ...mapState(["currentDate"]),
+    chauffeurs() {
+      return Chauffeur.query()
+        .orderBy("name", "asc")
+        .get();
+    },
     date() {
       return this.currentDate.toISOString().substring(0, 10);
     },
