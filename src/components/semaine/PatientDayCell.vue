@@ -1,44 +1,32 @@
 <template>
-  <td>
+  <td class="pa-1">
     <v-dialog v-model="dialog" width="unset" persistent>
       <template v-slot:activator="{ on }">
-        <v-container>
-          <v-row>
-            <v-btn
-              text
-              block
-              v-on="on"
-              @click="
-                newTime = patient[day.toLowerCase()];
-                r = false;
-              "
-            >
-              <span
-                :class="`subtitle-1 font-weight-bold ${patient.color}--text`"
-              >
-                <v-icon>mdi-arrow-right</v-icon> {{ patient.prettyTime(day) }}
-              </span>
-            </v-btn>
-          </v-row>
-          <v-row>
-            <v-btn
-              text
-              block
-              v-on="on"
-              @click="
-                newTime = patient[day.toLowerCase() + 'Retour'];
-                r = true;
-              "
-            >
-              <span
-                :class="`subtitle-1 font-weight-bold ${patient.color}--text`"
-              >
-                <v-icon>mdi-arrow-left</v-icon>
-                {{ patient.prettyTime(day, true) }}
-              </span>
-            </v-btn>
-          </v-row>
-        </v-container>
+        <v-btn
+          text
+          v-on="on"
+          @click="
+            newTime = patient[day.toLowerCase()];
+            r = false;
+          "
+        >
+          <span :class="`font-weight-bold ${patient.color}--text`">
+            <v-icon>mdi-arrow-right</v-icon> {{ patient.prettyTime(day) }}
+          </span>
+        </v-btn>
+        <v-btn
+          text
+          v-on="on"
+          @click="
+            newTime = patient[day.toLowerCase() + 'Retour'];
+            r = true;
+          "
+        >
+          <span :class="`font-weight-bold ${patient.color}--text`">
+            <v-icon>mdi-arrow-left</v-icon>
+            {{ patient.prettyTime(day, true) }}
+          </span>
+        </v-btn>
       </template>
       <v-card>
         <v-time-picker
@@ -46,6 +34,7 @@
           v-model="newTime"
           landscape
           format="24hr"
+          @change="changeTime"
         ></v-time-picker>
         <v-card-actions>
           <v-btn color="red" text @click="remove()">
@@ -99,3 +88,4 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped></style>

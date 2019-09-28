@@ -1,16 +1,27 @@
 <template>
-  <v-app>
+  <v-app fill-height class="fill-screen">
+    <v-app-bar color="blue accent-4">
+      <v-toolbar-title class="title white--text text-center toolbar-title">
+        <v-btn text absolute outlined small dark left to="/cal/journee">
+          Taxi OKA
+        </v-btn>
+        <v-btn text absolute outlined small dark right @click="logOut">
+          <v-icon left>mdi-close</v-icon>
+          Déconnexion
+        </v-btn>
+      </v-toolbar-title>
+    </v-app-bar>
     <v-container fluid fill-height class="d-flex flex-column pa-0">
       <v-container
         fluid
         class="d-flex elevation-8 pa-0 z-index-10 align-center"
       >
-        <v-tabs background-color="blue accent-4" dark class="flex-grow-1">
+        <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
           <v-tab to="/cal/journee">
             <v-icon left>mdi-view-sequential</v-icon>
             Journée
           </v-tab>
-          <v-tab to="/cal/departs">
+          <v-tab to="/departs">
             <v-icon left>mdi-view-parallel</v-icon>
             Départs
           </v-tab>
@@ -23,17 +34,6 @@
             Annuaire
           </v-tab>
         </v-tabs>
-        <v-btn
-          absolute
-          bottom
-          dark
-          right
-          fab
-          color="red accent-4"
-          @click="logOut"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
       </v-container>
       <v-container fluid fill-height class="flex-grow-1 pa-0">
         <router-view></router-view>
@@ -45,9 +45,13 @@
 <script>
 import firebase from "firebase";
 import store from "@/store";
+import { mapState } from "vuex";
 
 export default {
   store,
+  computed: {
+    ...mapState(["currentDate"])
+  },
   methods: {
     logOut() {
       firebase.auth().signOut();
@@ -57,6 +61,17 @@ export default {
 </script>
 
 <style>
+.fill-screen {
+  height: 100vh;
+}
+.toolbar-title {
+  width: 100%;
+}
+.title-scroll {
+  position: sticky !important;
+  top: 0;
+  z-index: 11 !important;
+}
 .z-index-10 {
   position: relative;
   z-index: 10;

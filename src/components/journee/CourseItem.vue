@@ -1,8 +1,12 @@
 <template>
   <v-card>
     <v-card-text fill-height class="pa-0 px-4">
-      <v-layout fill-height row justify-center align-center>
-        <v-flex mr-2 shrink text-center>
+      <v-container
+        fill-height
+        row
+        class="d-flex justify-center align-center nowrap pa-0"
+      >
+        <div class="mr-2 flex-shrink-0 flex-grow-0" text-center>
           <v-dialog v-model="dialog" width="unset" persistent>
             <template v-slot:activator="{ on }">
               <v-btn text v-on="on" @click="newTime = course.time">
@@ -32,39 +36,35 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-flex>
-        <v-flex v-if="course.generated">
-          <span>
-            {{ course.patient.name }}
-          </span>
-        </v-flex>
-        <v-flex v-else>
-          <v-combobox
-            dense
-            :value="course.patient"
-            height="24"
-            :items="patients"
-            item-text="name"
-            label="Nom du patient"
-            class="mx-2"
-            autocomplete="off"
-            @change="changePatient($event, course)"
-          ></v-combobox>
-        </v-flex>
-        <v-flex>
-          <v-combobox
-            dense
-            :value="course.chauffeur"
-            height="24"
-            :items="chauffeurs"
-            item-text="name"
-            label="Chauffeur"
-            class="mx-2"
-            autocomplete="off"
-            @change="changeChauffeur($event, course)"
-          ></v-combobox>
-        </v-flex>
-      </v-layout>
+        </div>
+        <span v-if="course.generated" class="flex-grow-1">
+          {{ course.patient.name }}
+        </span>
+        <v-combobox
+          v-else
+          dense
+          :value="course.patient"
+          height="24"
+          :items="patients"
+          item-text="name"
+          label="Nom du patient"
+          class="flex-grow-1 mx-2"
+          autocomplete="no-fill"
+          @change="changePatient($event, course)"
+        ></v-combobox>
+        <v-combobox
+          v-if="!hideChauffeur"
+          dense
+          :value="course.chauffeur"
+          height="24"
+          :items="chauffeurs"
+          item-text="name"
+          label="Chauffeur"
+          class="combo-width flex-shrink-0 flex-grow-0 mx-2"
+          autocomplete="off"
+          @change="changeChauffeur($event, course)"
+        ></v-combobox>
+      </v-container>
     </v-card-text>
   </v-card>
 </template>
@@ -77,7 +77,8 @@ export default {
   name: "CourseItem",
   props: {
     course: { type: Object, default: undefined },
-    index: { type: Number, default: undefined }
+    index: { type: Number, default: undefined },
+    hideChauffeur: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -139,5 +140,11 @@ export default {
   * {
     max-height: 48px;
   }
+}
+.combo-width {
+  width: 150px;
+}
+.nowrap {
+  flex-flow: nowrap;
 }
 </style>

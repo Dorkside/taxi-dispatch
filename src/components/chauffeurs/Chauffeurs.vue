@@ -1,9 +1,9 @@
 <template>
-  <v-simple-table>
+  <v-simple-table class="flex-grow-1">
     <thead>
       <tr>
         <th class="text-left">Chauffeur</th>
-        <th>
+        <th width="200px">
           <v-btn @click="createChauffeur()">
             <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
           </v-btn>

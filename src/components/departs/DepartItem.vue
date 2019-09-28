@@ -1,18 +1,21 @@
 <template>
-  <v-card>
-    <v-card-text fill-height class="pa-2 px-4">
-      <v-layout fill-height row justify-center align-center>
-        <v-flex mr-2 shrink text-center>
-          <span :class="`subtitle-1 font-weight-bold ${course.color}--text`">
-            {{ course.prettyTime }}
-          </span>
-        </v-flex>
-        <v-flex>
-          <span v-if="course.patient">
-            {{ course.patient.name }}
-          </span>
-        </v-flex>
-      </v-layout>
+  <v-card class="full-width">
+    <v-card-text fill-height class="pa-2 px-4 full-width">
+      <v-container
+        class="d-flex flex-column justify-center align-start pa-0"
+        fill-height
+        row
+      >
+        <span
+          class="mr-2 flex-shrink-1 flex-grow-0"
+          :class="`subtitle-1 font-weight-bold ${course.color}--text`"
+        >
+          {{ course.prettyTime }}
+        </span>
+        <span v-if="course.patient" class="flex-grow-1 text-wrap">
+          {{ course.patient.name }}
+        </span>
+      </v-container>
     </v-card-text>
   </v-card>
 </template>
@@ -51,11 +54,19 @@ export default {
 <style scoped lang="scss">
 .full-width {
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 .thin-card {
   height: 48px;
   * {
     max-height: 48px;
   }
+}
+.nowrap {
+  flex-flow: nowrap;
+}
+.text-wrap {
+  overflow: hidden;
 }
 </style>

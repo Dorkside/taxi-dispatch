@@ -1,10 +1,19 @@
 <template>
-  <v-container class="d-flex align-stretch pa-0" fluid fill-height>
+  <v-container
+    class="d-flex align-stretch pa-0 overflow-hide"
+    fluid
+    fill-height
+    :style="{ position: 'relative' }"
+  >
     <v-list
-      width="200px"
-      class="flex-shrink-0 elevation-8"
+      width="250px"
+      class="flex-shrink-0 elevation-8 scroll"
       :style="{ 'z-index': 1 }"
+      fill-height
     >
+      <v-subheader class="title-scroll">
+        <v-chip class="overline">Courses non attribuées</v-chip>
+      </v-subheader>
       <draggable
         :value="coursesTodayUnplanified"
         :sort="true"
@@ -16,13 +25,14 @@
         <v-list-item
           v-for="(course, index) in coursesTodayUnplanified"
           :key="`${course.ref}-${course.id}`"
+          class="mb-1"
         >
           <depart-item :course="course" :index="index"></depart-item>
         </v-list-item>
       </draggable>
     </v-list>
     <v-container
-      class="d-flex flex-grow-1 align-stretch pa-0"
+      class="d-flex flex-grow-1 align-stretch pa-0 overflow-scroll"
       fluid
       fill-height
     >
@@ -30,41 +40,47 @@
         <v-card
           :key="chauffeur.id"
           flat
-          class="chauffeur pa-0"
-          :style="{ position: 'relative' }"
+          class="chauffeur pa-0 flex-shrink-1 flex-grow-1"
         >
-          <v-chip class="subtitle-1 ml-4 mt-4">{{ chauffeur.name }}</v-chip>
+          <v-container
+            fluid
+            fill-height
+            class="pa-0 d-flex flex-column align-start scroll"
+          >
+            <v-chip class="subtitle-1 ml-4 mt-4 flex-shrink-0 title-scroll">
+              {{ chauffeur.name }}
+            </v-chip>
 
-          <v-timeline dense :style="{ height: '100%' }">
-            <draggable
-              :value="chauffeur.courses"
-              :sort="true"
-              group="courses"
-              fill-height
-              :style="{ height: '100%' }"
-              @change="moveCourse($event, chauffeur)"
-            >
-              <v-timeline-item
-                v-for="(course, index) in chauffeur.courses"
-                :key="`${course.ref}-${course.id}`"
-                :color="course.color"
-                class="pr-2"
-                small
-                fill-dot
+            <v-timeline dense class="flex-shrink-1 flex-grow-1 full-width">
+              <draggable
+                :value="chauffeur.courses"
+                :sort="true"
+                group="courses"
+                :style="{ height: '100%' }"
+                @change="moveCourse($event, chauffeur)"
               >
-                <template v-slot:icon dark>
-                  <v-icon dark>
-                    {{
-                      course.direction === "Aller"
-                        ? "mdi-arrow-right"
-                        : "mdi-arrow-left"
-                    }}
-                  </v-icon>
-                </template>
-                <depart-item :course="course" :index="index"></depart-item>
-              </v-timeline-item>
-            </draggable>
-          </v-timeline>
+                <v-timeline-item
+                  v-for="(course, index) in chauffeur.courses"
+                  :key="`${course.ref}-${course.id}`"
+                  :color="course.color"
+                  class="pr-2 full-width"
+                  small
+                  fill-dot
+                >
+                  <template v-slot:icon dark>
+                    <v-icon dark>
+                      {{
+                        course.direction === "Aller"
+                          ? "mdi-arrow-right"
+                          : "mdi-arrow-left"
+                      }}
+                    </v-icon>
+                  </template>
+                  <depart-item :course="course" :index="index"></depart-item>
+                </v-timeline-item>
+              </draggable>
+            </v-timeline>
+          </v-container>
         </v-card>
       </template>
     </v-container>
@@ -106,7 +122,7 @@ export default {
     chauffeurs() {
       return Chauffeur.query()
         .with("courses", query => {
-          query.where("date", this.date);
+          query.where("date", this.date).orderBy("time", "asc");
         })
         .with("courses.patient")
         .orderBy("name", "asc")
@@ -132,9 +148,7 @@ export default {
         .filter(course => course.time !== "")
         .filter(course => !course.chauffeur_id)
         .sort((a, b) => {
-          if (a.priority === "") return 0;
-          if (b.priority === "") return 0;
-          if (a.priority < b.priority) return -1;
+          if (a.time < b.time) return -1;
           return 1;
         });
     },
@@ -201,7 +215,21 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.full-width {
+  width: 100%;
+  max-width: 100%;
+}
+.overflow-hide {
+  overflow: hidden;
+}
 .chauffeur {
-  min-width: 250px;
+  max-width: 300px;
+  min-width: 300px;
+}
+.scroll {
+  overflow-y: auto;
+}
+.overflow-scroll {
+  overflow: auto;
 }
 </style>

@@ -1,21 +1,26 @@
 <template>
-  <v-layout fill-height>
-    <v-flex xs3 class="elevation-6 z-index-9">
-      <v-tabs vertical class="transparent w100">
-        <v-tab to="patients">
-          <v-icon left>mdi-medical-bag</v-icon>
-          Patients
-        </v-tab>
-        <v-tab to="chauffeurs">
-          <v-icon left>mdi-car</v-icon>
-          Chauffeurs
-        </v-tab>
-      </v-tabs>
-    </v-flex>
-    <v-flex>
-      <v-layout column fill-height> <router-view></router-view> </v-layout>
-    </v-flex>
-  </v-layout>
+  <v-container class="d-flex flex-row pa-0 align-stretch" fluid fill-height>
+    <v-tabs
+      vertical
+      class="tabs w100 transparent flex-shrink-1 elevation-6 z-index-9"
+    >
+      <v-tab to="patients" block>
+        <v-icon left>mdi-medical-bag</v-icon>
+        Patients
+      </v-tab>
+      <v-tab to="chauffeurs">
+        <v-icon left>mdi-car</v-icon>
+        Chauffeurs
+      </v-tab>
+    </v-tabs>
+    <v-container
+      class="flex-grow-1 flex-shrink-1 pa-0 align-start scroll"
+      fluid
+      fill-height
+    >
+      <router-view></router-view>
+    </v-container>
+  </v-container>
 </template>
 
 <script>
@@ -24,7 +29,10 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.tabs {
+  max-width: 150px !important;
+}
 .w100 {
   .v-item-group {
     width: 100%;
@@ -38,5 +46,8 @@ export default {
   .v-item-group {
     background-color: transparent !important;
   }
+}
+.scroll {
+  overflow-y: auto;
 }
 </style>

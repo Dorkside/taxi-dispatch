@@ -18,10 +18,10 @@ const routes = [
     component: Calendar,
     children: [
       { path: "", redirect: "journee" },
-      { path: "journee", component: Journee },
-      { path: "departs", component: Departs }
+      { path: "journee", component: Journee }
     ]
   },
+  { path: "/departs", component: Departs },
   {
     path: "/series",
     component: Semaine
