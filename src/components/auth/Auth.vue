@@ -5,7 +5,8 @@
 </template>
 <script>
 import firebase from "firebase";
-import firebaseui from "../../lib/npm__fr.js";
+import firebaseui from "../../lib/npm__fr";
+
 export default {
   name: "Auth",
   mounted() {
