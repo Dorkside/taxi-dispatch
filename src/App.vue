@@ -5,7 +5,7 @@
         <v-btn text absolute outlined small dark left to="/cal/journee">
           Taxi OKA
         </v-btn>
-        <span>{{ prettyDate() }}</span>
+        <span>{{ prettyDate }}</span>
         <v-btn text absolute outlined small dark right @click="logOut">
           <v-icon left>mdi-close</v-icon>
           Déconnexion
@@ -46,14 +46,12 @@
 <script>
 import firebase from "firebase";
 import store from "@/store";
+import { mapState } from "vuex";
 
 export default {
   store,
-  computed: {},
-  methods: {
-    logOut() {
-      firebase.auth().signOut();
-    },
+  computed: {
+    ...mapState(["currentDate"]),
     prettyDate() {
       const options = {
         weekday: "long",
@@ -61,7 +59,12 @@ export default {
         month: "long",
         day: "numeric"
       };
-      return new Date().toLocaleDateString("fr-FR", options);
+      return new Date(this.currentDate).toLocaleDateString("fr-FR", options);
+    }
+  },
+  methods: {
+    logOut() {
+      firebase.auth().signOut();
     }
   }
 };
