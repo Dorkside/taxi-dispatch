@@ -5,7 +5,7 @@
         <v-btn text absolute outlined small dark left to="/cal/journee">
           Taxi OKA
         </v-btn>
-        <span></span>
+        <span>{{ prettyDate() }}</span>
         <v-btn text absolute outlined small dark right @click="logOut">
           <v-icon left>mdi-close</v-icon>
           Déconnexion
@@ -53,6 +53,15 @@ export default {
   methods: {
     logOut() {
       firebase.auth().signOut();
+    },
+    prettyDate() {
+      const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      };
+      return new Date().toLocaleDateString("fr-FR", options);
     }
   }
 };
