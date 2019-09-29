@@ -5,6 +5,7 @@
         <v-btn text absolute outlined small dark left to="/cal/journee">
           Taxi OKA
         </v-btn>
+        <span></span>
         <v-btn text absolute outlined small dark right @click="logOut">
           <v-icon left>mdi-close</v-icon>
           Déconnexion
@@ -45,13 +46,10 @@
 <script>
 import firebase from "firebase";
 import store from "@/store";
-import { mapState } from "vuex";
 
 export default {
   store,
-  computed: {
-    ...mapState(["currentDate"])
-  },
+  computed: {},
   methods: {
     logOut() {
       firebase.auth().signOut();

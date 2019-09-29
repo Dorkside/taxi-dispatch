@@ -4,6 +4,7 @@
       <v-list-item>
         <v-date-picker
           full-width
+          locale="fr"
           :value="date"
           @input="setDate"
         ></v-date-picker>
