@@ -13,16 +13,23 @@ const router = new VueRouter({
   routes
 });
 
+router.beforeEach((to, from, next) => {
+  console.log(to);
+  if (to.path !== "/auth") {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        next({ path: "/auth" });
+      } else {
+        next();
+      }
+    });
+  } else next();
+});
+
 const app = new Vue({
   ...App,
   router,
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        this.$router.push("/auth");
-      }
-    });
-  },
+  created() {},
   vuetify
 });
 
