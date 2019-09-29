@@ -1,4 +1,4 @@
 /dist
 /node_modules
-hosting.*.cache
+/.firebase/**.*
 *.log
