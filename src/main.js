@@ -18,9 +18,7 @@ const app = new Vue({
   router,
   created() {
     firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.$router.push("/cal");
-      } else {
+      if (!user) {
         this.$router.push("/auth");
       }
     });
