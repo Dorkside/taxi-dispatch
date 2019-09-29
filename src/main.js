@@ -14,7 +14,6 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log(to);
   if (to.path !== "/auth") {
     firebase.auth().onAuthStateChanged(user => {
       if (!user) {
