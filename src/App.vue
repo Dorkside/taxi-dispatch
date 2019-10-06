@@ -5,7 +5,7 @@
         <v-btn text absolute outlined small dark left to="/cal/journee">
           Taxi OKA
         </v-btn>
-        <span>{{ prettyDate() }}</span>
+        <span>{{ prettyDate }}</span>
         <v-btn text absolute outlined small dark right @click="logOut">
           <v-icon left>mdi-close</v-icon>
           Déconnexion
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import firebase from "firebase";
 import store from "@/store";
 import Patient from "./models/Patient";
@@ -52,28 +53,8 @@ import { data } from "./models/contacts.json";
 
 export default {
   store,
-  computed: {},
-  mounted() {
-    const types = ["dyal", "cs", "psy", "ipc", "kine"];
-    const contacts = data.filter(contact => {
-      const c = contact.split(" ");
-      return (
-        c.some(part => types.some(type => part.toLowerCase() === type)) &&
-        !types.includes(c[0].toLowerCase())
-      );
-    });
-
-    setTimeout(() => {
-      contacts.forEach(contact => {
-        console.log(contact);
-        Patient.create(contact);
-      });
-    }, 5000);
-  },
-  methods: {
-    logOut() {
-      firebase.auth().signOut();
-    },
+  computed: {
+    ...mapState(["currentDate"]),
     prettyDate() {
       const options = {
         weekday: "long",
@@ -81,7 +62,54 @@ export default {
         month: "long",
         day: "numeric"
       };
-      return new Date().toLocaleDateString("fr-FR", options);
+      return new Date(this.currentDate).toLocaleDateString("fr-FR", options);
+    },
+    patients() {
+      return Patient.query().get();
+    }
+  },
+  mounted() {},
+  methods: {
+    logOut() {
+      firebase.auth().signOut();
+    },
+    initContacts() {
+      const types = ["dyal", "cs", "psy", "ipc", "kine"];
+      const contacts = data
+        .filter(contact => {
+          const c = contact.split(" ");
+          return (
+            c.some(part => types.some(type => part.toLowerCase() === type)) &&
+            !types.includes(c[0].toLowerCase())
+          );
+        })
+        .map(contact => {
+          let type = "Consultation";
+          const parts = contact.split(" ");
+          if (parts.some(part => part.toLowerCase() === "dyal")) {
+            type = "Dialyse";
+          }
+          if (parts.some(part => part.toLowerCase() === "psy")) {
+            type = "HDJ";
+          }
+          if (parts.some(part => part.toLowerCase() === "kine")) {
+            type = "Kiné / Rééducation";
+          }
+          return {
+            name: contact,
+            type
+          };
+        });
+
+      setTimeout(() => {
+        console.log(this.patients);
+        contacts.forEach(contact => {
+          if (!this.patients.some(patient => patient.name === contact.name)) {
+            console.log(`Creating ${contact}`);
+            Patient.create(contact);
+          }
+        });
+      }, 5000);
     }
   }
 };

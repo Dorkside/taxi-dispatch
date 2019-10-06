@@ -20,43 +20,31 @@
         <v-icon>mdi-plus-circle</v-icon> Ajouter patient
       </v-btn>
     </div>
-    <v-simple-table dense class="flex-grow-1">
-      <thead>
-        <tr>
-          <th width="50px"></th>
-          <th class="text-left">Patient</th>
-          <th width="200px">Type</th>
-          <th v-for="day of days" :key="day" width="60px">{{ day }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="patient in filteredPatients" :key="patient.id">
-          <td>
-            <v-avatar :color="patient.color" size="36" class="white--text">
-              {{ patient.shortType }}
-            </v-avatar>
-          </td>
-          <td>
-            <span> {{ patient.name }}</span>
-          </td>
-          <td>
-            <v-select
-              :items="types"
-              :value="patient.type"
-              label="Type"
-              dense
-              @change="changeType($event, patient)"
-            ></v-select>
-          </td>
-          <patient-day-cell
-            v-for="day of days"
-            :key="day"
-            :patient="patient"
-            :day="day"
-          />
-        </tr>
-      </tbody>
-    </v-simple-table>
+
+    <RecycleScroller
+      v-slot="{ item }"
+      class="scroller pa-2"
+      :items="filteredPatients"
+      :item-size="72"
+      key-field="id"
+    >
+      <v-container class="pa-0 patient d-flex align-center">
+        <v-avatar :color="item.color" size="36" class="white--text">
+          {{ item.shortType }}
+        </v-avatar>
+
+        <span class="mx-2 flex-grow-1">{{ item.name }}</span>
+
+        <patient-day-cell
+          v-for="day of days"
+          :key="day"
+          width="100px"
+          :patient="item"
+          :day="day"
+        />
+      </v-container>
+      <v-divider></v-divider>
+    </RecycleScroller>
   </v-container>
 </template>
 
@@ -101,11 +89,6 @@ export default {
     cancel() {
       this.dialog = false;
     },
-    changeType($event, patient) {
-      patient.update({
-        type: $event
-      });
-    },
     addPatient() {
       Patient.create();
     }
@@ -122,5 +105,11 @@ export default {
   position: sticky;
   top: 0;
   width: 100%;
+}
+.scroller {
+  width: 100%;
+}
+.patient {
+  height: 72px;
 }
 </style>

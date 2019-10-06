@@ -2,9 +2,14 @@ import Vue from "vue";
 import App from "./App";
 import vuetify from "@/plugins/vuetify";
 import VueRouter from "vue-router";
+import VueVirtualScroller from "vue-virtual-scroller";
 import routes from "@/routes";
 
 import firebase from "firebase";
+
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+
+Vue.use(VueVirtualScroller);
 
 Vue.use(VueRouter);
 
