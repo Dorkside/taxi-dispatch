@@ -31,8 +31,11 @@ export default class Patient extends Model {
     db.collection("patients").doc();
   }
 
-  static create() {
-    db.collection("patients").add({ name: "Nouveau patient", deleted: "" });
+  static create(name) {
+    db.collection("patients").add({
+      name: name || "Nouveau patient",
+      deleted: ""
+    });
   }
 
   update(data) {

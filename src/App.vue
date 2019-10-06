@@ -46,10 +46,30 @@
 <script>
 import firebase from "firebase";
 import store from "@/store";
+import Patient from "./models/Patient";
+
+import { data } from "./models/contacts.json";
 
 export default {
   store,
   computed: {},
+  mounted() {
+    const types = ["dyal", "cs", "psy", "ipc", "kine"];
+    const contacts = data.filter(contact => {
+      const c = contact.split(" ");
+      return (
+        c.some(part => types.some(type => part.toLowerCase() === type)) &&
+        !types.includes(c[0].toLowerCase())
+      );
+    });
+
+    setTimeout(() => {
+      contacts.forEach(contact => {
+        console.log(contact);
+        Patient.create(contact);
+      });
+    }, 5000);
+  },
   methods: {
     logOut() {
       firebase.auth().signOut();

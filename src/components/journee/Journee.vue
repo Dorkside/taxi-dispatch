@@ -129,7 +129,6 @@ export default {
           });
       },
       set(value) {
-        console.log("updateunplanified", value);
         Course.update({
           data: value.map((course, index) => {
             course.priority = index;
