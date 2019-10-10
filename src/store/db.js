@@ -2,6 +2,16 @@ const firebase = require("firebase");
 // Required for side-effects
 require("firebase/firestore");
 
+export const firebaseConfigDev = {
+  apiKey: "AIzaSyC0Ltkkj6bNqtfVy2GdezOv_PO6E9jGGuM",
+  authDomain: "taxi-oka-dev.firebaseapp.com",
+  databaseURL: "https://taxi-oka-dev.firebaseio.com",
+  projectId: "taxi-oka-dev",
+  storageBucket: "taxi-oka-dev.appspot.com",
+  messagingSenderId: "1028758599656",
+  appId: "1:1028758599656:web:1fb7857de2bb6dee16565d"
+};
+
 export const firebaseConfig = {
   apiKey: "AIzaSyCRNvQRCDe12pOHJCNHsocWXcZAyrHD7-E",
   authDomain: "taxi-oka.firebaseapp.com",
@@ -13,6 +23,8 @@ export const firebaseConfig = {
 };
 
 // Initialize Cloud Firestore through Firebase
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(
+  process.env.NODE_ENV === "development" ? firebaseConfigDev : firebaseConfig
+);
 
 export const db = firebase.firestore();
