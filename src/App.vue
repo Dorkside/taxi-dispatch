@@ -45,11 +45,16 @@
 
 <script>
 import { mapState } from "vuex";
-import firebase from "firebase";
 import store from "@/store";
-import Patient from "./models/Patient";
 
 import { data } from "./models/contacts.json";
+
+import firebase from "firebase";
+
+import { db } from "./store/db";
+import Chauffeur from "./models/Chauffeur";
+import Course from "./models/Course";
+import Patient from "./models/Patient";
 
 export default {
   store,
@@ -68,7 +73,125 @@ export default {
       return Patient.query().get();
     }
   },
-  mounted() {},
+  mounted() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        this.$store.commit("setAdmin", false);
+      } else {
+        if (["+33762686070"].includes(user.phoneNumber)) {
+          this.$store.commit("setAdmin", true);
+
+          db.collection("chauffeurs")
+            .where("deleted", "==", "")
+            .onSnapshot(function(querySnapshot) {
+              querySnapshot.docChanges().forEach(function(change) {
+                if (change.type === "added") {
+                  Chauffeur.insert({
+                    data: {
+                      ...change.doc.data(),
+                      id: change.doc.id
+                    }
+                  });
+                }
+                if (change.type === "modified") {
+                  Chauffeur.update({
+                    where: change.doc.id,
+                    data: change.doc.data()
+                  });
+                }
+                if (change.type === "removed") {
+                  Chauffeur.delete(change.doc.id);
+                }
+              });
+            });
+
+          db.collection("courses")
+            .where("deleted", "==", "")
+            .onSnapshot(function(querySnapshot) {
+              querySnapshot.docChanges().forEach(function(change) {
+                if (change.type === "added") {
+                  Course.insert({
+                    data: {
+                      ...change.doc.data(),
+                      id: change.doc.id
+                    }
+                  });
+                }
+                if (change.type === "modified") {
+                  Course.update({
+                    where: change.doc.id,
+                    data: change.doc.data()
+                  });
+                }
+                if (change.type === "removed") {
+                  Course.delete(change.doc.id);
+                }
+              });
+            });
+        } else {
+          db.collection("chauffeurs")
+            .doc(user.phoneNumber)
+            .onSnapshot(function(doc) {
+              Chauffeur.insert({
+                data: {
+                  ...doc.data(),
+                  id: doc.id
+                }
+              });
+            });
+
+          db.collection("courses")
+            .where("deleted", "==", "")
+            .where("chauffeur_id", "==", user.phoneNumber)
+            .onSnapshot(function(querySnapshot) {
+              querySnapshot.docChanges().forEach(function(change) {
+                if (change.type === "added") {
+                  Course.insert({
+                    data: {
+                      ...change.doc.data(),
+                      id: change.doc.id
+                    }
+                  });
+                }
+                if (change.type === "modified") {
+                  Course.update({
+                    where: change.doc.id,
+                    data: change.doc.data()
+                  });
+                }
+                if (change.type === "removed") {
+                  Course.delete(change.doc.id);
+                }
+              });
+            });
+        }
+
+        db.collection("patients")
+          .where("deleted", "==", "")
+          .onSnapshot(function(querySnapshot) {
+            querySnapshot.docChanges().forEach(function(change) {
+              if (change.type === "added") {
+                Patient.insert({
+                  data: {
+                    ...change.doc.data(),
+                    id: change.doc.id
+                  }
+                });
+              }
+              if (change.type === "modified") {
+                Patient.update({
+                  where: change.doc.id,
+                  data: change.doc.data()
+                });
+              }
+              if (change.type === "removed") {
+                Patient.delete(change.doc.id);
+              }
+            });
+          });
+      }
+    });
+  },
   methods: {
     logOut() {
       firebase.auth().signOut();

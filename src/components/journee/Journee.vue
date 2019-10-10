@@ -47,7 +47,9 @@
               {{
                 course.direction === "Aller"
                   ? "mdi-arrow-right"
-                  : "mdi-arrow-left"
+                  : course.direction === "Retour"
+                  ? "mdi-arrow-left"
+                  : ""
               }}
             </v-icon>
           </template>

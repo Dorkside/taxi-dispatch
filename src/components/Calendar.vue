@@ -9,7 +9,7 @@
           @input="setDate"
         ></v-date-picker>
       </v-list-item>
-      <v-list-item>
+      <v-list-item v-if="admin">
         <v-btn block @click="addCourse()">
           <v-icon>mdi-plus-circle</v-icon> Ajouter course
         </v-btn>
@@ -31,7 +31,7 @@ import Course from "@/models/Course";
 export default {
   name: "Calendar",
   computed: {
-    ...mapState(["currentDate"]),
+    ...mapState(["currentDate", "admin"]),
     date() {
       return this.currentDate.toISOString().substring(0, 10);
     }

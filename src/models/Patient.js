@@ -34,7 +34,9 @@ export default class Patient extends Model {
   static create(patientData) {
     db.collection("patients").add({
       ...patientData,
-      name: patientData.name || "Nouveau patient",
+      name: patientData
+        ? patientData.name || "Nouveau patient"
+        : "Nouveau patient",
       deleted: ""
     });
   }

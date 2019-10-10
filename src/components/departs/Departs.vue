@@ -19,7 +19,6 @@
         :sort="true"
         group="courses"
         fill-height
-        :style="{ height: '100%' }"
         @change="moveCourse($event, null)"
       >
         <v-list-item
@@ -72,7 +71,9 @@
                       {{
                         course.direction === "Aller"
                           ? "mdi-arrow-right"
-                          : "mdi-arrow-left"
+                          : course.direction === "Retour"
+                          ? "mdi-arrow-left"
+                          : ""
                       }}
                     </v-icon>
                   </template>

@@ -4,9 +4,58 @@
       <tr>
         <th class="text-left">Chauffeur</th>
         <th width="200px">
-          <v-btn @click="createChauffeur()">
-            <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
-          </v-btn>
+          <v-dialog v-model="dialog" persistent max-width="300px">
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on">
+                <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">Créer un nouveau chauffeur</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-text-field
+                    v-model="newChauffeur.name"
+                    label="Nom"
+                    autocomplete="nofill"
+                    prepend-inner-icon="mdi-account"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="newChauffeur.phone"
+                    label="Numéro de téléphone"
+                    prepend-inner-icon="mdi-phone"
+                    autocomplete="nofill"
+                    required
+                  ></v-text-field>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <div class="flex-grow-1"></div>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="
+                    resetData();
+                    dialog = false;
+                  "
+                >
+                  Annuler
+                </v-btn>
+                <v-btn
+                  color="primary darken-1"
+                  @click="
+                    createChauffeur(newChauffeur);
+                    dialog = false;
+                  "
+                >
+                  Enregistrer
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </th>
       </tr>
     </thead>
@@ -33,9 +82,17 @@
 
 <script>
 import Chauffeur from "@/models/Chauffeur";
-import { db } from "../../store/db";
 export default {
   name: "Chauffeurs",
+  data() {
+    return {
+      dialog: false,
+      newChauffeur: {
+        name: null,
+        phone: null
+      }
+    };
+  },
   computed: {
     chauffeurs() {
       return Chauffeur.query()
@@ -44,8 +101,15 @@ export default {
     }
   },
   methods: {
-    createChauffeur() {
-      Chauffeur.create();
+    createChauffeur(data) {
+      Chauffeur.create(data);
+      this.resetData();
+    },
+    resetData() {
+      this.newChauffeur = {
+        name: null,
+        phone: null
+      };
     },
     changeName($event, chauffeur) {
       chauffeur.update({ name: $event });

@@ -14,11 +14,22 @@ export default class Chauffeur extends Model {
     };
   }
 
-  static create() {
-    db.collection("chauffeurs").add({
-      name: "Nouveau chauffeur",
-      deleted: ""
-    });
+  static create(data = null) {
+    if (data.phone) {
+      db.collection("chauffeurs")
+        .doc(data.phone)
+        .set({
+          name: data.name || "Nouveau chauffeur",
+          phone: data.phone || "",
+          deleted: ""
+        });
+    } else {
+      db.collection("chauffeurs").add({
+        name: data.name || "Nouveau chauffeur",
+        phone: "",
+        deleted: ""
+      });
+    }
   }
 
   update(data) {
