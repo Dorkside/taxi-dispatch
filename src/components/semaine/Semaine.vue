@@ -21,13 +21,19 @@
       </v-btn>
     </div>
 
+    <v-container class="pa-0 d-flex justify-end days-label-container">
+      <div v-for="day of days" :key="day" class="day-label pl-4 pt-1">
+        <v-chip>{{ day }}</v-chip>
+      </div>
+    </v-container>
     <RecycleScroller
       v-slot="{ item }"
-      class="scroller pa-2"
+      class="scroller pa-2 pt-10"
       :items="filteredPatients"
       :item-size="72"
       key-field="id"
     >
+      <v-divider></v-divider>
       <v-container class="pa-0 patient d-flex align-center">
         <v-avatar :color="item.color" size="36" class="white--text">
           {{ item.shortType }}
@@ -43,7 +49,6 @@
           :day="day"
         />
       </v-container>
-      <v-divider></v-divider>
     </RecycleScroller>
   </v-container>
 </template>
@@ -97,6 +102,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.days-label-container {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+.day-label {
+  width: 100px;
+}
 .scroll {
   overflow-y: auto;
 }
