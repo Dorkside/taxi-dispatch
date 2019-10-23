@@ -1,11 +1,21 @@
 <template>
   <v-app fill-height class="fill-screen">
     <v-app-bar color="blue accent-4">
-      <v-toolbar-title class="title white--text text-center toolbar-title">
+      <v-toolbar-title
+        class="title white--text text-center toolbar-title d-flex align-center justify-center"
+      >
         <v-btn text absolute outlined small dark left to="/cal/journee">
           Taxi OKA
         </v-btn>
-        <span>{{ prettyDate }}</span>
+        <div class="d-flex align-center justify-center">
+          <v-btn text icon small class="white--text" @click="shiftDate(-1)">
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <span class="date-text">{{ prettyDate }}</span>
+          <v-btn text icon small class="white--text" @click="shiftDate(1)">
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </div>
         <v-btn text absolute outlined small dark right @click="logOut">
           <v-icon left>mdi-close</v-icon>
           Déconnexion
@@ -231,12 +241,21 @@ export default {
           }
         });
       }, 5000);
+    },
+    shiftDate(shift) {
+      this.$store.commit(
+        "setDate",
+        this.currentDate.setDate(this.currentDate.getDate() + shift)
+      );
     }
   }
 };
 </script>
 
 <style>
+.date-text {
+  width: 300px;
+}
 .fill-screen {
   height: 100vh;
 }

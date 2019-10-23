@@ -12,7 +12,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     setDate(state, date) {
-      state.currentDate = date;
+      state.currentDate = new Date(date);
     },
     setAdmin(state, admin) {
       state.admin = admin;
