@@ -1,7 +1,7 @@
 <template>
   <v-container class="d-flex flex-column pa-0" fluid>
     <div
-      class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 pa-0 align-center"
+      class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 align-center"
     >
       <v-text-field
         v-model="searchTerms"
@@ -109,6 +109,7 @@ export default {
 .action-bar {
   z-index: 2;
   position: sticky;
+  min-height: 64px;
   top: 0;
 }
 .scroller {

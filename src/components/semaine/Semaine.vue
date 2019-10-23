@@ -103,6 +103,7 @@ export default {
 .action-bar {
   z-index: 2;
   position: sticky;
+  min-height: 64px;
   top: 0;
   width: 100%;
 }

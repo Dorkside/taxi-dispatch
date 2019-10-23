@@ -1,6 +1,11 @@
 <template>
-  <v-card>
-    <v-card-text fill-height class="pa-0 px-4">
+  <v-card
+    :class="{
+      deleted: course.deleted !== '',
+      'elevation-0': course.deleted !== ''
+    }"
+  >
+    <v-card-text fill-height class="pa-0 pl-4">
       <v-container
         fill-height
         row
@@ -64,6 +69,51 @@
           autocomplete="off"
           @change="changeChauffeur($event, course)"
         ></v-combobox>
+
+        <v-dialog
+          v-if="course.deleted === ''"
+          v-model="dialogDelete"
+          persistent
+          max-width="290"
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn text icon color="red" v-on="on">
+              <v-icon>mdi-delete-forever</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline">
+              Etes-vous sûrs de vouloir supprimer la course ?
+            </v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialogDelete = false">
+                Annuler
+              </v-btn>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="
+                  deleteCourse(course);
+                  dialogDelete = false;
+                "
+              >
+                Confirmer
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-btn
+          v-else
+          text
+          icon
+          color="green"
+          v-on="on"
+          @click="undeleteCourse(course)"
+        >
+          <v-icon>mdi-restore</v-icon>
+        </v-btn>
       </v-container>
     </v-card-text>
   </v-card>
@@ -83,6 +133,7 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogDelete: false,
       newTime: this.course ? this.course.time : ""
     };
   },
@@ -126,12 +177,21 @@ export default {
           });
         }
       }
+    },
+    deleteCourse(course) {
+      course.delete();
+    },
+    undeleteCourse(course) {
+      course.undelete();
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
+.deleted {
+  opacity: 0.3;
+}
 .full-width {
   width: 100%;
 }

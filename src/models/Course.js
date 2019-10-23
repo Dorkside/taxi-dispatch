@@ -43,6 +43,12 @@ export default class Course extends Model {
       .update({ deleted: new Date().toISOString() });
   }
 
+  undelete() {
+    db.collection("courses")
+      .doc(this.id)
+      .update({ deleted: "" });
+  }
+
   get direction() {
     if (this.ref) {
       let _ref = this.ref.split(".");

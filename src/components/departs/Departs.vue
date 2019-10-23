@@ -140,7 +140,9 @@ export default {
     },
     coursesToday() {
       if (this.currentDate) {
-        return this.courses.filter(course => course.date === this.date);
+        return this.courses
+          .filter(course => !course.deleted)
+          .filter(course => course.date === this.date);
       }
       return [];
     },

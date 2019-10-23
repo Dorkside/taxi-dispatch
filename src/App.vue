@@ -105,29 +105,27 @@ export default {
               });
             });
 
-          db.collection("courses")
-            .where("deleted", "==", "")
-            .onSnapshot(function(querySnapshot) {
-              querySnapshot.docChanges().forEach(function(change) {
-                if (change.type === "added") {
-                  Course.insert({
-                    data: {
-                      ...change.doc.data(),
-                      id: change.doc.id
-                    }
-                  });
-                }
-                if (change.type === "modified") {
-                  Course.update({
-                    where: change.doc.id,
-                    data: change.doc.data()
-                  });
-                }
-                if (change.type === "removed") {
-                  Course.delete(change.doc.id);
-                }
-              });
+          db.collection("courses").onSnapshot(function(querySnapshot) {
+            querySnapshot.docChanges().forEach(function(change) {
+              if (change.type === "added") {
+                Course.insert({
+                  data: {
+                    ...change.doc.data(),
+                    id: change.doc.id
+                  }
+                });
+              }
+              if (change.type === "modified") {
+                Course.update({
+                  where: change.doc.id,
+                  data: change.doc.data()
+                });
+              }
+              if (change.type === "removed") {
+                Course.delete(change.doc.id);
+              }
             });
+          });
         } else {
           db.collection("chauffeurs")
             .doc(user.phoneNumber)
