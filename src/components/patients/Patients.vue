@@ -10,6 +10,7 @@
         label="Recherche"
         dense
         clearable
+        @input="page = 1"
       >
       </v-text-field>
       <v-btn text @click="addPatient()">
@@ -20,7 +21,7 @@
     <RecycleScroller
       v-slot="{ item }"
       class="scroller pa-2"
-      :items="filteredPatients"
+      :items="pagePatients"
       :item-size="72"
       key-field="id"
     >
@@ -53,6 +54,7 @@
       </v-container>
       <v-divider></v-divider>
     </RecycleScroller>
+    <v-pagination v-model="page" class="my-4" :length="nbPages"></v-pagination>
   </v-container>
 </template>
 
@@ -63,7 +65,8 @@ export default {
   data() {
     return {
       types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"],
-      searchTerms: ""
+      searchTerms: "",
+      page: 1
     };
   },
   computed: {
@@ -71,6 +74,9 @@ export default {
       return Patient.query()
         .orderBy("name", "asc")
         .get();
+    },
+    nbPages() {
+      return Math.ceil(this.filteredPatients.length / 15);
     },
     search() {
       return this.searchTerms.toLowerCase().split(" ");
@@ -84,6 +90,9 @@ export default {
         });
       }
       return this.patients;
+    },
+    pagePatients() {
+      return this.filteredPatients.slice((this.page - 1) * 15, this.page * 15);
     }
   },
   methods: {
