@@ -88,7 +88,14 @@ export default {
       if (!user) {
         this.$store.commit("setAdmin", false);
       } else {
-        if (["+33762686070"].includes(user.phoneNumber)) {
+        if (
+          [
+            "+33762686070",
+            "+33761610703",
+            "+33760910409",
+            "+33668666606"
+          ].includes(user.phoneNumber)
+        ) {
           this.$store.commit("setAdmin", true);
 
           db.collection("chauffeurs")
