@@ -13,9 +13,59 @@
         @input="page = 1"
       >
       </v-text-field>
-      <v-btn text @click="addPatient()">
-        <v-icon>mdi-plus-circle</v-icon> Ajouter patient
-      </v-btn>
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <template v-slot:activator="{ on }">
+          <v-btn text v-on="on">
+            <v-icon>mdi-plus-circle</v-icon> Ajouter patient
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="headline">Nouveau patient</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    v-model="newPatient.name"
+                    label="Nom"
+                    placeholder="Nom du patient"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="newPatient.type"
+                    :items="types"
+                    :value="newPatient.type"
+                    class="mx-2 type flex-grow-0 flex-shrink-1"
+                    label="Type"
+                    dense
+                    required
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="dialog = false">
+              Annuler
+            </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="
+                dialog = false;
+                addPatient();
+              "
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
 
     <RecycleScroller
@@ -66,7 +116,12 @@ export default {
     return {
       types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"],
       searchTerms: "",
-      page: 1
+      page: 1,
+      newPatient: {
+        name: "",
+        type: "Consultation"
+      },
+      dialog: false
     };
   },
   computed: {
@@ -108,7 +163,11 @@ export default {
       patient.delete();
     },
     addPatient() {
-      Patient.create();
+      Patient.create(this.newPatient);
+      this.newPatient = {
+        name: "",
+        type: "Consultation"
+      };
     }
   }
 };
