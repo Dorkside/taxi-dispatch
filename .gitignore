@@ -5,4 +5,4 @@
 *.log
 .DS_Store
 .firebase/hosting.*.cache
-src/.DS_Store-
+src/.DS_Store
