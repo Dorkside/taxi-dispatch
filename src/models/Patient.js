@@ -1,6 +1,6 @@
 import { Model } from "@vuex-orm/core";
-import Course from "./Course";
 import { db } from "../store/db";
+import Course from "./Course";
 
 export default class Patient extends Model {
   static entity = "patients";
@@ -62,13 +62,13 @@ export default class Patient extends Model {
   get color() {
     switch (this.type) {
       case "Dialyse":
-        return "blue";
+        return "CornflowerBlue";
       case "HDJ":
-        return "red";
+        return "Tomato";
       case "Kiné / Rééducation":
         return "black";
       case "Consultation":
-        return "green";
+        return "ForestGreen";
       default:
         return "grey";
     }
