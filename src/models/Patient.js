@@ -66,7 +66,7 @@ export default class Patient extends Model {
       case "HDJ":
         return "Tomato";
       case "Kiné / Rééducation":
-        return "black";
+        return "grey";
       case "Consultation":
         return "ForestGreen";
       default:
