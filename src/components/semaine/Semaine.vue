@@ -6,6 +6,7 @@
   >
     <div
       class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 pa-0 align-center"
+      :style="{ maxHeight: 'calc(100% - 67px)' }"
     >
       <v-text-field
         v-model="searchTerms"
@@ -29,6 +30,7 @@
     <RecycleScroller
       v-slot="{ item }"
       class="scroller pa-2 pt-10"
+      :style="{ maxHeight: 'calc(100% - 120px)' }"
       :items="filteredPatients"
       :item-size="72"
       key-field="id"

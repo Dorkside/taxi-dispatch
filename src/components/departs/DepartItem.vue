@@ -1,18 +1,27 @@
 <template>
-  <v-card class="full-width">
+  <v-card class="full-width" :style="{ backgroundColor: course.color }">
     <v-card-text fill-height class="pa-2 px-4 full-width">
       <v-container
-        class="d-flex flex-column justify-center align-start pa-0"
+        class="d-flex flex-row justify-center align-center pa-0"
         fill-height
         row
       >
+        <v-icon dark>
+          {{
+            course.direction === "Aller"
+              ? "mdi-arrow-right"
+              : course.direction === "Retour"
+              ? "mdi-arrow-left"
+              : ""
+          }}
+        </v-icon>
         <span
           class="mr-2 flex-shrink-1 flex-grow-0"
-          :class="`subtitle-1 font-weight-bold ${course.color}--text`"
+          :class="`subtitle-1 font-weight-bold white--text`"
         >
           {{ course.prettyTime }}
         </span>
-        <span v-if="course.patient" class="flex-grow-1 text-wrap">
+        <span v-if="course.patient" class="flex-grow-1 text-wrap white--text">
           {{ course.patient.name }}
         </span>
       </v-container>

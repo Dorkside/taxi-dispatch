@@ -4,20 +4,28 @@
       deleted: course.deleted !== '',
       'elevation-0': course.deleted !== ''
     }"
+    :style="{ backgroundColor: course.color }"
   >
     <v-card-text fill-height class="pa-0 pl-4">
       <v-container
         fill-height
         row
-        class="d-flex justify-center align-center nowrap pa-0"
+        class="d-flex justify-center align-center nowrap py-0"
       >
+        <v-icon dark>
+          {{
+            course.direction === "Aller"
+              ? "mdi-arrow-right"
+              : course.direction === "Retour"
+              ? "mdi-arrow-left"
+              : ""
+          }}
+        </v-icon>
         <div class="mr-2 flex-shrink-0 flex-grow-0" text-center>
           <v-dialog v-model="dialog" width="unset" persistent>
             <template v-slot:activator="{ on }">
               <v-btn text v-on="on" @click="newTime = course.time">
-                <span
-                  :class="`subtitle-1 font-weight-bold ${course.color}--text`"
-                >
+                <span :class="`subtitle-1 font-weight-bold white--text`">
                   {{ course.prettyTime }}
                 </span>
               </v-btn>
@@ -42,7 +50,7 @@
             </v-card>
           </v-dialog>
         </div>
-        <span v-if="course.generated" class="flex-grow-1">
+        <span v-if="course.generated" class="flex-grow-1 white--text">
           {{ course.patient.name }}
         </span>
         <v-combobox
@@ -53,7 +61,7 @@
           :items="patients"
           item-text="name"
           label="Nom du patient"
-          class="flex-grow-1 mx-2"
+          class="flex-grow-1 mx-2 white--text"
           autocomplete="no-fill"
           @change="changePatient($event, course)"
         ></v-combobox>
@@ -66,6 +74,7 @@
           item-text="name"
           label="Chauffeur"
           class="combo-width flex-shrink-0 flex-grow-0 mx-2"
+          dark
           autocomplete="off"
           @change="changeChauffeur($event, course)"
         ></v-combobox>
@@ -109,6 +118,7 @@
           text
           icon
           color="green"
+          dark
           v-on="on"
           @click="undeleteCourse(course)"
         >

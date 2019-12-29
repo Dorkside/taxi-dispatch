@@ -1,7 +1,7 @@
 <template>
-  <v-container class="pa-0 ma-0 d-flex" fluid fill-height>
+  <v-container class="pa-0 ma-0 d-flex align-start" fluid fill-height>
     <v-container
-      class="d-flex flex-shrink-0 flex-grow-0 unplanned scroll align-stretch pa-0"
+      class="d-flex flex-shrink-0 flex-grow-0 unplanned scroll align-stretch pa-1"
       fluid
       fill-height
     >
@@ -19,6 +19,7 @@
             <course-item
               :course="course"
               :index="index"
+              class="my-1"
               hide-chauffeur="true"
             ></course-item>
           </v-list-item-content>
@@ -26,36 +27,21 @@
       </v-list>
     </v-container>
     <v-container
-      class="d-flex flex-grow-1 align-start pa-0 scroll"
+      class="d-flex flex-grow-1 flex-column align-start pa-1 scroll"
+      :style="{ maxHeight: 'calc(100% - 48px)' }"
       fluid
       fill-height
     >
-      <v-timeline class="flex-grow-1 pa-1" dense>
-        <v-chip class="title-scroll overline timeline-sticky">
-          Courses de la journée
-        </v-chip>
-        <v-timeline-item
-          v-for="(course, index) in coursesTodayPlanified"
-          :key="`${course.ref}-${course.id}`"
-          :color="course.color"
-          class="pr-2"
-          small
-          fill-dot
-        >
-          <template v-slot:icon dark>
-            <v-icon dark>
-              {{
-                course.direction === "Aller"
-                  ? "mdi-arrow-right"
-                  : course.direction === "Retour"
-                  ? "mdi-arrow-left"
-                  : ""
-              }}
-            </v-icon>
-          </template>
-          <course-item :course="course" :index="index"></course-item>
-        </v-timeline-item>
-      </v-timeline>
+      <v-chip class="title-scroll overline timeline-sticky">
+        Courses de la journée
+      </v-chip>
+      <course-item
+        v-for="(course, index) in coursesTodayPlanified"
+        :key="`${course.ref}-${course.id}`"
+        class="my-1"
+        :course="course"
+        :index="index"
+      ></course-item>
     </v-container>
   </v-container>
 </template>

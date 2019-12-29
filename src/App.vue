@@ -22,7 +22,12 @@
         </v-btn>
       </v-toolbar-title>
     </v-app-bar>
-    <v-container fluid fill-height class="d-flex flex-column pa-0">
+    <v-container
+      fluid
+      fill-height
+      class="d-flex flex-column pa-0"
+      :style="{ maxHeight: 'calc(100% - 64px)' }"
+    >
       <v-container
         fluid
         class="d-flex elevation-8 pa-0 z-index-10 align-center"

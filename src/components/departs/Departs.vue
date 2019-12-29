@@ -31,7 +31,7 @@
       </draggable>
     </v-list>
     <v-container
-      class="d-flex flex-grow-1 align-stretch pa-0 overflow-scroll"
+      class="d-flex flex-grow-1 align-stretch flex-wrap pa-0 overflow-scroll"
       fluid
       fill-height
     >
@@ -44,43 +44,27 @@
           <v-container
             fluid
             fill-height
-            class="pa-0 d-flex flex-column align-start scroll"
+            class="px-2 d-flex flex-column align-stretch scroll"
           >
-            <v-chip class="subtitle-1 ml-4 mt-4 flex-shrink-0 title-scroll">
+            <v-chip class="subtitle-1 mt-4 flex-shrink-0 title-scroll">
               {{ chauffeur.name }}
             </v-chip>
 
-            <v-timeline dense class="flex-shrink-1 flex-grow-1 full-width">
-              <draggable
-                :value="chauffeur.courses"
-                :sort="true"
-                group="courses"
-                :style="{ height: '100%' }"
-                @change="moveCourse($event, chauffeur)"
-              >
-                <v-timeline-item
-                  v-for="(course, index) in chauffeur.courses"
-                  :key="`${course.ref}-${course.id}`"
-                  :color="course.color"
-                  class="pr-2 full-width"
-                  small
-                  fill-dot
-                >
-                  <template v-slot:icon dark>
-                    <v-icon dark>
-                      {{
-                        course.direction === "Aller"
-                          ? "mdi-arrow-right"
-                          : course.direction === "Retour"
-                          ? "mdi-arrow-left"
-                          : ""
-                      }}
-                    </v-icon>
-                  </template>
-                  <depart-item :course="course" :index="index"></depart-item>
-                </v-timeline-item>
-              </draggable>
-            </v-timeline>
+            <draggable
+              :value="chauffeur.courses"
+              :sort="true"
+              group="courses"
+              :style="{ height: '100%' }"
+              @change="moveCourse($event, chauffeur)"
+            >
+              <depart-item
+                v-for="(course, index) in chauffeur.courses"
+                :key="`${course.ref}-${course.id}`"
+                :course="course"
+                class="my-1"
+                :index="index"
+              ></depart-item>
+            </draggable>
           </v-container>
         </v-card>
       </template>
@@ -226,8 +210,12 @@ export default {
   overflow: hidden;
 }
 .chauffeur {
-  max-width: 300px;
-  min-width: 300px;
+  min-height: 40vh;
+  max-height: 40vh;
+  width: 20%;
+  min-width: 16%;
+  max-width: 20%;
+  flex: 0 0 20%;
 }
 .scroll {
   overflow-y: auto;

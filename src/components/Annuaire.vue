@@ -15,6 +15,7 @@
     </v-tabs>
     <v-container
       class="flex-grow-1 flex-shrink-1 pa-0 align-start scroll"
+      :style="{ maxHeight: 'calc(100% - 48px)' }"
       fluid
       fill-height
     >
