@@ -10,7 +10,7 @@
             r = false;
           "
         >
-          <span :class="`font-weight-bold ${patient.color}--text`">
+          <span class="font-weight-bold">
             <v-icon>mdi-arrow-right</v-icon> {{ patient.prettyTime(day) }}
           </span>
         </v-btn>
@@ -22,7 +22,7 @@
             r = true;
           "
         >
-          <span :class="`font-weight-bold ${patient.color}--text`">
+          <span class="font-weight-bold">
             <v-icon>mdi-arrow-left</v-icon>
             {{ patient.prettyTime(day, true) }}
           </span>

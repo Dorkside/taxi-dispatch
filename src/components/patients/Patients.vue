@@ -76,7 +76,11 @@
       key-field="id"
     >
       <v-container class="pa-0 patient d-flex align-center">
-        <v-avatar :color="item.color" size="36" class="white--text">
+        <v-avatar
+          :style="{ backgroundColor: item.color }"
+          size="36"
+          class="white--text"
+        >
           {{ item.shortType }}
         </v-avatar>
 
