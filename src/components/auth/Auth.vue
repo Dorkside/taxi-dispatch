@@ -18,7 +18,7 @@ export default {
     );
 
     var uiConfig = {
-      signInSuccessUrl: "/cal/journee",
+      signInSuccessUrl: "/journee",
       signInOptions: [firebase.auth.PhoneAuthProvider.PROVIDER_ID]
     };
     var ui = new firebaseui.auth.AuthUI(firebase.auth());

@@ -1,9 +1,9 @@
 <template>
-  <div class="pa-0 ma-0 d-flex align-start">
+  <div class="pa-0 ma-0 d-flex align-stretch day-container">
     <div
-      class="d-flex flex-shrink-0 flex-grow-0 unplanned scroll align-stretch pa-1"
+      class="d-flex flex-shrink-0 flex-grow-0 unplanned align-stretch pa-1 overflow-hidden elevation-8"
     >
-      <v-list class="flex-grow-1 transparent pa-0" dense>
+      <v-list class="flex-grow-1 transparent pa-0 overflow-y-auto" dense>
         <v-subheader class="title-scroll">
           <v-chip class=" overline">Courses non planifiées</v-chip>
         </v-subheader>
@@ -11,13 +11,12 @@
           v-for="(course, index) in coursesTodayUnplanified"
           :key="`${course.ref}-${course.id}`"
           :index="index"
-          class="ma-2"
+          class="mx-2"
         >
           <v-list-item-content class="show-overflow">
             <course-item
               :course="course"
               :index="index"
-              class="my-1"
               hide-chauffeur="true"
             ></course-item>
           </v-list-item-content>
@@ -25,18 +24,28 @@
       </v-list>
     </div>
     <div
-      class="d-flex flex-grow-1 flex-shrink-1 flex-column align-start pa-1 scroll"
+      class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch pa-2 scroll"
     >
-      <v-chip class="title-scroll overline timeline-sticky">
-        Courses de la journée
-      </v-chip>
-      <course-item
-        v-for="(course, index) in coursesTodayPlanified"
-        :key="`${course.ref}-${course.id}`"
-        class="my-1"
-        :course="course"
-        :index="index"
-      ></course-item>
+      <v-list class="flex-grow-1 transparent pa-0" dense>
+        <v-subheader class="title-scroll">
+          <v-chip class=" overline"> Courses de la journée</v-chip>
+        </v-subheader>
+        <v-list-item
+          v-for="(course, index) in coursesTodayPlanified"
+          :key="`${course.ref}-${course.id}`"
+          :index="index"
+          class="mx-2"
+        >
+          <v-list-item-content class="show-overflow">
+            <course-item
+              :key="`${course.ref}-${course.id}`"
+              class="my-1"
+              :course="course"
+              :index="index"
+            ></course-item>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </div>
   </div>
 </template>
@@ -175,6 +184,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.day-container {
+  height: 100%;
+}
 .unplanned {
   width: 400px;
 }
@@ -182,10 +194,10 @@ export default {
   opacity: 0.5;
 }
 .show-overflow {
-  overflow: visible;
+  // overflow: visible;
 }
 .scroll {
-  overflow-y: auto;
+  // overflow-y: scroll;
 }
 .timeline-sticky {
   top: 4px !important;

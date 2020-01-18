@@ -6,9 +6,10 @@ import VueRouter from "vue-router";
 import VueVirtualScroller from "vue-virtual-scroller";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import App from "./App";
-import wb from "./registerServiceWorker";
 
-Vue.prototype.$workbox = wb;
+// import wb from "./registerServiceWorker";
+
+// Vue.prototype.$workbox = wb;
 
 Vue.use(VueVirtualScroller);
 

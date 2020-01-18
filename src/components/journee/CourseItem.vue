@@ -46,7 +46,11 @@
             </v-card>
           </v-dialog>
         </div>
-        <span v-if="course.generated" class="flex-grow-1 white--text">
+        <span
+          v-if="course.generated"
+          class="flex-grow-1 white--text"
+          :style="{ minWidth: '100px' }"
+        >
           {{ course.patient.name }}
         </span>
         <v-combobox

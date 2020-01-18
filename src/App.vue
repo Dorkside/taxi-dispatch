@@ -11,9 +11,23 @@
         <v-btn text icon small class="white--text" @click="shiftDate(-1)">
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
-        <v-btn text dark center class="date-text">
-          {{ prettyDate }}
-        </v-btn>
+
+        <v-dialog v-model="dialog" center width="400">
+          <template v-slot:activator="{ on }">
+            <v-btn text dark center class="date-text" v-on="on">
+              {{ prettyDate }}
+            </v-btn>
+          </template>
+          <v-date-picker
+            full-width
+            locale="fr"
+            :value="date"
+            @change="
+              setDate($event);
+              dialog = false;
+            "
+          ></v-date-picker>
+        </v-dialog>
         <v-btn text icon small class="white--text" @click="shiftDate(1)">
           <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
@@ -28,9 +42,11 @@
       class="d-flex flex-column pa-0 flex-grow-1 flex-shrink-1"
       :style="{ maxHeight: 'calc(100% - 64px)' }"
     >
-      <div class="d-flex elevation-8 pa-0 z-index-10 align-center">
+      <div
+        class="d-flex elevation-8 pa-0 z-index-10 align-center flex-grow-0 flex-shrink-0"
+      >
         <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
-          <v-tab to="/cal/journee">
+          <v-tab to="/journee">
             <v-icon left>mdi-view-sequential</v-icon>
             Journée
           </v-tab>
@@ -42,13 +58,17 @@
             <v-icon left>mdi-calendar-week</v-icon>
             Séries
           </v-tab>
-          <v-tab to="/annuaire">
-            <v-icon left>mdi-contacts</v-icon>
-            Annuaire
+          <v-tab to="/patients">
+            <v-icon left>mdi-medical-bag</v-icon>
+            Patients
+          </v-tab>
+          <v-tab to="/chauffeurs">
+            <v-icon left>mdi-car</v-icon>
+            Chauffeurs
           </v-tab>
         </v-tabs>
       </div>
-      <div class="flex-grow-1 pa-0">
+      <div class="flex-grow-1 flex-shrink-1 pa-0 overflow-hidden">
         <router-view></router-view>
       </div>
     </div>
@@ -71,7 +91,7 @@ import Patient from "./models/Patient";
 export default {
   store,
   computed: {
-    ...mapState(["currentDate"]),
+    ...mapState(["currentDate", "admin"]),
     prettyDate() {
       const options = {
         weekday: "long",
@@ -83,6 +103,9 @@ export default {
     },
     patients() {
       return Patient.query().get();
+    },
+    date() {
+      return this.currentDate.toISOString().substring(0, 10);
     }
   },
   mounted() {
@@ -92,6 +115,8 @@ export default {
       } else {
         if (
           [
+            "+330123456789",
+            "+33123456789",
             "+33762686070",
             "+33761610703",
             "+33760910409",
@@ -218,10 +243,14 @@ export default {
   },
   data() {
     return {
+      dialog: false,
       prompt: false
     };
   },
   methods: {
+    setDate(event) {
+      this.$store.commit("setDate", new Date(event));
+    },
     async upgrade() {
       this.prompt = false;
       await this.$workbox.messageSW({ type: "SKIP_WAITING" });
