@@ -15,22 +15,20 @@
                 <span class="headline">Créer un nouveau chauffeur</span>
               </v-card-title>
               <v-card-text>
-                <v-container>
-                  <v-text-field
-                    v-model="newChauffeur.name"
-                    label="Nom"
-                    autocomplete="nofill"
-                    prepend-inner-icon="mdi-account"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="newChauffeur.phone"
-                    label="Numéro de téléphone"
-                    prepend-inner-icon="mdi-phone"
-                    autocomplete="nofill"
-                    required
-                  ></v-text-field>
-                </v-container>
+                <v-text-field
+                  v-model="newChauffeur.name"
+                  label="Nom"
+                  autocomplete="nofill"
+                  prepend-inner-icon="mdi-account"
+                  required
+                ></v-text-field>
+                <v-text-field
+                  v-model="newChauffeur.phone"
+                  label="Numéro de téléphone"
+                  prepend-inner-icon="mdi-phone"
+                  autocomplete="nofill"
+                  required
+                ></v-text-field>
               </v-card-text>
               <v-card-actions>
                 <div class="flex-grow-1"></div>

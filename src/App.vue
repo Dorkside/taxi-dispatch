@@ -1,37 +1,34 @@
 <template>
-  <v-app fill-height class="fill-screen">
-    <v-app-bar color="blue accent-4">
-      <v-toolbar-title
-        class="title white--text text-center toolbar-title d-flex align-center justify-center"
-      >
-        <v-btn text absolute outlined small dark left to="/cal/journee">
-          Taxi OKA
-        </v-btn>
-        <div class="d-flex align-center justify-center">
-          <v-btn text icon small class="white--text" @click="shiftDate(-1)">
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <span class="date-text">{{ prettyDate }}</span>
-          <v-btn text icon small class="white--text" @click="shiftDate(1)">
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </div>
-        <v-btn text absolute outlined small dark right @click="logOut">
-          <v-icon left>mdi-close</v-icon>
-          Déconnexion
-        </v-btn>
+  <v-app class="fill-screen">
+    <v-app-bar
+      color="blue accent-4 flex-grow-0 flex-shrink-0 justify-space-between"
+    >
+      <v-toolbar-title class="white--text">
+        Taxi OKA
       </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <div center class="d-flex align-center justify-center white--text">
+        <v-btn text icon small class="white--text" @click="shiftDate(-1)">
+          <v-icon>mdi-chevron-left</v-icon>
+        </v-btn>
+        <v-btn text dark center class="date-text">
+          {{ prettyDate }}
+        </v-btn>
+        <v-btn text icon small class="white--text" @click="shiftDate(1)">
+          <v-icon>mdi-chevron-right</v-icon>
+        </v-btn>
+      </div>
+      <v-spacer></v-spacer>
+      <v-btn text small dark right @click="logOut">
+        <v-icon left>mdi-close</v-icon>
+        Déconnexion
+      </v-btn>
     </v-app-bar>
-    <v-container
-      fluid
-      fill-height
-      class="d-flex flex-column pa-0"
+    <div
+      class="d-flex flex-column pa-0 flex-grow-1 flex-shrink-1"
       :style="{ maxHeight: 'calc(100% - 64px)' }"
     >
-      <v-container
-        fluid
-        class="d-flex elevation-8 pa-0 z-index-10 align-center"
-      >
+      <div class="d-flex elevation-8 pa-0 z-index-10 align-center">
         <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
           <v-tab to="/cal/journee">
             <v-icon left>mdi-view-sequential</v-icon>
@@ -50,11 +47,11 @@
             Annuaire
           </v-tab>
         </v-tabs>
-      </v-container>
-      <v-container fluid fill-height class="flex-grow-1 pa-0">
+      </div>
+      <div class="flex-grow-1 pa-0">
         <router-view></router-view>
-      </v-container>
-    </v-container>
+      </div>
+    </div>
   </v-app>
 </template>
 
@@ -212,7 +209,23 @@ export default {
       }
     });
   },
+  created() {
+    if (this.$workbox) {
+      this.$workbox.addEventListener("waiting", () => {
+        this.prompt = true;
+      });
+    }
+  },
+  data() {
+    return {
+      prompt: false
+    };
+  },
   methods: {
+    async upgrade() {
+      this.prompt = false;
+      await this.$workbox.messageSW({ type: "SKIP_WAITING" });
+    },
     logOut() {
       firebase.auth().signOut();
     },

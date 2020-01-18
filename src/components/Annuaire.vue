@@ -1,5 +1,5 @@
 <template>
-  <v-container class="d-flex flex-row pa-0 align-stretch" fluid fill-height>
+  <div class="d-flex flex-row pa-0 align-stretch" fluid fill-height>
     <v-tabs
       vertical
       class="tabs w100 transparent flex-shrink-1 elevation-6 z-index-9"
@@ -13,15 +13,15 @@
         Chauffeurs
       </v-tab>
     </v-tabs>
-    <v-container
+    <div
       class="flex-grow-1 flex-shrink-1 pa-0 align-start scroll"
       :style="{ maxHeight: 'calc(100% - 48px)' }"
       fluid
       fill-height
     >
       <router-view></router-view>
-    </v-container>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>

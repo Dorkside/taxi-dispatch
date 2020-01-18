@@ -1,8 +1,8 @@
 <template lang="html">
-  <v-container align="center" justify="center">
+  <div align="center" justify="center">
     <div id="firebaseui-auth-container"></div>
     <div id="recaptcha-container"></div>
-  </v-container>
+  </div>
 </template>
 <script>
 import firebase from "firebase";

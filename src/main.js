@@ -1,13 +1,14 @@
-import Vue from "vue";
-import App from "./App";
 import vuetify from "@/plugins/vuetify";
+import routes from "@/routes";
+import firebase from "firebase";
+import Vue from "vue";
 import VueRouter from "vue-router";
 import VueVirtualScroller from "vue-virtual-scroller";
-import routes from "@/routes";
-
-import firebase from "firebase";
-
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+import App from "./App";
+import wb from "./registerServiceWorker";
+
+Vue.prototype.$workbox = wb;
 
 Vue.use(VueVirtualScroller);
 

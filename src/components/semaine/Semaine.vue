@@ -1,5 +1,5 @@
 <template>
-  <v-container
+  <div
     class="d-flex flex-column pa-0 ma-0 z-index-8 scroll align-start"
     fluid
     fill-height
@@ -22,11 +22,11 @@
       </v-btn>
     </div>
 
-    <v-container class="pa-0 d-flex justify-end days-label-container">
+    <div class="pa-0 d-flex justify-end days-label-container">
       <div v-for="day of days" :key="day" class="day-label pl-4 pt-1">
         <v-chip>{{ day }}</v-chip>
       </div>
-    </v-container>
+    </div>
     <RecycleScroller
       v-slot="{ item }"
       class="scroller pa-2 pt-10"
@@ -36,7 +36,7 @@
       key-field="id"
     >
       <v-divider></v-divider>
-      <v-container class="pa-0 patient d-flex align-center">
+      <div class="pa-0 patient d-flex align-center">
         <v-avatar
           :style="{ backgroundColor: item.color }"
           size="36"
@@ -54,9 +54,9 @@
           :patient="item"
           :day="day"
         />
-      </v-container>
+      </div>
     </RecycleScroller>
-  </v-container>
+  </div>
 </template>
 
 <script>

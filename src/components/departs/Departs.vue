@@ -1,8 +1,6 @@
 <template>
-  <v-container
+  <div
     class="d-flex align-stretch pa-0 overflow-hide"
-    fluid
-    fill-height
     :style="{ position: 'relative' }"
   >
     <v-list
@@ -30,10 +28,8 @@
         </v-list-item>
       </draggable>
     </v-list>
-    <v-container
+    <div
       class="d-flex flex-grow-1 align-stretch flex-wrap pa-0 overflow-scroll"
-      fluid
-      fill-height
     >
       <template v-for="chauffeur of chauffeurs">
         <v-card
@@ -41,11 +37,7 @@
           flat
           class="chauffeur pa-0 flex-shrink-1 flex-grow-1"
         >
-          <v-container
-            fluid
-            fill-height
-            class="px-2 d-flex flex-column align-stretch scroll"
-          >
+          <div class="px-2 d-flex flex-column align-stretch scroll">
             <v-chip class="subtitle-1 mt-4 flex-shrink-0 title-scroll">
               {{ chauffeur.name }}
             </v-chip>
@@ -65,11 +57,11 @@
                 :index="index"
               ></depart-item>
             </draggable>
-          </v-container>
+          </div>
         </v-card>
       </template>
-    </v-container>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>

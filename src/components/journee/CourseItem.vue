@@ -7,11 +7,7 @@
     :style="{ backgroundColor: course.color }"
   >
     <v-card-text fill-height class="pa-0 pl-4">
-      <v-container
-        fill-height
-        row
-        class="d-flex justify-center align-center nowrap py-0"
-      >
+      <div class="d-flex justify-center align-center nowrap py-0">
         <v-icon dark>
           {{
             course.direction === "Aller"
@@ -124,7 +120,7 @@
         >
           <v-icon>mdi-restore</v-icon>
         </v-btn>
-      </v-container>
+      </div>
     </v-card-text>
   </v-card>
 </template>

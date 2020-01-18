@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid fill-height class="d-flex max-vw align-stretch pa-0">
+  <div class="d-flex max-vw align-stretch pa-0">
     <v-list class="flex-shrink-0 elevation-6 z-index-9" width="300px">
       <v-list-item>
         <v-date-picker
@@ -15,14 +15,10 @@
         </v-btn>
       </v-list-item>
     </v-list>
-    <v-container
-      fluid
-      fill-height
-      class="flex-grow-1 flex-shrink-1 pa-0 scroll"
-    >
+    <div class="flex-grow-1 flex-shrink-1 pa-0 scroll">
       <router-view></router-view>
-    </v-container>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>

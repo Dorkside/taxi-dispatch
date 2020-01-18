@@ -3,8 +3,25 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
+    "lint": "vue-cli-service lint",
     "deploy": "yarn build && firebase deploy",
-    "lint": "vue-cli-service lint"
+    "capacitor-copy": "vue-cli-service capacitor-copy",
+    "capacitor-init": "vue-cli-service capacitor-init",
+    "capacitor-open": "vue-cli-service capacitor-open",
+    "capacitor-update": "vue-cli-service capacitor-update"
+  },
+  "dependencies": {
+    "@capacitor/cli": "^1.0.0-alpha.38",
+    "@capacitor/core": "^1.0.0-alpha.38",
+    "@vuex-orm/core": "^0.32.1",
+    "@vuex-orm/plugin-axios": "^0.5.1",
+    "firebase": "^6.6.2",
+    "firebaseui": "^4.2.0",
+    "firestore-parser": "^0.8.9",
+    "vue-router": "^3.1.2",
+    "vue-virtual-scroller": "^1.0.0-rc.2",
+    "vuedraggable": "^2.23.0",
+    "vuetify": "^2.0.5"
   },
   "devDependencies": {
     "@mdi/font": "^3.9.97",
@@ -25,19 +42,10 @@
     "prettier": "^1.18.2",
     "sass-loader": "^7.2.0",
     "vue": "^2.6.10",
+    "vue-cli-plugin-pwa": "^1.0.0-alpha.1",
     "vue-cli-plugin-vuetify": "^0.6.3",
     "vue-template-compiler": "^2.6.10",
-    "vuex": "^3.1.1"
-  },
-  "dependencies": {
-    "@vuex-orm/core": "^0.32.1",
-    "@vuex-orm/plugin-axios": "^0.5.1",
-    "firebase": "^6.6.2",
-    "firebaseui": "^4.2.0",
-    "firestore-parser": "^0.8.9",
-    "vue-router": "^3.1.2",
-    "vue-virtual-scroller": "^1.0.0-rc.2",
-    "vuedraggable": "^2.23.0",
-    "vuetify": "^2.0.5"
+    "vuex": "^3.1.1",
+    "workbox-webpack-plugin": "^4.3.1"
   }
 }

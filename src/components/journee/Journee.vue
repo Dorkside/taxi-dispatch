@@ -1,9 +1,7 @@
 <template>
-  <v-container class="pa-0 ma-0 d-flex align-start" fluid fill-height>
-    <v-container
+  <div class="pa-0 ma-0 d-flex align-start">
+    <div
       class="d-flex flex-shrink-0 flex-grow-0 unplanned scroll align-stretch pa-1"
-      fluid
-      fill-height
     >
       <v-list class="flex-grow-1 transparent pa-0" dense>
         <v-subheader class="title-scroll">
@@ -25,12 +23,9 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-container>
-    <v-container
-      class="d-flex flex-grow-1 flex-column align-start pa-1 scroll"
-      :style="{ maxHeight: 'calc(100% - 48px)' }"
-      fluid
-      fill-height
+    </div>
+    <div
+      class="d-flex flex-grow-1 flex-shrink-1 flex-column align-start pa-1 scroll"
     >
       <v-chip class="title-scroll overline timeline-sticky">
         Courses de la journée
@@ -42,8 +37,8 @@
         :course="course"
         :index="index"
       ></course-item>
-    </v-container>
-  </v-container>
+    </div>
+  </div>
 </template>
 
 <script>

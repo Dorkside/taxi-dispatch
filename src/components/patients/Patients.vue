@@ -1,5 +1,5 @@
 <template>
-  <v-container class="d-flex flex-column pa-0" fluid>
+  <div class="d-flex flex-column pa-0">
     <div
       class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 align-center"
     >
@@ -24,29 +24,27 @@
             <span class="headline">Nouveau patient</span>
           </v-card-title>
           <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="newPatient.name"
-                    label="Nom"
-                    placeholder="Nom du patient"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select
-                    v-model="newPatient.type"
-                    :items="types"
-                    :value="newPatient.type"
-                    class="mx-2 type flex-grow-0 flex-shrink-1"
-                    label="Type"
-                    dense
-                    required
-                  ></v-select>
-                </v-col>
-              </v-row>
-            </v-container>
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="newPatient.name"
+                  label="Nom"
+                  placeholder="Nom du patient"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-select
+                  v-model="newPatient.type"
+                  :items="types"
+                  :value="newPatient.type"
+                  class="mx-2 type flex-grow-0 flex-shrink-1"
+                  label="Type"
+                  dense
+                  required
+                ></v-select>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -75,7 +73,7 @@
       :item-size="72"
       key-field="id"
     >
-      <v-container class="pa-0 patient d-flex align-center">
+      <div class="pa-0 patient d-flex align-center">
         <v-avatar
           :style="{ backgroundColor: item.color }"
           size="36"
@@ -105,11 +103,11 @@
         <v-btn text outlined color="red" @click="deletePatient(item)">
           <v-icon>mdi-delete-forever</v-icon> Supprimer
         </v-btn>
-      </v-container>
+      </div>
       <v-divider></v-divider>
     </RecycleScroller>
     <v-pagination v-model="page" class="my-4" :length="nbPages"></v-pagination>
-  </v-container>
+  </div>
 </template>
 
 <script>
