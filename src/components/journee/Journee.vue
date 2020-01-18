@@ -1,9 +1,13 @@
 <template>
-  <div class="pa-0 ma-0 d-flex align-stretch day-container">
+  <div
+    class="pa-0 ma-0 d-flex align-stretch day-container"
+    :style="{ border: 'solid 10px blue' }"
+  >
     <div
-      class="d-flex flex-shrink-0 flex-grow-0 unplanned align-stretch pa-1 overflow-hidden elevation-8"
+      class="d-flex flex-shrink-0 flex-grow-0 unplanned align-stretch pa-1 scroll elevation-8"
+      :style="{ border: 'solid 10px red' }"
     >
-      <v-list class="flex-grow-1 transparent pa-0 overflow-y-scroll" dense>
+      <v-list class="flex-grow-1 transparent pa-0" dense>
         <v-subheader class="title-scroll">
           <v-chip class=" overline">Courses non planifiées</v-chip>
         </v-subheader>
@@ -17,7 +21,7 @@
             <course-item
               :course="course"
               :index="index"
-              hide-chauffeur="true"
+              :hide-chauffeur="true"
             ></course-item>
           </v-list-item-content>
         </v-list-item>
@@ -118,7 +122,8 @@ export default {
             if (b.priority === "") return 0;
             if (a.priority < b.priority) return -1;
             return 1;
-          });
+          })
+          .concat(new Array(100).fill(new Course()));
       },
       set(value) {
         Course.update({

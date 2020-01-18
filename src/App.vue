@@ -1,81 +1,91 @@
 <template>
-  <v-app class="fill-screen">
-    <v-app-bar
-      color="blue accent-4 flex-grow-0 flex-shrink-0 justify-space-between"
-    >
-      <v-toolbar-title class="white--text">
-        Taxi OKA
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <div center class="d-flex align-center justify-center white--text">
-        <v-btn text icon small class="white--text" @click="shiftDate(-1)">
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
+  <v-app class="overflow-hidden">
+    <vue100vh :css="{ height: '100rvh' }">
+      <v-app-bar color="blue accent-4 justify-space-between">
+        <v-toolbar-title class="white--text">
+          Taxi OKA
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <div center class="d-flex align-center justify-center white--text">
+          <v-btn text icon small class="white--text" @click="shiftDate(-1)">
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
 
-        <v-dialog v-model="dialog" center width="400">
-          <template v-slot:activator="{ on }">
-            <v-btn text dark center class="date-text" v-on="on">
-              {{ prettyDate }}
-            </v-btn>
-          </template>
-          <v-date-picker
-            full-width
-            locale="fr"
-            :value="date"
-            @change="
-              setDate($event);
-              dialog = false;
-            "
-          ></v-date-picker>
-        </v-dialog>
-        <v-btn text icon small class="white--text" @click="shiftDate(1)">
-          <v-icon>mdi-chevron-right</v-icon>
+          <v-dialog v-model="dialog" center width="400">
+            <template v-slot:activator="{ on }">
+              <v-btn text dark center class="date-text" v-on="on">
+                {{ prettyDate }}
+              </v-btn>
+            </template>
+            <v-date-picker
+              full-width
+              locale="fr"
+              :value="date"
+              @change="
+                setDate($event);
+                dialog = false;
+              "
+            ></v-date-picker>
+          </v-dialog>
+          <v-btn text icon small class="white--text" @click="shiftDate(1)">
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </div>
+        <v-spacer></v-spacer>
+        <v-btn text small dark right @click="logOut">
+          <v-icon left>mdi-close</v-icon>
+          Déconnexion
         </v-btn>
-      </div>
-      <v-spacer></v-spacer>
-      <v-btn text small dark right @click="logOut">
-        <v-icon left>mdi-close</v-icon>
-        Déconnexion
-      </v-btn>
-    </v-app-bar>
-    <div
-      class="d-flex flex-column pa-0 flex-grow-1 flex-shrink-1"
-      :style="{ maxHeight: 'calc(100% - 64px)' }"
-    >
-      <div
-        class="d-flex elevation-8 pa-0 z-index-10 align-center flex-grow-0 flex-shrink-0"
+      </v-app-bar>
+      <v-content
+        class="pa-0 overflow-hidden"
+        :style="{
+          border: 'solid 10px yellow',
+          height: 'calc(100% - 64px)'
+        }"
       >
-        <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
-          <v-tab to="/journee">
-            <v-icon left>mdi-view-sequential</v-icon>
-            Journée
-          </v-tab>
-          <v-tab to="/departs">
-            <v-icon left>mdi-view-parallel</v-icon>
-            Départs
-          </v-tab>
-          <v-tab to="/series">
-            <v-icon left>mdi-calendar-week</v-icon>
-            Séries
-          </v-tab>
-          <v-tab to="/patients">
-            <v-icon left>mdi-medical-bag</v-icon>
-            Patients
-          </v-tab>
-          <v-tab to="/chauffeurs">
-            <v-icon left>mdi-car</v-icon>
-            Chauffeurs
-          </v-tab>
-        </v-tabs>
-      </div>
-      <div class="flex-grow-1 flex-shrink-1 pa-0 overflow-hidden">
-        <router-view></router-view>
-      </div>
-    </div>
+        <div class="elevation-8 pa-0 z-index-10 align-center">
+          <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
+            <v-tab to="/journee">
+              <v-icon left>mdi-view-sequential</v-icon>
+              Journée
+            </v-tab>
+            <v-tab to="/departs">
+              <v-icon left>mdi-view-parallel</v-icon>
+              Départs
+            </v-tab>
+            <v-tab to="/series">
+              <v-icon left>mdi-calendar-week</v-icon>
+              Séries
+            </v-tab>
+            <v-tab to="/patients">
+              <v-icon left>mdi-medical-bag</v-icon>
+              Patients
+            </v-tab>
+            <v-tab to="/chauffeurs">
+              <v-icon left>mdi-car</v-icon>
+              Chauffeurs
+            </v-tab>
+          </v-tabs>
+        </div>
+        <v-container
+          fluid
+          class="pa-0 overflow-hidden"
+          :style="{
+            border: 'solid 10px green',
+            height: 'calc(100% - 48px)',
+            maxHeight: 'calc(100% - 48px)'
+          }"
+        >
+          <router-view></router-view>
+        </v-container>
+      </v-content>
+    </vue100vh>
   </v-app>
 </template>
 
 <script>
+import vue100vh from "vue-100vh";
 import { mapState } from "vuex";
 import store from "@/store";
 
@@ -89,6 +99,7 @@ import Course from "./models/Course";
 import Patient from "./models/Patient";
 
 export default {
+  components: { vue100vh },
   store,
   computed: {
     ...mapState(["currentDate", "admin"]),
@@ -306,12 +317,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .date-text {
   width: 300px;
-}
-.fill-screen {
-  height: 100vh;
 }
 .toolbar-title {
   width: 100%;

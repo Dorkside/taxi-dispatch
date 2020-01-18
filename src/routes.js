@@ -6,6 +6,7 @@ import Semaine from "@/components/semaine/Semaine.vue";
 import Auth from "./components/auth/Auth.vue";
 
 const routes = [
+  { path: "/", redirect: "/journee" },
   { path: "/auth", component: Auth },
   { path: "/journee", component: Journee },
   { path: "/departs", component: Departs },

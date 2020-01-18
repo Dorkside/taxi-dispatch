@@ -47,7 +47,7 @@
           </v-dialog>
         </div>
         <span
-          v-if="course.generated"
+          v-if="course.generated && course.patient"
           class="flex-grow-1 white--text"
           :style="{ minWidth: '100px' }"
         >

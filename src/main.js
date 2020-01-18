@@ -11,7 +11,6 @@ import App from "./App";
 // Vue.prototype.$workbox = wb;
 
 Vue.use(VueVirtualScroller);
-
 Vue.use(VueRouter);
 
 const router = new VueRouter({
