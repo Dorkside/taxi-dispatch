@@ -210,9 +210,9 @@ export default {
   flex: 0 0 20%;
 }
 .scroll {
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 .overflow-scroll {
-  overflow: auto;
+  overflow: scroll;
 }
 </style>

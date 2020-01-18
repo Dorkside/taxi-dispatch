@@ -48,6 +48,6 @@ export default {
 
 <style lang="scss">
 .scroll {
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 </style>

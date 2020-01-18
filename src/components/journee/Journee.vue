@@ -3,7 +3,7 @@
     <div
       class="d-flex flex-shrink-0 flex-grow-0 unplanned align-stretch pa-1 overflow-hidden elevation-8"
     >
-      <v-list class="flex-grow-1 transparent pa-0 overflow-y-auto" dense>
+      <v-list class="flex-grow-1 transparent pa-0 overflow-y-scroll" dense>
         <v-subheader class="title-scroll">
           <v-chip class=" overline">Courses non planifiées</v-chip>
         </v-subheader>
@@ -194,10 +194,10 @@ export default {
   opacity: 0.5;
 }
 .show-overflow {
-  // overflow: visible;
+  overflow: visible;
 }
 .scroll {
-  // overflow-y: scroll;
+  overflow-y: scroll;
 }
 .timeline-sticky {
   top: 4px !important;

@@ -1,6 +1,5 @@
 import vuetify from "@/plugins/vuetify";
 import routes from "@/routes";
-import firebase from "firebase";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import VueVirtualScroller from "vue-virtual-scroller";
@@ -20,17 +19,25 @@ const router = new VueRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.path !== "/auth") {
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        next({ path: "/auth" });
-      } else {
-        next();
-      }
-    });
-  } else next();
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.path !== "/auth") {
+//     firebase.auth().onAuthStateChanged(user => {
+//       if (!user) {
+//         next({ path: "/auth" });
+//       } else {
+//         next();
+//       }
+//     });
+//   } else if (to.path !== "/auth") {
+//     firebase.auth().onAuthStateChanged(user => {
+//       if (!user) {
+//         next();
+//       } else {
+//         next({ path: "/journee" });
+//       }
+//     });
+//   } else next();
+// });
 
 const app = new Vue({
   ...App,

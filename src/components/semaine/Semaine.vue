@@ -119,7 +119,7 @@ export default {
   width: 100px;
 }
 .scroll {
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 .action-bar {
   z-index: 2;

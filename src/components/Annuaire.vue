@@ -49,6 +49,6 @@ export default {
   }
 }
 .scroll {
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 </style>
