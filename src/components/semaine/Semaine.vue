@@ -1,12 +1,10 @@
 <template>
   <div
-    class="d-flex flex-column pa-0 ma-0 z-index-8 scroll align-start"
-    fluid
-    fill-height
+    class="d-flex flex-column pa-0 ma-0 z-index-8 align-start"
+    :style="{ height: '100%' }"
   >
     <div
-      class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 pa-0 align-center"
-      :style="{ maxHeight: 'calc(100% - 67px)' }"
+      class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 pa-0 align-center flex-grow-0 flex-shrink-0"
     >
       <v-text-field
         v-model="searchTerms"
@@ -30,7 +28,7 @@
     <RecycleScroller
       v-slot="{ item }"
       class="scroller pa-2 pt-10"
-      :style="{ maxHeight: 'calc(100% - 120px)' }"
+      :style="{ height: '100%' }"
       :items="filteredPatients"
       :item-size="72"
       key-field="id"

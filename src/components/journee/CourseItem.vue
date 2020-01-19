@@ -6,7 +6,7 @@
     }"
     :style="{ backgroundColor: course.color }"
   >
-    <v-card-text fill-height class="pa-0 pl-4">
+    <v-card-text fill-height class="pa-1 pl-4">
       <div class="d-flex justify-center align-center nowrap py-0">
         <v-icon dark>
           {{
@@ -63,6 +63,8 @@
           label="Nom du patient"
           class="flex-grow-1 mx-2 white--text"
           autocomplete="no-fill"
+          :hide-details="true"
+          outlined
           @change="changePatient($event, course)"
         ></v-combobox>
         <v-combobox
@@ -75,7 +77,9 @@
           label="Chauffeur"
           class="combo-width flex-shrink-0 flex-grow-0 mx-2"
           dark
+          :hide-details="true"
           autocomplete="off"
+          outlined
           @change="changeChauffeur($event, course)"
         ></v-combobox>
 

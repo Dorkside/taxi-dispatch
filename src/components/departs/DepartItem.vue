@@ -1,8 +1,8 @@
 <template>
   <v-card class="full-width" :style="{ backgroundColor: course.color }">
-    <v-card-text fill-height class="pa-2 px-4 full-width">
+    <v-card-text class="pa-2 full-width">
       <div class="d-flex flex-row justify-center align-center pa-0">
-        <v-icon dark>
+        <v-icon dark class="flex-shrink-0 flex-grow-0">
           {{
             course.direction === "Aller"
               ? "mdi-arrow-right"
@@ -12,14 +12,22 @@
           }}
         </v-icon>
         <span
-          class="mr-2 flex-shrink-1 flex-grow-0"
+          class="mr-2 flex-shrink-0 flex-grow-0"
           :class="`subtitle-1 font-weight-bold white--text`"
         >
           {{ course.prettyTime }}
         </span>
-        <span v-if="course.patient" class="flex-grow-1 text-wrap white--text">
-          {{ course.patient.name }}
-        </span>
+        <div class="flex-grow-1 text-wrap white--text">
+          <span v-if="course.patient">
+            {{ course.patient.name }}
+          </span>
+          <span v-else>
+            <i>NA</i>
+          </span>
+        </div>
+        <v-icon dark class="flex-shrink-0 flex-grow-0 handle">
+          {{ "mdi-arrow-all" }}
+        </v-icon>
       </div>
     </v-card-text>
   </v-card>
@@ -72,6 +80,14 @@ export default {
   flex-flow: nowrap;
 }
 .text-wrap {
-  overflow: hidden;
+  min-width: 0;
+  flex: 1;
+  span {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 </style>

@@ -1,6 +1,7 @@
 import { Model } from "@vuex-orm/core";
-import Course from "./Course";
+import * as firebase from "firebase";
 import { db } from "../store/db";
+import Course from "./Course";
 
 export default class Chauffeur extends Model {
   static entity = "chauffeurs";
@@ -43,10 +44,17 @@ export default class Chauffeur extends Model {
       .where("chauffeur_id", this.$id)
       .get()
       .forEach(course => {
-        course.update({ chauffeur_id: null });
+        course.update({ chauffeur_id: firebase.firestore.FieldValue.delete() });
       });
     db.collection("chauffeurs")
       .doc(this.id)
       .update({ deleted: new Date().toISOString() });
+  }
+
+  get initiales() {
+    return this.name
+      .split(" ")
+      .map(chunk => (chunk.length > 0 ? chunk[0] : ""))
+      .join("");
   }
 }

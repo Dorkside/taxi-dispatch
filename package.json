@@ -15,6 +15,7 @@
     "@capacitor/core": "^1.0.0-alpha.38",
     "@vuex-orm/core": "^0.32.1",
     "@vuex-orm/plugin-axios": "^0.5.1",
+    "dayjs": "^1.8.19",
     "firebase": "^6.6.2",
     "firebaseui": "^4.2.0",
     "firestore-parser": "^0.8.9",

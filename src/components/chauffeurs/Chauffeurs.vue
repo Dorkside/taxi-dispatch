@@ -1,81 +1,132 @@
 <template>
-  <v-simple-table class="flex-grow-1">
-    <thead>
-      <tr>
-        <th class="text-left">Chauffeur</th>
-        <th width="200px">
-          <v-dialog v-model="dialog" persistent max-width="300px">
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on">
-                <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="headline">Créer un nouveau chauffeur</span>
-              </v-card-title>
-              <v-card-text>
-                <v-text-field
-                  v-model="newChauffeur.name"
-                  label="Nom"
-                  autocomplete="nofill"
-                  prepend-inner-icon="mdi-account"
-                  required
-                ></v-text-field>
-                <v-text-field
-                  v-model="newChauffeur.phone"
-                  label="Numéro de téléphone"
-                  prepend-inner-icon="mdi-phone"
-                  autocomplete="nofill"
-                  required
-                ></v-text-field>
-              </v-card-text>
-              <v-card-actions>
-                <div class="flex-grow-1"></div>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="
-                    resetData();
-                    dialog = false;
-                  "
-                >
-                  Annuler
-                </v-btn>
-                <v-btn
-                  color="primary darken-1"
-                  @click="
-                    createChauffeur(newChauffeur);
-                    dialog = false;
-                  "
-                >
-                  Enregistrer
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="chauffeur of chauffeurs" :key="chauffeur.id">
-        <td>
-          <v-text-field
-            label="Regular"
-            single-line
-            :value="chauffeur.name"
-            placeholder="Nom"
-            @change="changeName($event, chauffeur)"
-          ></v-text-field>
-        </td>
-        <td>
-          <v-btn text outlined color="red" @click="deleteChauffeur(chauffeur)">
-            <v-icon>mdi-delete-forever</v-icon> Supprimer
+  <div class="d-flex flex-column pa-0" :style="{ height: '100%' }">
+    <div
+      class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 align-center flex-grow-0 flex-shrink-0"
+    >
+      <v-text-field
+        v-model="searchTerms"
+        prepend-inner-icon="mdi-magnify"
+        class="flex-grow-1"
+        label="Recherche"
+        dense
+        clearable
+        @input="page = 1"
+      >
+      </v-text-field>
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <template v-slot:activator="{ on }">
+          <v-btn text v-on="on">
+            <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
           </v-btn>
-        </td>
-      </tr>
-    </tbody>
-  </v-simple-table>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="headline">Créer un nouveau chauffeur</span>
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="newChauffeur.name"
+              label="Nom"
+              autocomplete="nofill"
+              prepend-inner-icon="mdi-account"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="newChauffeur.phone"
+              label="Numéro de téléphone"
+              prepend-inner-icon="mdi-phone"
+              autocomplete="nofill"
+              required
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="
+                resetData();
+                dialog = false;
+              "
+            >
+              Annuler
+            </v-btn>
+            <v-btn
+              color="primary darken-1"
+              @click="
+                createChauffeur(newChauffeur);
+                dialog = false;
+              "
+            >
+              Enregistrer
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+
+    <RecycleScroller
+      v-slot="{ item }"
+      class="scroller pa-2 flex-grow-1 flex-shrink-1"
+      :items="pageChauffeurs"
+      :item-size="72"
+      key-field="id"
+    >
+      <div class="pa-0 chauffeur d-flex align-center">
+        <v-avatar
+          :style="{ backgroundColor: 'grey' }"
+          size="36"
+          class="white--text"
+        >
+          {{ item.initiales }}
+        </v-avatar>
+
+        <v-text-field
+          label="Regular"
+          single-line
+          :value="item.name"
+          class="mx-2 flex-grow-1"
+          placeholder="Nom"
+          @change="changeName($event, item)"
+        ></v-text-field>
+
+        <v-dialog v-model="dialogDelete" persistent max-width="290">
+          <template v-slot:activator="{ on }">
+            <v-btn text icon color="red" v-on="on">
+              <v-icon>mdi-delete-forever</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline">
+              Etes-vous sûrs de vouloir supprimer le chauffeur ?
+            </v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialogDelete = false">
+                Annuler
+              </v-btn>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="
+                  deleteChauffeur(chauffeur);
+                  dialogDelete = false;
+                "
+              >
+                Confirmer
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
+      <v-divider></v-divider>
+    </RecycleScroller>
+    <v-pagination
+      v-model="page"
+      class=" flex-grow-0 flex-shrink-0 elevation-4"
+      :length="nbPages"
+    ></v-pagination>
+  </div>
 </template>
 
 <script>
@@ -85,10 +136,13 @@ export default {
   data() {
     return {
       dialog: false,
+      searchTerms: "",
+      page: 1,
       newChauffeur: {
         name: null,
         phone: null
-      }
+      },
+      dialogDelete: false
     };
   },
   computed: {
@@ -96,6 +150,28 @@ export default {
       return Chauffeur.query()
         .orderBy("name", "asc")
         .get();
+    },
+    nbPages() {
+      return Math.ceil(this.filteredChauffeurs.length / 15);
+    },
+    search() {
+      return this.searchTerms.toLowerCase().split(" ");
+    },
+    filteredChauffeurs() {
+      if (this.searchTerms) {
+        return this.chauffeurs.filter(chauffeur => {
+          return this.search.every(s => {
+            return chauffeur.name.toLowerCase().includes(s);
+          });
+        });
+      }
+      return this.chauffeurs;
+    },
+    pageChauffeurs() {
+      return this.filteredChauffeurs.slice(
+        (this.page - 1) * 15,
+        this.page * 15
+      );
     }
   },
   methods: {
@@ -119,4 +195,11 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.action-bar {
+  z-index: 2;
+  position: sticky;
+  min-height: 64px;
+  top: 0;
+}
+</style>

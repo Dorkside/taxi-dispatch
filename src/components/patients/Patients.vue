@@ -1,12 +1,12 @@
 <template>
-  <div class="d-flex flex-column pa-0">
+  <div class="d-flex flex-column pa-0" :style="{ height: '100%' }">
     <div
-      class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 align-center"
+      class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 align-center flex-grow-0 flex-shrink-0"
     >
       <v-text-field
         v-model="searchTerms"
         prepend-inner-icon="mdi-magnify"
-        class="flex-grow-1"
+        class="flex-grow-1 flex-shrink-0"
         label="Recherche"
         dense
         clearable
@@ -68,7 +68,7 @@
 
     <RecycleScroller
       v-slot="{ item }"
-      class="scroller pa-2"
+      class="scroller pa-2 flex-grow-1 flex-shrink-1"
       :items="pagePatients"
       :item-size="72"
       key-field="id"
@@ -100,13 +100,42 @@
           @change="changeType($event, item)"
         ></v-select>
 
-        <v-btn text outlined color="red" @click="deletePatient(item)">
-          <v-icon>mdi-delete-forever</v-icon> Supprimer
-        </v-btn>
+        <v-dialog v-model="dialogDelete" persistent max-width="290">
+          <template v-slot:activator="{ on }">
+            <v-btn text icon color="red" v-on="on">
+              <v-icon>mdi-delete-forever</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline">
+              Etes-vous sûrs de vouloir supprimer le patient ?
+            </v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialogDelete = false">
+                Annuler
+              </v-btn>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="
+                  deletePatient(item);
+                  dialogDelete = false;
+                "
+              >
+                Confirmer
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
       <v-divider></v-divider>
     </RecycleScroller>
-    <v-pagination v-model="page" class="my-4" :length="nbPages"></v-pagination>
+    <v-pagination
+      v-model="page"
+      class=" flex-grow-0 flex-shrink-0 elevation-4"
+      :length="nbPages"
+    ></v-pagination>
   </div>
 </template>
 
@@ -123,7 +152,8 @@ export default {
         name: "",
         type: "Consultation"
       },
-      dialog: false
+      dialog: false,
+      dialogDelete: false
     };
   },
   computed: {

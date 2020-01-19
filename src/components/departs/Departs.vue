@@ -1,50 +1,55 @@
 <template>
   <div
-    class="d-flex align-stretch pa-0 overflow-hide"
-    :style="{ position: 'relative' }"
+    class="d-flex align-stretch pa-0 overflow-hidden"
+    :style="{ position: 'relative', height: '100%' }"
   >
     <v-list
       width="250px"
-      class="flex-shrink-0 elevation-8 scroll"
-      :style="{ 'z-index': 1 }"
-      fill-height
+      class="d-flex flex-column flex-shrink-0 elevation-8 scroll"
     >
-      <v-subheader class="title-scroll">
+      <v-subheader class="title-scroll flex-grow-0 flex-shrink-0">
         <v-chip class="overline">Courses non attribuées</v-chip>
       </v-subheader>
-      <draggable
-        :value="coursesTodayUnplanified"
-        :sort="true"
-        group="courses"
-        fill-height
-        @change="moveCourse($event, null)"
-      >
-        <v-list-item
-          v-for="(course, index) in coursesTodayUnplanified"
-          :key="`${course.ref}-${course.id}`"
-          class="mb-1"
+      <div class="flex-grow-1 flex-shrink-1">
+        <draggable
+          :value="coursesTodayUnplanified"
+          handle=".handle"
+          :sort="true"
+          group="courses"
+          fill-height
+          class="mx-2 "
+          @change="moveCourse($event, null)"
         >
-          <depart-item :course="course" :index="index"></depart-item>
-        </v-list-item>
-      </draggable>
+          <v-list-item
+            v-for="(course, index) in coursesTodayUnplanified"
+            :key="`${course.ref}-${course.id}`"
+            class="mb-1"
+          >
+            <depart-item :course="course" :index="index"></depart-item>
+          </v-list-item>
+        </draggable>
+      </div>
     </v-list>
-    <div
-      class="d-flex flex-grow-1 align-stretch flex-wrap pa-0 overflow-scroll"
-    >
+    <div class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll">
       <template v-for="chauffeur of chauffeurs">
         <v-card
           :key="chauffeur.id"
           flat
-          class="chauffeur pa-0 flex-shrink-1 flex-grow-1"
+          class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
         >
-          <div class="px-2 d-flex flex-column align-stretch scroll">
-            <v-chip class="subtitle-1 mt-4 flex-shrink-0 title-scroll">
-              {{ chauffeur.name }}
-            </v-chip>
-
+          <v-list
+            class="px-2 d-flex flex-column align-stretch overflow-y-auto"
+            :style="{ height: '100%', background: 'transparent' }"
+          >
+            <v-subheader class="title-scroll">
+              <v-chip class="mt-4">
+                {{ chauffeur.name }}
+              </v-chip>
+            </v-subheader>
             <draggable
               :value="chauffeur.courses"
               :sort="true"
+              handle=".handle"
               group="courses"
               :style="{ height: '100%' }"
               @change="moveCourse($event, chauffeur)"
@@ -57,7 +62,7 @@
                 :index="index"
               ></depart-item>
             </draggable>
-          </div>
+          </v-list>
         </v-card>
       </template>
     </div>
@@ -72,6 +77,7 @@ import Chauffeur from "@/models/Chauffeur";
 import Patient from "@/models/Patient";
 import DepartItem from "./DepartItem";
 import { mapState } from "vuex";
+import * as firebase from "firebase";
 export default {
   name: "Departs",
   components: {
@@ -141,7 +147,11 @@ export default {
   methods: {
     moveCourse(event, chauffeur) {
       if (event.added) {
-        event.added.element.update({ chauffeur_id: chauffeur.id });
+        event.added.element.update({
+          chauffeur_id: chauffeur
+            ? chauffeur.id
+            : firebase.firestore.FieldValue.delete()
+        });
       }
     },
     initTodayCourses() {
@@ -198,9 +208,6 @@ export default {
   width: 100%;
   max-width: 100%;
 }
-.overflow-hide {
-  overflow: hidden;
-}
 .chauffeur {
   min-height: 40vh;
   max-height: 40vh;
@@ -212,7 +219,7 @@ export default {
 .scroll {
   overflow-y: scroll;
 }
-.overflow-scroll {
-  overflow: scroll;
+.title-scroll {
+  position: fixed;
 }
 </style>

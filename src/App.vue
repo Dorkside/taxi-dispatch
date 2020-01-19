@@ -40,7 +40,6 @@
       <v-content
         class="pa-0 overflow-hidden"
         :style="{
-          border: 'solid 10px yellow',
           height: 'calc(100% - 64px)'
         }"
       >
@@ -72,7 +71,6 @@
           fluid
           class="pa-0 overflow-hidden"
           :style="{
-            border: 'solid 10px green',
             height: 'calc(100% - 48px)',
             maxHeight: 'calc(100% - 48px)'
           }"
@@ -173,7 +171,10 @@ export default {
               if (change.type === "modified") {
                 Course.update({
                   where: change.doc.id,
-                  data: change.doc.data()
+                  data: {
+                    chauffeur_id: undefined,
+                    ...change.doc.data()
+                  }
                 });
               }
               if (change.type === "removed") {
