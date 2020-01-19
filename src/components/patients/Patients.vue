@@ -66,6 +66,38 @@
       </v-dialog>
     </div>
 
+    <v-dialog v-model="dialogDelete" persistent max-width="290">
+      <v-card>
+        <v-card-title v-if="deleteData" class="headline">
+          Etes-vous sûrs de vouloir supprimer le patient {{ deleteData.name }} ?
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              dialogDelete = false;
+              deleteData = undefined;
+            "
+          >
+            Annuler
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              deletePatient(deleteData);
+              deleteData = undefined;
+              dialogDelete = false;
+            "
+          >
+            Confirmer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <RecycleScroller
       v-slot="{ item }"
       class="scroller pa-2 flex-grow-1 flex-shrink-1"
@@ -100,34 +132,9 @@
           @change="changeType($event, item)"
         ></v-select>
 
-        <v-dialog v-model="dialogDelete" persistent max-width="290">
-          <template v-slot:activator="{ on }">
-            <v-btn text icon color="red" v-on="on">
-              <v-icon>mdi-delete-forever</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title class="headline">
-              Etes-vous sûrs de vouloir supprimer le patient ?
-            </v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="dialogDelete = false">
-                Annuler
-              </v-btn>
-              <v-btn
-                color="green darken-1"
-                text
-                @click="
-                  deletePatient(item);
-                  dialogDelete = false;
-                "
-              >
-                Confirmer
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <v-btn text icon color="red" @click="deleteModal(item)">
+          <v-icon>mdi-delete-forever</v-icon>
+        </v-btn>
       </div>
       <v-divider></v-divider>
     </RecycleScroller>
@@ -153,6 +160,7 @@ export default {
         type: "Consultation"
       },
       dialog: false,
+      deleteData: undefined,
       dialogDelete: false
     };
   },
@@ -183,6 +191,10 @@ export default {
     }
   },
   methods: {
+    deleteModal(item) {
+      this.deleteData = item;
+      this.dialogDelete = true;
+    },
     changeName($event, patient) {
       patient.update({ name: $event });
     },
