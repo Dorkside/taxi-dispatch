@@ -5,8 +5,6 @@ let wb;
 if ("serviceWorker" in navigator) {
   wb = new Workbox(`${process.env.BASE_URL}service-worker.js`);
 
-  console.log("Service worker initialized...");
-
   wb.addEventListener("controlling", () => {
     window.location.reload();
   });

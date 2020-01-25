@@ -67,20 +67,7 @@
             </v-tab>
           </v-tabs>
         </div>
-
-        <div v-if="prompt" class="upgrade-dialog">
-          <div class="upgrade-dialog__message">
-            Votre application n'est pas à jour.
-          </div>
-          <v-btn @click="upgrade">
-            Mettre à jour
-          </v-btn>
-          <v-btn @click="prompt = false">
-            Plus tard
-          </v-btn>
-        </div>
         <v-container
-          v-else
           fluid
           class="pa-0 overflow-hidden"
           :style="{
@@ -259,27 +246,14 @@ export default {
       }
     });
   },
-  created() {
-    if (this.$workbox) {
-      console.log("Checking PWA update...");
-      this.$workbox.addEventListener("waiting", () => {
-        this.prompt = true;
-      });
-    }
-  },
   data() {
     return {
-      dialog: false,
-      prompt: false
+      dialog: false
     };
   },
   methods: {
     setDate(event) {
       this.$store.commit("setDate", new Date(event));
-    },
-    async upgrade() {
-      this.prompt = false;
-      await this.$workbox.messageSW({ type: "SKIP_WAITING" });
     },
     logOut() {
       firebase.auth().signOut();
