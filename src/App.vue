@@ -1,17 +1,6 @@
 <template>
   <v-app class="overflow-hidden">
-    <div v-if="prompt" class="upgrade-dialog">
-      <div class="upgrade-dialog__message">
-        Votre application n'est pas à jour.
-      </div>
-      <v-btn @click="upgrade">
-        Mettre à jour
-      </v-btn>
-      <v-btn @click="prompt = false">
-        Plus tard
-      </v-btn>
-    </div>
-    <vue100vh v-else :css="{ height: '100rvh' }">
+    <vue100vh :css="{ height: '100rvh' }">
       <v-app-bar color="blue accent-4 justify-space-between">
         <v-toolbar-title class="white--text">
           Taxi OKA
@@ -78,7 +67,20 @@
             </v-tab>
           </v-tabs>
         </div>
+
+        <div v-if="prompt" class="upgrade-dialog">
+          <div class="upgrade-dialog__message">
+            Votre application n'est pas à jour.
+          </div>
+          <v-btn @click="upgrade">
+            Mettre à jour
+          </v-btn>
+          <v-btn @click="prompt = false">
+            Plus tard
+          </v-btn>
+        </div>
         <v-container
+          v-else
           fluid
           class="pa-0 overflow-hidden"
           :style="{
