@@ -4,7 +4,7 @@
     :style="{ position: 'relative', height: '100%' }"
   >
     <v-list
-      width="250px"
+      width="300px"
       class="d-flex flex-column flex-shrink-0 elevation-8 scroll"
     >
       <v-subheader class="title-scroll flex-grow-0 flex-shrink-0">
@@ -211,10 +211,10 @@ export default {
 .chauffeur {
   min-height: 40vh;
   max-height: 40vh;
-  width: 20%;
-  min-width: 16%;
-  max-width: 20%;
-  flex: 0 0 20%;
+  width: 300px;
+  min-width: 200px;
+  max-width: 300px;
+  flex: 0 0 300px;
 }
 .scroll {
   overflow-y: scroll;
