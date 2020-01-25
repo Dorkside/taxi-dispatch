@@ -20,7 +20,12 @@
         <div class="mr-2 flex-shrink-0 flex-grow-0" text-center>
           <v-dialog v-model="dialog" width="unset" persistent>
             <template v-slot:activator="{ on }">
-              <v-btn text v-on="on" @click="newTime = course.time">
+              <v-btn
+                :disabled="!admin"
+                text
+                v-on="on"
+                @click="newTime = course.time"
+              >
                 <span :class="`subtitle-1 font-weight-bold white--text`">
                   {{ course.prettyTime }}
                 </span>
@@ -68,7 +73,7 @@
           @change="changePatient($event, course)"
         ></v-combobox>
         <v-combobox
-          v-if="!hideChauffeur"
+          v-if="!hideChauffeur && admin"
           dense
           :value="course.chauffeur"
           height="24"
@@ -82,58 +87,64 @@
           outlined
           @change="changeChauffeur($event, course)"
         ></v-combobox>
-
-        <v-dialog
-          v-if="course.deleted === ''"
-          v-model="dialogDelete"
-          persistent
-          max-width="290"
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn text icon color="red" v-on="on">
-              <v-icon>mdi-delete-forever</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title class="headline">
-              Etes-vous sûrs de vouloir supprimer la course ?
-            </v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="dialogDelete = false">
-                Annuler
+        <template v-if="admin">
+          <v-dialog
+            v-if="course.deleted === ''"
+            v-model="dialogDelete"
+            persistent
+            max-width="290"
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn text icon color="red" v-on="on">
+                <v-icon>mdi-delete-forever</v-icon>
               </v-btn>
-              <v-btn
-                color="green darken-1"
-                text
-                @click="
-                  deleteCourse(course);
-                  dialogDelete = false;
-                "
-              >
-                Confirmer
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+            </template>
+            <v-card>
+              <v-card-title class="headline">
+                Etes-vous sûrs de vouloir supprimer la course ?
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="green darken-1"
+                  text
+                  @click="dialogDelete = false"
+                >
+                  Annuler
+                </v-btn>
+                <v-btn
+                  color="green darken-1"
+                  text
+                  @click="
+                    deleteCourse(course);
+                    dialogDelete = false;
+                  "
+                >
+                  Confirmer
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
 
-        <v-btn
-          v-else
-          text
-          icon
-          color="green"
-          dark
-          v-on="on"
-          @click="undeleteCourse(course)"
-        >
-          <v-icon>mdi-restore</v-icon>
-        </v-btn>
+          <v-btn
+            v-else
+            text
+            icon
+            color="green"
+            dark
+            v-on="on"
+            @click="undeleteCourse(course)"
+          >
+            <v-icon>mdi-restore</v-icon>
+          </v-btn>
+        </template>
       </div>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Patient from "@/models/Patient";
 import Course from "@/models/Course";
 import Chauffeur from "@/models/Chauffeur";
@@ -152,6 +163,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["admin"]),
     patients() {
       return Patient.query().get();
     },

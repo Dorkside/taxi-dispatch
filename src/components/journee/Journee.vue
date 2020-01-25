@@ -1,6 +1,7 @@
 <template>
   <div class="pa-0 ma-0 d-flex align-stretch day-container">
     <div
+      v-if="admin"
       class="flex-shrink-0 flex-grow-0 unplanned align-stretch pa-1 scroll elevation-8"
     >
       <v-list class="d-flex flex-column flex-grow-1 transparent pa-0" dense>

@@ -1,6 +1,17 @@
 <template>
   <v-app class="overflow-hidden">
-    <vue100vh :css="{ height: '100rvh' }">
+    <div v-if="prompt" class="upgrade-dialog">
+      <div class="upgrade-dialog__message">
+        Votre application n'est pas à jour.
+      </div>
+      <v-btn @click="upgrade">
+        Mettre à jour
+      </v-btn>
+      <v-btn @click="prompt = false">
+        Plus tard
+      </v-btn>
+    </div>
+    <vue100vh v-else :css="{ height: '100rvh' }">
       <v-app-bar color="blue accent-4 justify-space-between">
         <v-toolbar-title class="white--text">
           Taxi OKA
@@ -49,19 +60,19 @@
               <v-icon left>mdi-view-sequential</v-icon>
               Journée
             </v-tab>
-            <v-tab to="/departs">
+            <v-tab v-if="admin" to="/departs">
               <v-icon left>mdi-view-parallel</v-icon>
               Départs
             </v-tab>
-            <v-tab to="/series">
+            <v-tab v-if="admin" to="/series">
               <v-icon left>mdi-calendar-week</v-icon>
               Séries
             </v-tab>
-            <v-tab to="/patients">
+            <v-tab v-if="admin" to="/patients">
               <v-icon left>mdi-medical-bag</v-icon>
               Patients
             </v-tab>
-            <v-tab to="/chauffeurs">
+            <v-tab v-if="admin" to="/chauffeurs">
               <v-icon left>mdi-car</v-icon>
               Chauffeurs
             </v-tab>
@@ -248,6 +259,7 @@ export default {
   },
   created() {
     if (this.$workbox) {
+      console.log("Checking PWA update...");
       this.$workbox.addEventListener("waiting", () => {
         this.prompt = true;
       });
