@@ -11,7 +11,8 @@ export default class Chauffeur extends Model {
       id: this.string(""),
       name: this.string(""),
       courses: this.hasMany(Course, "chauffeur_id"),
-      deleted: this.string("")
+      deleted: this.string(""),
+      order: this.number(0)
     };
   }
 
@@ -22,7 +23,8 @@ export default class Chauffeur extends Model {
         .set({
           name: data.name || "Nouveau chauffeur",
           phone: data.phone || "",
-          deleted: ""
+          deleted: "",
+          order: 0
         });
     } else {
       db.collection("chauffeurs").add({

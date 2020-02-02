@@ -123,7 +123,7 @@
           @change="changeName($event, item)"
         ></v-text-field>
 
-        <v-btn text icon color="red" v-on="on" @click="deleteModal(item)">
+        <v-btn text icon color="red" @click="deleteModal(item)">
           <v-icon>mdi-delete-forever</v-icon>
         </v-btn>
       </div>

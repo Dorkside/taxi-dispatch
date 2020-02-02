@@ -65,6 +65,10 @@
               <v-icon left>mdi-car</v-icon>
               Chauffeurs
             </v-tab>
+            <v-tab v-if="admin" to="/facturation">
+              <v-icon left>mdi-receipt</v-icon>
+              Facturation
+            </v-tab>
           </v-tabs>
         </div>
         <v-container
@@ -95,6 +99,8 @@ import { db } from "./store/db";
 import Chauffeur from "./models/Chauffeur";
 import Course from "./models/Course";
 import Patient from "./models/Patient";
+
+import * as dayjs from "dayjs";
 
 export default {
   components: { vue100vh },

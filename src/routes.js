@@ -1,5 +1,6 @@
 import Chauffeurs from "@/components/chauffeurs/Chauffeurs.vue";
 import Departs from "@/components/departs/Departs.vue";
+import Facturation from "@/components/facturation/Facturation.vue";
 import Journee from "@/components/journee/Journee.vue";
 import Patients from "@/components/patients/Patients.vue";
 import Semaine from "@/components/semaine/Semaine.vue";
@@ -21,6 +22,10 @@ const routes = [
   {
     path: "/chauffeurs",
     component: Chauffeurs
+  },
+  {
+    path: "/facturation",
+    component: Facturation
   }
 ];
 export default routes;

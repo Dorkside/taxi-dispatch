@@ -30,42 +30,50 @@
         </draggable>
       </div>
     </v-list>
-    <div class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll">
-      <template v-for="chauffeur of chauffeurs">
-        <v-card
-          :key="chauffeur.id"
-          flat
-          class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
+    <draggable
+      v-model="chauffeurs"
+      handle=".handle-chauffeur"
+      :sort="true"
+      group="chauffeurs"
+      class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll"
+    >
+      <v-card
+        v-for="chauffeur of chauffeurs"
+        :key="chauffeur.id"
+        flat
+        class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
+      >
+        <v-icon class="handle-chauffeur">
+          {{ "mdi-arrow-all" }}
+        </v-icon>
+        <v-list
+          class="px-2 d-flex flex-column align-stretch overflow-y-auto"
+          :style="{ height: '100%', background: 'transparent' }"
         >
-          <v-list
-            class="px-2 d-flex flex-column align-stretch overflow-y-auto"
-            :style="{ height: '100%', background: 'transparent' }"
+          <v-subheader class="title-scroll">
+            <v-chip class="mt-4">
+              {{ chauffeur.name }}
+            </v-chip>
+          </v-subheader>
+          <draggable
+            :value="chauffeur.courses"
+            :sort="true"
+            handle=".handle"
+            group="courses"
+            :style="{ height: '100%' }"
+            @change="moveCourse($event, chauffeur)"
           >
-            <v-subheader class="title-scroll">
-              <v-chip class="mt-4">
-                {{ chauffeur.name }}
-              </v-chip>
-            </v-subheader>
-            <draggable
-              :value="chauffeur.courses"
-              :sort="true"
-              handle=".handle"
-              group="courses"
-              :style="{ height: '100%' }"
-              @change="moveCourse($event, chauffeur)"
-            >
-              <depart-item
-                v-for="(course, index) in chauffeur.courses"
-                :key="`${course.ref}-${course.id}`"
-                :course="course"
-                class="my-1"
-                :index="index"
-              ></depart-item>
-            </draggable>
-          </v-list>
-        </v-card>
-      </template>
-    </div>
+            <depart-item
+              v-for="(course, index) in chauffeur.courses"
+              :key="`${course.ref}-${course.id}`"
+              :course="course"
+              class="my-1"
+              :index="index"
+            ></depart-item>
+          </draggable>
+        </v-list>
+      </v-card>
+    </draggable>
   </div>
 </template>
 
@@ -102,14 +110,24 @@ export default {
   },
   computed: {
     ...mapState(["currentDate"]),
-    chauffeurs() {
-      return Chauffeur.query()
-        .with("courses", query => {
-          query.where("date", this.date).orderBy("time", "asc");
-        })
-        .with("courses.patient")
-        .orderBy("name", "asc")
-        .get();
+    chauffeurs: {
+      get() {
+        return Chauffeur.query()
+          .with("courses", query => {
+            query.where("date", this.date).orderBy("time", "asc");
+          })
+          .with("courses.patient")
+          .orderBy("order", "asc")
+          .orderBy("name", "asc")
+          .get();
+      },
+      set(chauffeurs) {
+        chauffeurs.forEach((chauffeur, index) => {
+          if (chauffeur.order !== index) {
+            chauffeur.update({ order: index });
+          }
+        });
+      }
     },
     date() {
       return this.currentDate.toISOString().substring(0, 10);
@@ -221,5 +239,11 @@ export default {
 }
 .title-scroll {
   position: fixed;
+}
+.handle-chauffeur {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
 }
 </style>
