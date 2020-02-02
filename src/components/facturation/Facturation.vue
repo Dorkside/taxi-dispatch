@@ -36,6 +36,8 @@
                 <tr>
                   <th class="text-left">Date</th>
                   <th class="text-left">Heure</th>
+                  <th class="text-left">Chauffeur</th>
+                  <th class="text-left">Société</th>
                 </tr>
               </thead>
               <tbody>
@@ -45,6 +47,8 @@
                 >
                   <td>{{ prettyDate(course.date) }}</td>
                   <td>{{ course.time }}</td>
+                  <td>{{ course.chauffeur.name }}</td>
+                  <td>???</td>
                 </tr>
               </tbody>
             </template>
@@ -112,7 +116,8 @@ export default {
         .where("deleted", "")
         .with("chauffeur")
         .with("patient")
-        .get();
+        .get()
+        .filter(course => !!course.chauffeur);
     },
     months() {
       return this.courses
@@ -145,7 +150,7 @@ export default {
           }
           return patients;
         }, [])
-        .sort((a, b) => (a.name > b.name ? -1 : 1));
+        .sort((a, b) => (a.name > b.name ? 1 : -1));
     },
     coursesByPatient() {
       return this.monthlyCourses.reduce((patients, course) => {
