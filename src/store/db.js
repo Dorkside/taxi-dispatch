@@ -27,4 +27,10 @@ firebase.initializeApp(
   process.env.NODE_ENV === "development" ? firebaseConfigDev : firebaseConfig
 );
 
+firebase.firestore().settings({
+  cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+});
+
+firebase.firestore().enablePersistence();
+
 export const db = firebase.firestore();
