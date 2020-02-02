@@ -53,41 +53,43 @@
       </v-card>
     </v-dialog>
 
-    <v-expansion-panels v-if="courses.length > 0" :value="0">
-      <v-expansion-panel v-for="(month, i) in months" :key="i">
-        <v-expansion-panel-header @click="setMonth(month.date)">
-          {{ month.string }}
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <template v-for="patient in filteredPatients">
-            <div :key="patient.id" class="pa-0 patient d-flex align-center">
-              <v-avatar
-                :style="{ backgroundColor: patient.color }"
-                size="36"
-                class="white--text"
-              >
-                {{ patient.shortType }}
-              </v-avatar>
+    <div class="scroller flex-grow-1 flex-shrink-1">
+      <v-expansion-panels v-if="courses.length > 0" :value="0">
+        <v-expansion-panel v-for="(month, i) in months" :key="i">
+          <v-expansion-panel-header @click="setMonth(month.date)">
+            {{ month.string }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <template v-for="patient in filteredPatients">
+              <div :key="patient.id" class="pa-0 patient d-flex align-center">
+                <v-avatar
+                  :style="{ backgroundColor: patient.color }"
+                  size="36"
+                  class="white--text"
+                >
+                  {{ patient.shortType }}
+                </v-avatar>
 
-              <span class="mx-2 flex-grow-1">{{ patient.name }}</span>
+                <span class="mx-2 flex-grow-1">{{ patient.name }}</span>
 
-              <v-btn
-                dark
-                @click="
-                  dialogData = patient;
-                  dialog = true;
-                "
-              >
-                {{ coursesByPatient[patient.id].length }} course{{
-                  coursesByPatient[patient.id].length > 1 ? "s" : ""
-                }}
-              </v-btn>
-            </div>
-            <v-divider :key="'_' + patient.id"></v-divider>
-          </template>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+                <v-btn
+                  dark
+                  @click="
+                    dialogData = patient;
+                    dialog = true;
+                  "
+                >
+                  {{ coursesByPatient[patient.id].length }} course{{
+                    coursesByPatient[patient.id].length > 1 ? "s" : ""
+                  }}
+                </v-btn>
+              </div>
+              <v-divider :key="'_' + patient.id"></v-divider>
+            </template>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
   </div>
 </template>
 
@@ -134,14 +136,16 @@ export default {
       });
     },
     patients() {
-      return this.monthlyCourses.reduce((patients, course) => {
-        if (course.patient) {
-          if (!patients.includes(course.patient)) {
-            patients.push(course.patient);
+      return this.monthlyCourses
+        .reduce((patients, course) => {
+          if (course.patient) {
+            if (!patients.includes(course.patient)) {
+              patients.push(course.patient);
+            }
           }
-        }
-        return patients;
-      }, []);
+          return patients;
+        }, [])
+        .sort((a, b) => (a.name > b.name ? -1 : 1));
     },
     coursesByPatient() {
       return this.monthlyCourses.reduce((patients, course) => {
@@ -184,6 +188,7 @@ export default {
 }
 .scroller {
   width: 100%;
+  overflow-y: auto;
 }
 .patient {
   height: 72px;
