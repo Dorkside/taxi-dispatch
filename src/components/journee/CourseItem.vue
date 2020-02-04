@@ -4,9 +4,12 @@
       deleted: course.deleted !== '',
       'elevation-0': course.deleted !== ''
     }"
-    :style="{ backgroundColor: course.color }"
   >
-    <v-card-text fill-height class="pa-1 pl-4">
+    <v-card-text
+      fill-height
+      class="pa-1 pl-4"
+      :style="{ backgroundColor: course.color }"
+    >
       <div class="d-flex justify-center align-center nowrap py-0">
         <v-icon dark>
           {{
@@ -57,6 +60,8 @@
           :style="{ minWidth: '100px' }"
         >
           {{ course.patient.name }}
+          <i v-if="course.deleted">Course annulée</i>
+          <i v-else-if="course.doneDate">Course effectuée</i>
         </span>
         <v-combobox
           v-else
@@ -72,21 +77,6 @@
           outlined
           @change="changePatient($event, course)"
         ></v-combobox>
-        <v-combobox
-          v-if="!hideChauffeur && admin"
-          dense
-          :value="course.chauffeur"
-          height="24"
-          :items="chauffeurs"
-          item-text="name"
-          label="Chauffeur"
-          class="combo-width flex-shrink-0 flex-grow-0 mx-2"
-          dark
-          :hide-details="true"
-          autocomplete="off"
-          outlined
-          @change="changeChauffeur($event, course)"
-        ></v-combobox>
         <template v-if="admin">
           <v-dialog
             v-if="course.deleted === ''"
@@ -101,7 +91,7 @@
             </template>
             <v-card>
               <v-card-title class="headline">
-                Etes-vous sûrs de vouloir supprimer la course ?
+                <span>Etes-vous sûrs de vouloir annuler la course ?</span>
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -129,17 +119,43 @@
           <v-btn
             v-else
             text
-            icon
-            color="green"
+            color="black"
             dark
             v-on="on"
             @click="undeleteCourse(course)"
           >
-            <v-icon>mdi-restore</v-icon>
+            <v-icon>mdi-restore</v-icon> Restaurer
           </v-btn>
         </template>
       </div>
     </v-card-text>
+    <v-card-actions v-if="course.time" class="d-flex justify-end align-center">
+      <v-label v-if="!course.chauffeur">Attribuer chauffeur</v-label>
+      <v-combobox
+        v-if="!hideChauffeur && admin"
+        dense
+        :value="course.chauffeur"
+        height="24"
+        :items="chauffeurs"
+        item-text="name"
+        label="Chauffeur"
+        class="combo-width flex-shrink-0 flex-grow-0 mx-2"
+        :hide-details="true"
+        autocomplete="off"
+        outlined
+        clearable
+        @click:clear="changeChauffeur(null, course)"
+        @change="changeChauffeur($event, course)"
+      ></v-combobox>
+      <v-btn
+        text
+        :color="!course.doneDate ? 'green' : 'grey'"
+        :disabled="!course.chauffeur || !course.time"
+        @click="doCourse(course)"
+      >
+        {{ !course.doneDate ? "Valider" : "Annuler" }}
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -195,13 +211,18 @@ export default {
       }
     },
     changeChauffeur($event, course) {
-      if ($event) {
-        let chauffeur = $event;
-        if (typeof chauffeur !== "string") {
-          course.update({
-            chauffeur_id: chauffeur.id
-          });
-        }
+      let chauffeur = $event;
+      if (typeof chauffeur !== "string") {
+        course.update({
+          chauffeur_id: $event ? chauffeur.id : null
+        });
+      }
+    },
+    doCourse(course) {
+      if (!course.doneDate) {
+        course.done();
+      } else {
+        course.undone();
       }
     },
     deleteCourse(course) {

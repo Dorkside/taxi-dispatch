@@ -123,6 +123,15 @@
           @change="changeName($event, item)"
         ></v-text-field>
 
+        <v-select
+          :items="societes"
+          :value="item.societe"
+          class="mx-2 type flex-grow-0 flex-shrink-0"
+          label="Société"
+          dense
+          @change="changeSociete($event, item)"
+        ></v-select>
+
         <v-btn text icon color="red" @click="deleteModal(item)">
           <v-icon>mdi-delete-forever</v-icon>
         </v-btn>
@@ -144,6 +153,7 @@ export default {
   data() {
     return {
       dialog: false,
+      societes: ["OKA", "Cicciu"],
       searchTerms: "",
       page: 1,
       newChauffeur: {
@@ -203,6 +213,9 @@ export default {
     },
     deleteChauffeur(chauffeur) {
       chauffeur.delete();
+    },
+    changeSociete($event, patient) {
+      patient.update({ societe: $event });
     }
   }
 };

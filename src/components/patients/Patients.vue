@@ -119,8 +119,17 @@
           single-line
           :value="item.name"
           class="mx-2 flex-grow-1"
-          placeholder="Nom"
+          placeholder="Prénom"
           @change="changeName($event, item)"
+        ></v-text-field>
+
+        <v-text-field
+          label="Regular"
+          single-line
+          :value="item.surname"
+          class="mx-2 flex-grow-1"
+          placeholder="Nom"
+          @change="changeSurname($event, item)"
         ></v-text-field>
 
         <v-select
@@ -197,6 +206,9 @@ export default {
     },
     changeName($event, patient) {
       patient.update({ name: $event });
+    },
+    changeSurname($event, patient) {
+      patient.update({ surname: $event });
     },
     changeType($event, patient) {
       patient.update({

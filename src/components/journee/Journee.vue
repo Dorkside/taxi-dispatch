@@ -7,13 +7,16 @@
       <v-list class="d-flex flex-column flex-grow-1 transparent pa-0" dense>
         <v-subheader class="flex-grow-0 flex-shrink-0">
           <v-chip class=" overline">Courses non planifiées</v-chip>
-
           <v-btn small text @click="addCourse()">
             <v-icon>mdi-plus-circle</v-icon> Ajouter course
           </v-btn>
         </v-subheader>
+        <v-subheader class="flex-grow-0 flex-shrink-0">
+          <v-switch v-model="showAll" label="Afficher toutes les courses">
+          </v-switch>
+        </v-subheader>
         <v-list-item
-          v-for="(course, index) in coursesTodayUnplanified"
+          v-for="(course, index) in coursesTodayUnplanifiedFiltered"
           :key="`${course.ref}-${course.id}`"
           :index="index"
           class="mx-2 flex-grow-1 flex-shrink-1"
@@ -31,10 +34,11 @@
     <div
       ref="coursesList"
       class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch pa-2 scroll"
+      style="position: relative;"
     >
       <v-list class="flex-grow-1 transparent pa-0" dense>
         <v-list-item
-          v-for="(course, index) in coursesTodayPlanified"
+          v-for="(course, index) in coursesTodayPlanifiedFiltered"
           :key="`${course.ref}-${course.id}`"
           :index="index"
           class="mx-2 pa-0"
@@ -76,7 +80,8 @@ export default {
         "Jeudi",
         "Vendredi",
         "Samedi"
-      ]
+      ],
+      showAll: false
     };
   },
   created() {
@@ -134,6 +139,16 @@ export default {
           })
         });
       }
+    },
+    coursesTodayUnplanifiedFiltered() {
+      return this.coursesTodayUnplanified.filter(
+        course => (!course.doneDate && !course.deleted) || this.showAll
+      );
+    },
+    coursesTodayPlanifiedFiltered() {
+      return this.coursesTodayPlanified.filter(
+        course => (!course.doneDate && !course.deleted) || this.showAll
+      );
     },
     currentDay() {
       return this.days[new Date(this.currentDate).getDay()].toLowerCase();

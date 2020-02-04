@@ -1,7 +1,7 @@
 import { Model } from "@vuex-orm/core";
+import { db } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
-import { db } from "../store/db";
 
 export default class Course extends Model {
   static entity = "courses";
@@ -18,7 +18,8 @@ export default class Course extends Model {
       time: this.string(""),
       priority: this.number(Infinity),
       generated: this.boolean(false),
-      deleted: this.string("")
+      deleted: this.string(""),
+      doneDate: this.string("")
     };
   }
 
@@ -47,6 +48,19 @@ export default class Course extends Model {
     db.collection("courses")
       .doc(this.id)
       .update({ deleted: "" });
+  }
+
+  done() {
+    console.log("TEST");
+    db.collection("courses")
+      .doc(this.id)
+      .update({ doneDate: new Date().toISOString() });
+  }
+
+  undone() {
+    db.collection("courses")
+      .doc(this.id)
+      .update({ doneDate: "" });
   }
 
   get direction() {

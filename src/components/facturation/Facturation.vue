@@ -48,7 +48,7 @@
                   <td>{{ prettyDate(course.date) }}</td>
                   <td>{{ course.time }}</td>
                   <td>{{ course.chauffeur.name }}</td>
-                  <td>???</td>
+                  <td>{{ course.chauffeur.societe }}</td>
                 </tr>
               </tbody>
             </template>
@@ -61,11 +61,24 @@
       <v-expansion-panels v-if="courses.length > 0" :value="0">
         <v-expansion-panel v-for="(month, i) in months" :key="i">
           <v-expansion-panel-header @click="setMonth(month.date)">
-            {{ month.string }}
+            <span>{{ month.string }}</span>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <template v-for="patient in filteredPatients">
-              <div :key="patient.id" class="pa-0 patient d-flex align-center">
+            <div class="pa-2">
+              <v-label>{{ courses.length }} courses</v-label>
+              <v-btn text class="float-right" @click.stop="print('OKA')">
+                <v-icon>mdi-printer</v-icon> OKA
+              </v-btn>
+              <v-btn text class="float-right" @click.stop="print('Cicciu')">
+                <v-icon>mdi-printer</v-icon> Cicciu
+              </v-btn>
+            </div>
+            <v-list>
+              <v-list-item
+                v-for="patient in filteredPatients"
+                :key="patient.id"
+                class="pa-0 patient d-flex align-center"
+              >
                 <v-avatar
                   :style="{ backgroundColor: patient.color }"
                   size="36"
@@ -87,9 +100,8 @@
                     coursesByPatient[patient.id].length > 1 ? "s" : ""
                   }}
                 </v-btn>
-              </div>
-              <v-divider :key="'_' + patient.id"></v-divider>
-            </template>
+              </v-list-item>
+            </v-list>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -100,6 +112,7 @@
 <script>
 import Course from "@/models/Course";
 import * as dayjs from "dayjs";
+import jsPDF from "jspdf";
 export default {
   name: "Facturation",
   data() {
@@ -114,6 +127,7 @@ export default {
     courses() {
       return Course.query()
         .where("deleted", "")
+        .where("doneDate", value => value !== "")
         .with("chauffeur")
         .with("patient")
         .get()
@@ -179,6 +193,130 @@ export default {
     },
     prettyDate(date) {
       return dayjs(date).format("dddd D MMMM YYYY");
+    },
+    print(societeName) {
+      const societe =
+        societeName === "OKA"
+          ? {
+              name: "Taxi OKA",
+              telephone: "06.68.66.66.06"
+            }
+          : {
+              name: "Taxi CICCIU Christophe",
+              telephone: "06.68.66.66.06"
+            };
+      var doc = new jsPDF();
+
+      Object.entries(this.coursesByPatient).forEach(
+        ([patientId, courses], index) => {
+          const patient = this.patients.find(
+            patient => patient.id === patientId
+          );
+
+          if (index > 0) {
+            doc.addPage();
+          }
+
+          doc.setFontSize(20);
+          doc.text(
+            societe.name,
+            doc.internal.pageSize.width / 2,
+            20,
+            null,
+            null,
+            "center"
+          );
+
+          doc.setFontSize(18);
+          doc.text(
+            societe.telephone,
+            doc.internal.pageSize.width / 2,
+            27,
+            null,
+            null,
+            "center"
+          );
+
+          doc.setFontSize(16);
+          doc.text(
+            "Relevé de transport",
+            doc.internal.pageSize.width / 2,
+            35,
+            null,
+            null,
+            "center"
+          );
+
+          doc.setFontSize(16);
+          doc.text(
+            dayjs(this.currentMonth)
+              .format("MMMM YYYY")
+              .toUpperCase(),
+            doc.internal.pageSize.width / 2,
+            42,
+            null,
+            null,
+            "center"
+          );
+
+          doc.setFontSize(18);
+          doc.text(
+            `${patient.surname.toUpperCase()} ${patient.name}`,
+            doc.internal.pageSize.width / 2,
+            50,
+            null,
+            null,
+            "center"
+          );
+
+          const jours = courses.reduce((_jours, course) => {
+            let date = this.prettyDate(course.date);
+            if (!_jours.includes(date)) {
+              _jours.push(date);
+            }
+            return _jours;
+          }, []);
+
+          doc.setFontSize(12);
+
+          jours.forEach((jour, index) => {
+            doc.text(
+              `- ${jour}`,
+              doc.internal.pageSize.width / 4,
+              60 + (31 - jours.length) * 2.5 + 5 * index,
+              null,
+              null,
+              "left"
+            );
+          });
+
+          doc.setFontSize(16);
+          doc.text(
+            `Soit ${jours.length} Allers/Retours`,
+            doc.internal.pageSize.width / 2,
+            230,
+            null,
+            null,
+            "center"
+          );
+
+          doc.setFontSize(14);
+          doc.text(
+            `Le ${new dayjs().format("DD MMMM YYYY")}`,
+            (doc.internal.pageSize.width * 3) / 4,
+            240,
+            null,
+            null,
+            "center"
+          );
+        }
+      );
+
+      doc.save(
+        `export-${societeName}-${dayjs(this.currentMonth).format(
+          "MMMM-YYYY"
+        )}.pdf`
+      );
     }
   }
 };
