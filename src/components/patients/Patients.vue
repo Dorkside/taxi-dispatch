@@ -115,20 +115,18 @@
         </v-avatar>
 
         <v-text-field
-          label="Regular"
-          single-line
+          label="Prénom"
+          dense
           :value="item.name"
           class="mx-2 flex-grow-1"
-          placeholder="Prénom"
           @change="changeName($event, item)"
         ></v-text-field>
 
         <v-text-field
-          label="Regular"
-          single-line
+          label="Nom"
+          dense
           :value="item.surname"
           class="mx-2 flex-grow-1"
-          placeholder="Nom"
           @change="changeSurname($event, item)"
         ></v-text-field>
 

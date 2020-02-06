@@ -19,7 +19,7 @@
         </span>
         <div class="flex-grow-1 text-wrap white--text">
           <span v-if="course.patient">
-            {{ course.patient.name }}
+            {{ course.patient.name }} {{ course.patient.surname }}
           </span>
           <span v-else>
             <i>NA</i>

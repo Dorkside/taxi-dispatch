@@ -43,7 +43,7 @@
           {{ item.shortType }}
         </v-avatar>
 
-        <span class="mx-2 flex-grow-1">{{ item.name }}</span>
+        <span class="mx-2 flex-grow-1">{{ item.name }} {{ item.surname }}</span>
 
         <patient-day-cell
           v-for="day of days"

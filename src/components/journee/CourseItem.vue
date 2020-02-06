@@ -59,7 +59,7 @@
           class="flex-grow-1 white--text"
           :style="{ minWidth: '100px' }"
         >
-          {{ course.patient.name }}
+          {{ course.patient.name }} {{ course.patient.surname }}
           <i v-if="course.deleted">Course annulée</i>
           <i v-else-if="course.doneDate">Course effectuée</i>
         </span>
