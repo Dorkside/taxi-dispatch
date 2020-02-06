@@ -209,106 +209,130 @@ export default {
 
       Object.entries(this.coursesByPatient).forEach(
         ([patientId, courses], index) => {
-          const patient = this.patients.find(
-            patient => patient.id === patientId
+          const societeCourses = courses.filter(
+            c => c.chauffeur.societe === societeName
           );
-
-          if (index > 0) {
-            doc.addPage();
-          }
-
-          doc.setFontSize(20);
-          doc.text(
-            societe.name,
-            doc.internal.pageSize.width / 2,
-            20,
-            null,
-            null,
-            "center"
-          );
-
-          doc.setFontSize(18);
-          doc.text(
-            societe.telephone,
-            doc.internal.pageSize.width / 2,
-            27,
-            null,
-            null,
-            "center"
-          );
-
-          doc.setFontSize(16);
-          doc.text(
-            "Relevé de transport",
-            doc.internal.pageSize.width / 2,
-            35,
-            null,
-            null,
-            "center"
-          );
-
-          doc.setFontSize(16);
-          doc.text(
-            dayjs(this.currentMonth)
-              .format("MMMM YYYY")
-              .toUpperCase(),
-            doc.internal.pageSize.width / 2,
-            42,
-            null,
-            null,
-            "center"
-          );
-
-          doc.setFontSize(18);
-          doc.text(
-            `${patient.surname.toUpperCase()} ${patient.name}`,
-            doc.internal.pageSize.width / 2,
-            50,
-            null,
-            null,
-            "center"
-          );
-
-          const jours = courses.reduce((_jours, course) => {
-            let date = this.prettyDate(course.date);
-            if (!_jours.includes(date)) {
-              _jours.push(date);
-            }
-            return _jours;
-          }, []);
-
-          doc.setFontSize(12);
-
-          jours.forEach((jour, index) => {
-            doc.text(
-              `- ${jour}`,
-              doc.internal.pageSize.width / 4,
-              60 + (31 - jours.length) * 2.5 + 5 * index,
-              null,
-              null,
-              "left"
+          if (societeCourses.length) {
+            const patient = this.patients.find(
+              patient => patient.id === patientId
             );
-          });
 
-          doc.setFontSize(16);
-          doc.text(
-            `Soit ${jours.length} Allers/Retours`,
-            doc.internal.pageSize.width / 2,
-            230,
-            null,
-            null,
-            "center"
-          );
+            doc.setFontSize(20);
+            doc.text(
+              societe.name,
+              doc.internal.pageSize.width / 2,
+              20,
+              null,
+              null,
+              "center"
+            );
 
-          doc.setFontSize(14);
-          doc.text(
-            `Le ${new dayjs().format("DD MMMM YYYY")}`,
-            (doc.internal.pageSize.width * 3) / 4,
-            240,
-            null,
-            null,
-            "center"
-          );
+            doc.setFontSize(18);
+            doc.text(
+              societe.telephone,
+              doc.internal.pageSize.width / 2,
+              27,
+              null,
+              null,
+              "center"
+            );
+
+            doc.setFontSize(16);
+            doc.text(
+              "Relevé de transport",
+              doc.internal.pageSize.width / 2,
+              35,
+              null,
+              null,
+              "center"
+            );
+
+            doc.setFontSize(16);
+            doc.text(
+              dayjs(this.currentMonth)
+                .format("MMMM YYYY")
+                .toUpperCase(),
+              doc.internal.pageSize.width / 2,
+              42,
+              null,
+              null,
+              "center"
+            );
+
+            doc.setFontSize(18);
+            doc.text(
+              `${patient.surname.toUpperCase()} ${patient.name}`,
+              doc.internal.pageSize.width / 2,
+              50,
+              null,
+              null,
+              "center"
+            );
+
+            const jours = societeCourses.reduce((_jours, course) => {
+              let date = this.prettyDate(course.date);
+              let c = course.ref.includes("Retour") ? "R" : "A";
+              if (!_jours[date]) {
+                _jours[date] = [c];
+              } else {
+                _jours[date].push(c);
+              }
+              return _jours;
+            }, {});
+
+            doc.setFontSize(12);
+
+            Object.keys(jours).forEach((jour, index) => {
+              doc.text(
+                `- ${jour} (${jours[jour].length} trajets)`,
+                doc.internal.pageSize.width / 4,
+                60 + (31 - Object.keys(jours).length) * 2.5 + 5 * index,
+                null,
+                null,
+                "left"
+              );
+            });
+
+            const allers = Object.values(jours)
+              .flat()
+              .filter(j => j === "A").length;
+            const retours = Object.values(jours)
+              .flat()
+              .filter(j => j === "R").length;
+
+            doc.setFontSize(14);
+            doc.text(
+              `Soit ${allers} Aller${allers > 1 ? "s" : ""}`,
+              (doc.internal.pageSize.width * 3) / 4,
+              230,
+              null,
+              null,
+              "right"
+            );
+            doc.text(
+              `et ${retours} Retour${retours > 1 ? "s" : ""}`,
+              (doc.internal.pageSize.width * 3) / 4,
+              237,
+              null,
+              null,
+              "right"
+            );
+
+            doc.setFontSize(12);
+            doc.setFontType("italic");
+            doc.text(
+              `Le ${new dayjs().format("DD MMMM YYYY")}`,
+              (doc.internal.pageSize.width * 3) / 4,
+              250,
+              null,
+              null,
+              "center"
+            );
+
+            if (index < Object.keys(this.coursesByPatient).length - 1) {
+              doc.addPage();
+            }
+          }
         }
       );
 
