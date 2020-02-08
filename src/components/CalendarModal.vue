@@ -23,6 +23,7 @@
 
 <script>
 import { mapState } from "vuex";
+import uuid from "uuid";
 import Course from "@/models/Course";
 export default {
   name: "Calendar",
@@ -39,6 +40,7 @@ export default {
     addCourse() {
       Course.create({
         date: this.date,
+        ref: `${this.date}.${uuid.v4()}`,
         deleted: ""
       });
     }

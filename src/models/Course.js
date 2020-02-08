@@ -1,5 +1,5 @@
 import { Model } from "@vuex-orm/core";
-import { db } from "../store/db";
+import { db, functions } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
 
@@ -24,12 +24,20 @@ export default class Course extends Model {
   }
 
   static create(data) {
-    db.collection("courses").add(
-      data || {
-        date: this.string(new Date().toISOString().substring(0, 10)),
-        deleted: ""
-      }
-    );
+    functions
+      .httpsCallable("createCourse")(
+        data || {
+          date: this.string(new Date().toISOString().substring(0, 10)),
+          deleted: ""
+        }
+      )
+      .then(console.log);
+    // db.collection("courses").add(
+    //   data || {
+    //     date: this.string(new Date().toISOString().substring(0, 10)),
+    //     deleted: ""
+    //   }
+    // );
   }
 
   update(data) {

@@ -34,3 +34,4 @@ firebase.firestore().settings({
 firebase.firestore().enablePersistence();
 
 export const db = firebase.firestore();
+export const functions = firebase.functions();

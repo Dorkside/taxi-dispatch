@@ -65,6 +65,7 @@ import Patient from "@/models/Patient";
 import CourseItem from "./CourseItem";
 import { mapState } from "vuex";
 import * as dayjs from "dayjs";
+import uuid from "uuid";
 export default {
   name: "Journee",
   components: {
@@ -158,7 +159,8 @@ export default {
     addCourse() {
       Course.create({
         date: this.date,
-        deleted: ""
+        deleted: "",
+        ref: `${this.date}.${uuid.v4()}`
       });
     },
     async scrollToNow() {
