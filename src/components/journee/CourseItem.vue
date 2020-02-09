@@ -125,7 +125,7 @@
     >
       <span
         v-if="course.generated && course.patient"
-        class="flex-grow-1 white--text"
+        class="flex-grow-1"
         :style="{ minWidth: '100px' }"
       >
         {{ course.patient.name }} {{ course.patient.surname }}

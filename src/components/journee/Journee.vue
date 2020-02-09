@@ -202,14 +202,12 @@ export default {
             });
             return result;
           }, []);
-        _courses
-          .filter(
+        Course.create(
+          _courses.filter(
             _course =>
               !this.courses.map(course => course.ref).includes(_course.ref)
           )
-          .forEach(course => {
-            Course.create(course);
-          });
+        );
       }
     }
   },

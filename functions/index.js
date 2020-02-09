@@ -24,3 +24,21 @@ exports.createCourse = functions.https.onCall((data, context) => {
       return error;
     });
 });
+
+exports.createCourses = functions.https.onCall((data, context) => {
+  const courses = data;
+
+  courses.forEach(course => {
+    db.collection("courses")
+      .where("ref", "==", course.ref)
+      .get()
+      .then(doc => {
+        if (!doc.exists) {
+          db.collection("courses").add(course);
+        }
+      })
+      .catch(error => {
+        return error;
+      });
+  });
+});

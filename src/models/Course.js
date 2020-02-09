@@ -25,20 +25,16 @@ export default class Course extends Model {
   }
 
   static create(data) {
-    functions
-      .httpsCallable("createCourse")(
+    if (Array.isArray(data)) {
+      functions.httpsCallable("createCourses")(data);
+    } else {
+      functions.httpsCallable("createCourse")(
         data || {
           date: this.string(new Date().toISOString().substring(0, 10)),
           deleted: ""
         }
-      )
-      .then(console.log);
-    // db.collection("courses").add(
-    //   data || {
-    //     date: this.string(new Date().toISOString().substring(0, 10)),
-    //     deleted: ""
-    //   }
-    // );
+      );
+    }
   }
 
   update(data) {

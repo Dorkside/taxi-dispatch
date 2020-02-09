@@ -174,7 +174,7 @@ export default {
   computed: {
     patients() {
       return Patient.query()
-        .orderBy("name", "asc")
+        .orderBy("surname", "asc")
         .get();
     },
     nbPages() {
