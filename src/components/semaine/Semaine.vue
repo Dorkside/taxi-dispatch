@@ -87,7 +87,9 @@ export default {
       if (this.searchTerms) {
         return this.patients.filter(patient => {
           return this.search.every(s => {
-            return patient.name.toLowerCase().includes(s);
+            return `${patient.name} ${patient.surname}`
+              .toLowerCase()
+              .includes(s);
           });
         });
       }

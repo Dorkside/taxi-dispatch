@@ -115,19 +115,19 @@
         </v-avatar>
 
         <v-text-field
-          label="Prénom"
-          dense
-          :value="item.name"
-          class="mx-2 flex-grow-1"
-          @change="changeName($event, item)"
-        ></v-text-field>
-
-        <v-text-field
           label="Nom"
           dense
           :value="item.surname"
           class="mx-2 flex-grow-1"
           @change="changeSurname($event, item)"
+        ></v-text-field>
+
+        <v-text-field
+          label="Prénom"
+          dense
+          :value="item.name"
+          class="mx-2 flex-grow-1"
+          @change="changeName($event, item)"
         ></v-text-field>
 
         <v-select
@@ -187,7 +187,9 @@ export default {
       if (this.searchTerms) {
         return this.patients.filter(patient => {
           return this.search.every(s => {
-            return patient.name.toLowerCase().includes(s);
+            return `${patient.name} ${patient.surname}`
+              .toLowerCase()
+              .includes(s);
           });
         });
       }

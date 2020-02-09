@@ -79,15 +79,9 @@
                 :key="patient.id"
                 class="pa-0 patient d-flex align-center"
               >
-                <v-avatar
-                  :style="{ backgroundColor: patient.color }"
-                  size="36"
-                  class="white--text"
-                >
-                  {{ patient.shortType }}
-                </v-avatar>
-
-                <span class="mx-2 flex-grow-1">{{ patient.name }}</span>
+                <span class="mx-2 flex-grow-1">
+                  {{ patient.surname }} {{ patient.name }}
+                </span>
 
                 <v-btn
                   dark
@@ -131,7 +125,8 @@ export default {
         .with("chauffeur")
         .with("patient")
         .get()
-        .filter(course => !!course.chauffeur);
+        .filter(course => !!course.chauffeur)
+        .filter(course => course.type !== "Consultation");
     },
     months() {
       return this.courses
@@ -180,7 +175,9 @@ export default {
       if (this.searchTerms) {
         return this.patients.filter(patient => {
           return this.search.every(s => {
-            return patient.name.toLowerCase().includes(s);
+            return `${patient.name} ${patient.surname}`
+              .toLowerCase()
+              .includes(s);
           });
         });
       }

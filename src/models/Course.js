@@ -11,6 +11,7 @@ export default class Course extends Model {
       id: this.string(),
       ref: this.string(),
       chauffeur_id: this.string(),
+      type: this.string("Consultation"),
       chauffeur: this.belongsTo(Chauffeur, "chauffeur_id"),
       patient_id: this.string(),
       patient: this.belongsTo(Patient, "patient_id"),
@@ -92,7 +93,20 @@ export default class Course extends Model {
   }
 
   get color() {
-    if (this.patient) {
+    if (this.type) {
+      switch (this.type) {
+        case "Dialyse":
+          return "CornflowerBlue";
+        case "HDJ":
+          return "Tomato";
+        case "Kiné / Rééducation":
+          return "grey";
+        case "Consultation":
+          return "ForestGreen";
+        default:
+          return "grey";
+      }
+    } else if (this.patient) {
       return this.patient.color;
     } else {
       return "grey";

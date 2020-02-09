@@ -184,7 +184,8 @@ export default {
             time: patient[this.currentDay],
             patient_id: patient.id,
             generated: true,
-            deleted: ""
+            deleted: "",
+            type: patient.type
           });
           result.push({
             ref: `${this.date}.${patient.id}.Retour`,
@@ -192,7 +193,8 @@ export default {
             time: patient[this.currentDay + "Retour"],
             patient_id: patient.id,
             generated: true,
-            deleted: ""
+            deleted: "",
+            type: patient.type
           });
           return result;
         }, []);
