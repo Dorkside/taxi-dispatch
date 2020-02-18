@@ -11,7 +11,6 @@ export default class Chauffeur extends Model {
       id: this.string(""),
       name: this.string(""),
       courses: this.hasMany(Course, "chauffeur_id"),
-      societe: this.string(""),
       deleted: this.string(""),
       order: this.number(0)
     };

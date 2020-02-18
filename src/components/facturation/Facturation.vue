@@ -48,7 +48,7 @@
                   <td>{{ prettyDate(course.date) }}</td>
                   <td>{{ course.time }}</td>
                   <td>{{ course.chauffeur.name }}</td>
-                  <td>{{ course.chauffeur.societe }}</td>
+                  <td>{{ course.societe }}</td>
                 </tr>
               </tbody>
             </template>
@@ -192,23 +192,32 @@ export default {
       return dayjs(date).format("dddd D MMMM YYYY");
     },
     print(societeName) {
-      const societe =
-        societeName === "OKA"
-          ? {
-              name: "Taxi OKA",
-              telephone: "06.68.66.66.06"
-            }
-          : {
-              name: "Taxi CICCIU Christophe",
-              telephone: "06.68.66.66.06"
-            };
+      let societe;
+      switch (societeName) {
+        case "OKA":
+          societe = {
+            name: "SARL OKA",
+            telephone: "06.68.66.66.06"
+          };
+          break;
+        case "Cicciu":
+          societe = {
+            name: "Taxi CICCIU Christophe",
+            telephone: "06.68.66.66.06"
+          };
+          break;
+        case "TAP":
+          societe = {
+            name: "SAS TAP",
+            telephone: "06.68.66.66.06"
+          };
+          break;
+      }
       var doc = new jsPDF();
 
       Object.entries(this.coursesByPatient).forEach(
         ([patientId, courses], index) => {
-          const societeCourses = courses.filter(
-            c => c.chauffeur.societe === societeName
-          );
+          const societeCourses = courses.filter(c => c.societe === societeName);
           if (societeCourses.length) {
             const patient = this.patients.find(
               patient => patient.id === patientId

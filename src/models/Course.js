@@ -20,7 +20,8 @@ export default class Course extends Model {
       priority: this.number(Infinity),
       generated: this.boolean(false),
       deleted: this.string(""),
-      doneDate: this.string("")
+      doneDate: this.string(""),
+      societe: this.string("")
     };
   }
 

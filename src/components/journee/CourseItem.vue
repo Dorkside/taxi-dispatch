@@ -4,47 +4,48 @@
       deleted: course.deleted !== '',
       'elevation-0': course.deleted !== ''
     }"
+    :style="`border-left: solid 82px ${course.color} !important;`"
   >
-    <v-card-text
-      fill-height
-      class="pa-1 pl-4"
-      :style="{ backgroundColor: course.color }"
-    >
+    <v-card-text fill-height class="pa-1 pl-4">
       <div class="d-flex justify-space-between align-center nowrap py-0">
-        <v-select
-          v-if="!course.generated"
-          :items="types"
-          :value="course.type"
-          class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
-          label="Type"
-          dense
-          outlined
-          :hide-details="true"
-          @change="changeType($event, course)"
-        ></v-select>
         <div class="mr-2 flex-shrink-0 flex-grow-0" text-center>
           <v-dialog v-model="dialog" width="unset" persistent>
             <template v-slot:activator="{ on }">
               <div>
-                <v-icon v-if="course.direction" dark>
-                  {{
-                    course.direction === "Aller"
-                      ? "mdi-arrow-right"
-                      : course.direction === "Retour"
-                      ? "mdi-arrow-left"
-                      : ""
-                  }}
-                </v-icon>
                 <v-btn
                   :disabled="!admin"
                   text
+                  class="time-btn"
                   v-on="on"
                   @click="newTime = course.time"
                 >
-                  <span :class="`subtitle-1 font-weight-bold white--text`">
+                  <span :class="`subtitle-1 font-weight-bold`">
                     {{ course.prettyTime }}
                   </span>
                 </v-btn>
+                <span
+                  v-if="course.generated && course.patient"
+                  class="flex-grow-1"
+                  :style="{ minWidth: '100px' }"
+                >
+                  {{ course.patient.name }} {{ course.patient.surname }}
+                  <i v-if="course.deleted">Course annulée</i>
+                  <i v-else-if="course.doneDate">Course effectuée</i>
+                </span>
+                <v-combobox
+                  v-else
+                  dense
+                  :value="course.patient"
+                  height="24"
+                  :items="patients"
+                  item-text="name"
+                  label="Nom du patient"
+                  class="combo-width mx-2 flex-shrink-0 flex-grow-0"
+                  autocomplete="no-fill"
+                  :hide-details="true"
+                  outlined
+                  @change="changePatient($event, course)"
+                ></v-combobox>
               </div>
             </template>
             <v-card>
@@ -110,7 +111,6 @@
             v-else
             text
             color="black"
-            dark
             v-on="on"
             @click="undeleteCourse(course)"
           >
@@ -118,35 +118,41 @@
           </v-btn>
         </template>
       </div>
+      <v-select
+        v-if="!course.generated"
+        :items="types"
+        :value="course.type"
+        class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
+        label="Type"
+        dense
+        outlined
+        :hide-details="true"
+        @change="changeType($event, course)"
+      ></v-select>
     </v-card-text>
     <v-card-actions
       v-if="course.time"
       class="d-flex justify-space-between align-center"
     >
-      <span
-        v-if="course.generated && course.patient"
-        class="flex-grow-1"
-        :style="{ minWidth: '100px' }"
-      >
-        {{ course.patient.name }} {{ course.patient.surname }}
-        <i v-if="course.deleted">Course annulée</i>
-        <i v-else-if="course.doneDate">Course effectuée</i>
+      <v-icon v-if="course.direction">
+        {{
+          course.direction === "Aller"
+            ? "mdi-arrow-right"
+            : course.direction === "Retour"
+            ? "mdi-arrow-left"
+            : ""
+        }}
+      </v-icon>
+      <span v-if="course.direction">
+        {{
+          course.direction === "Aller"
+            ? "Aller"
+            : course.direction === "Retour"
+            ? "Retour"
+            : ""
+        }}
       </span>
-      <v-combobox
-        v-else
-        dense
-        :value="course.patient"
-        height="24"
-        :items="patients"
-        item-text="name"
-        label="Nom du patient"
-        class="combo-width mx-2 flex-shrink-0 flex-grow-0"
-        autocomplete="no-fill"
-        :hide-details="true"
-        outlined
-        @change="changePatient($event, course)"
-      ></v-combobox>
-      <v-label v-if="!course.chauffeur">Attribuer chauffeur</v-label>
+      <v-spacer></v-spacer>
       <v-combobox
         v-if="!hideChauffeur && admin"
         dense
@@ -163,6 +169,25 @@
         @click:clear="changeChauffeur(null, course)"
         @change="changeChauffeur($event, course)"
       ></v-combobox>
+      <v-select
+        v-if="!hideChauffeur && admin"
+        :items="societes"
+        label="Société"
+        :hide-details="true"
+        height="24"
+        outlined
+        :value="course.societe"
+        class="combo-width flex-shrink-0 flex-grow-0 mx-2"
+        dense
+        @change="changeSociete($event, course)"
+      ></v-select>
+    </v-card-actions>
+
+    <v-card-actions
+      v-if="course.time && course.chauffeur && course.societe"
+      class="d-flex justify-space-between align-center"
+    >
+      <v-spacer></v-spacer>
       <v-btn
         text
         :color="!course.doneDate ? 'green' : 'grey'"
@@ -192,7 +217,8 @@ export default {
       dialog: false,
       dialogDelete: false,
       newTime: this.course ? this.course.time : "",
-      types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"]
+      types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"],
+      societes: ["OKA", "Cicciu", "TAP"]
     };
   },
   computed: {
@@ -252,6 +278,9 @@ export default {
     },
     undeleteCourse(course) {
       course.undelete();
+    },
+    changeSociete($event, course) {
+      course.update({ societe: $event });
     }
   }
 };
@@ -275,5 +304,9 @@ export default {
 }
 .nowrap {
   flex-flow: nowrap;
+}
+.time-btn {
+  margin-left: -94px;
+  margin-right: 16px;
 }
 </style>
