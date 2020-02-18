@@ -75,6 +75,10 @@ export default class Patient extends Model {
     }
   }
 
+  get fullname() {
+    return `${this.surname} ${this.name}`;
+  }
+
   get shortType() {
     switch (this.type) {
       case "Dialyse":

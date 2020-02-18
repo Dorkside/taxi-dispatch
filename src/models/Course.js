@@ -1,4 +1,5 @@
 import { Model } from "@vuex-orm/core";
+import uuid from "uuid";
 import { db, functions } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
@@ -40,8 +41,23 @@ export default class Course extends Model {
 
   update(data) {
     db.collection("courses")
-      .doc(this.id)
-      .update(data);
+      .doc(this.id || this.ref || uuid.v4())
+      .update(data)
+      .then(() => {})
+      .catch(error => {
+        db.collection("courses")
+          .doc(this.ref || uuid.v4())
+          .set({
+            ...JSON.parse(
+              JSON.stringify({
+                ...this.$toJson(),
+                patient_id: this.$toJson().patient.id,
+                patient: undefined
+              })
+            ),
+            ...data
+          });
+      });
   }
 
   delete() {
@@ -57,7 +73,6 @@ export default class Course extends Model {
   }
 
   done() {
-    console.log("TEST");
     db.collection("courses")
       .doc(this.id)
       .update({ doneDate: new Date().toISOString() });

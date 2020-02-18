@@ -1,5 +1,5 @@
 <template>
-  <td class="pa-1">
+  <td class="pa-1 text-center">
     <v-dialog v-model="dialog" width="unset" persistent>
       <template v-slot:activator="{ on }">
         <v-btn
@@ -11,7 +11,7 @@
           "
         >
           <span class="font-weight-bold">
-            <v-icon>mdi-arrow-right</v-icon> {{ patient.prettyTime(day) }}
+            {{ patient.prettyTime(day) }}
           </span>
         </v-btn>
         <v-btn
@@ -23,7 +23,6 @@
           "
         >
           <span class="font-weight-bold">
-            <v-icon>mdi-arrow-left</v-icon>
             {{ patient.prettyTime(day, true) }}
           </span>
         </v-btn>

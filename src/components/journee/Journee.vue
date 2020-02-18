@@ -1,57 +1,95 @@
 <template>
-  <div class="pa-0 ma-0 d-flex align-stretch day-container">
-    <div
+  <div class="pa-0 ma-0 d-flex align-stretch flex-column day-container">
+    <v-subheader
       v-if="admin"
-      class="flex-shrink-0 flex-grow-0 unplanned align-stretch pa-1 scroll elevation-8"
+      class="d-flex flex-grow-0 flex-shrink-0 elevation-2"
+      style="z-index: 10;"
     >
-      <v-list class="d-flex flex-column flex-grow-1 transparent pa-0" dense>
-        <v-subheader class="flex-grow-0 flex-shrink-0">
-          <v-chip class=" overline">Courses non planifiées</v-chip>
-          <v-btn small text @click="addCourse()">
-            <v-icon>mdi-plus-circle</v-icon> Ajouter course
-          </v-btn>
-        </v-subheader>
-        <v-subheader class="flex-grow-0 flex-shrink-0">
-          <v-switch v-model="showAll" label="Afficher toutes les courses">
-          </v-switch>
-        </v-subheader>
-        <v-list-item
-          v-for="(course, index) in coursesTodayUnplanifiedFiltered"
-          :key="`${course.ref}-${course.id}`"
-          :index="index"
-          class="mx-2 flex-grow-1 flex-shrink-1"
-        >
-          <v-list-item-content class="show-overflow">
-            <course-item
-              :course="course"
-              :index="index"
-              :hide-chauffeur="true"
-            ></course-item>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </div>
+      <v-switch
+        v-model="showAll"
+        class="flex-shrink-0"
+        label="Afficher toutes les courses"
+      >
+      </v-switch>
+      <v-spacer></v-spacer>
+      <v-progress-linear
+        height="20"
+        striped
+        rounded
+        :value="
+          (coursesTodayPlanifiedDone.length * 100) /
+            coursesTodayPlanified.length
+        "
+        class="flex-grow-0 mx-2"
+        style="max-width: 400px;"
+      >
+        <template v-slot="{ value }">
+          <strong>
+            Courses de la journée : {{ coursesTodayPlanifiedDone.length }} /
+            {{ coursesTodayPlanified.length }}
+          </strong>
+        </template>
+      </v-progress-linear>
+      <v-spacer></v-spacer>
+      <v-btn small text @click="addCourse()">
+        <v-icon>mdi-plus-circle</v-icon> Ajouter course
+      </v-btn>
+    </v-subheader>
     <div
       ref="coursesList"
       class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch pa-2 scroll"
       style="position: relative;"
     >
       <v-list class="flex-grow-1 transparent pa-0" dense>
+        <v-subheader v-if="coursesTodayUnplanifiedFiltered.length > 0">
+          Courses à planifier
+        </v-subheader>
+
+        <template v-if="admin && coursesTodayUnplanifiedFiltered.length > 0">
+          <v-list-item
+            v-for="(course, index) in coursesTodayUnplanifiedFiltered"
+            :key="`${course.ref}-${course.id}`"
+            :index="index"
+            class="mx-2 pa-0"
+          >
+            <v-list-item-content
+              class="show-overflow justify-center align-center"
+            >
+              <course-item
+                :course="course"
+                class="my-1"
+                :index="index"
+                :hide-chauffeur="true"
+              ></course-item>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+
+        <v-divider
+          v-if="coursesTodayUnplanifiedFiltered.length > 0"
+        ></v-divider>
+
+        <v-subheader>
+          Courses de la journée
+          {{ coursesTodayPlanifiedDone.length }}
+          / {{ coursesTodayPlanified.length }}
+        </v-subheader>
+
         <v-list-item
           v-for="(course, index) in coursesTodayPlanifiedFiltered"
           :key="`${course.ref}-${course.id}`"
           :index="index"
           class="mx-2 pa-0"
         >
-          <v-list-item-content class="show-overflow">
-            <div :ref="`${course.ref}-${course.id}`">
-              <course-item
-                :key="`${course.ref}-${course.id}`"
-                class="my-1"
-                :course="course"
-                :index="index"
-              ></course-item>
-            </div>
+          <v-list-item-content
+            class="show-overflow justify-center align-center"
+          >
+            <course-item
+              :key="`${course.ref}-${course.id}`"
+              class="my-1"
+              :course="course"
+              :index="index"
+            ></course-item>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -86,13 +124,51 @@ export default {
     };
   },
   created() {
-    this.initTodayCourses();
+    // this.initTodayCourses();
   },
   mounted() {
     this.scrollToNow();
   },
   computed: {
     ...mapState(["currentDate", "admin"]),
+    recurringCourses() {
+      if (this.admin) {
+        return this.patients
+          .filter(patient => {
+            return patient[this.currentDay];
+          })
+          .reduce((result, patient) => {
+            result.push(
+              new Course({
+                ref: `${this.date}.${patient.id}.Aller`,
+                date: this.date,
+                time: patient[this.currentDay],
+                patient: Patient.find(patient.id),
+                generated: true,
+                deleted: "",
+                type: patient.type
+              })
+            );
+            result.push(
+              new Course({
+                ref: `${this.date}.${patient.id}.Retour`,
+                date: this.date,
+                time: patient[this.currentDay + "Retour"],
+                patient: Patient.find(patient.id),
+                generated: true,
+                deleted: "",
+                type: patient.type
+              })
+            );
+            return result;
+          }, [])
+          .filter(
+            _course =>
+              !this.courses.map(course => course.ref).includes(_course.ref)
+          );
+      }
+      return [];
+    },
     date() {
       return this.currentDate.toISOString().substring(0, 10);
     },
@@ -105,9 +181,12 @@ export default {
     patients() {
       return Patient.query().get();
     },
+    allCourses() {
+      return this.courses.concat(this.recurringCourses);
+    },
     coursesToday() {
       if (this.currentDate) {
-        return this.courses.filter(course => course.date === this.date);
+        return this.allCourses.filter(course => course.date === this.date);
       }
       return [];
     },
@@ -120,6 +199,11 @@ export default {
           if (a.time < b.time) return -1;
           return 1;
         });
+    },
+    coursesTodayPlanifiedDone() {
+      return this.coursesTodayPlanified.filter(
+        course => !!course.doneDate && !course.deleted
+      );
     },
     coursesTodayUnplanified: {
       get() {
@@ -173,54 +257,6 @@ export default {
         if (this.$refs[ref]) {
           this.$refs[ref][0].scrollIntoView(true);
         }
-      }
-    },
-    initTodayCourses() {
-      if (this.admin) {
-        let _courses = this.patients
-          .filter(patient => {
-            return patient[this.currentDay];
-          })
-          .reduce((result, patient) => {
-            result.push({
-              ref: `${this.date}.${patient.id}.Aller`,
-              date: this.date,
-              time: patient[this.currentDay],
-              patient_id: patient.id,
-              generated: true,
-              deleted: "",
-              type: patient.type
-            });
-            result.push({
-              ref: `${this.date}.${patient.id}.Retour`,
-              date: this.date,
-              time: patient[this.currentDay + "Retour"],
-              patient_id: patient.id,
-              generated: true,
-              deleted: "",
-              type: patient.type
-            });
-            return result;
-          }, []);
-        Course.create(
-          _courses.filter(
-            _course =>
-              !this.courses.map(course => course.ref).includes(_course.ref)
-          )
-        );
-      }
-    }
-  },
-  watch: {
-    currentDate() {
-      if (this.courses ? this.courses.length : false) {
-        this.initTodayCourses();
-      }
-      this.scrollToNow();
-    },
-    patients() {
-      if (this.courses ? this.courses.length : false) {
-        this.initTodayCourses();
       }
     }
   }

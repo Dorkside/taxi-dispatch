@@ -1,8 +1,18 @@
 <template>
-  <v-card class="full-width" :style="{ backgroundColor: course.color }">
-    <v-card-text class="pa-2 full-width">
+  <v-card
+    class="full-width"
+    :style="
+      `border-left: solid 82px ${course.color} !important; overflow:visible;`
+    "
+  >
+    <v-card-text class="pa-2 full-width" style="overflow:visible;">
       <div class="d-flex flex-row justify-center align-center pa-0">
-        <v-icon dark class="flex-shrink-0 flex-grow-0">
+        <span
+          class="time-span mr-2 flex-shrink-0 flex-grow-0 subtitle-1 font-weight-bold white--text"
+        >
+          {{ course.prettyTime }}
+        </span>
+        <v-icon class="ml-1 flex-shrink-0 flex-grow-0">
           {{
             course.direction === "Aller"
               ? "mdi-arrow-right"
@@ -11,13 +21,7 @@
               : ""
           }}
         </v-icon>
-        <span
-          class="mr-2 flex-shrink-0 flex-grow-0"
-          :class="`subtitle-1 font-weight-bold white--text`"
-        >
-          {{ course.prettyTime }}
-        </span>
-        <div class="flex-grow-1 text-wrap white--text">
+        <div class="flex-grow-1 text-wrap">
           <span v-if="course.patient">
             {{ course.patient.name }} {{ course.patient.surname }}
           </span>
@@ -25,7 +29,7 @@
             <i>NA</i>
           </span>
         </div>
-        <v-icon dark class="flex-shrink-0 flex-grow-0 handle">
+        <v-icon class="flex-shrink-0 flex-grow-0 handle">
           {{ "mdi-arrow-all" }}
         </v-icon>
       </div>
@@ -89,5 +93,9 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+}
+.time-span {
+  margin-left: -64px;
+  margin-right: 32px;
 }
 </style>

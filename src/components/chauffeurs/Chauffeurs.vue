@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column pa-0" :style="{ height: '100%' }">
+  <div class="d-flex flex-column pa-0" :style="{ height: 'calc(100%)' }">
     <div
       class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 align-center flex-grow-0 flex-shrink-0"
     >
@@ -98,54 +98,64 @@
       </v-card>
     </v-dialog>
 
-    <RecycleScroller
-      v-slot="{ item }"
-      class="scroller pa-2 flex-grow-1 flex-shrink-1"
-      :items="pageChauffeurs"
-      :item-size="72"
-      key-field="id"
-    >
-      <div class="pa-0 chauffeur d-flex align-center">
-        <v-avatar
-          :style="{ backgroundColor: 'grey' }"
-          size="36"
-          class="white--text"
+    <div class="scroller pa-2 d-flex flex-shrink-1">
+      <draggable
+        v-model="chauffeurs"
+        handle=".handle-chauffeur"
+        :sort="true"
+        group="chauffeurs"
+        style="max-height: calc(100% - 48px);"
+        class="d-flex flex-wrap pa-4 scroll"
+      >
+        <v-card
+          v-for="item of chauffeurs"
+          :key="item.id"
+          style="width: 300px; height: 128px;"
+          class="pa-0 ma-2 chauffeur align-start justify-start"
         >
-          {{ item.initiales }}
-        </v-avatar>
-
-        <v-text-field
-          label="Regular"
-          single-line
-          :value="item.name"
-          class="mx-2 flex-grow-1"
-          placeholder="Nom"
-          @change="changeName($event, item)"
-        ></v-text-field>
-
-        <v-btn text icon color="red" @click="deleteModal(item)">
-          <v-icon>mdi-delete-forever</v-icon>
-        </v-btn>
-      </div>
-      <v-divider></v-divider>
-    </RecycleScroller>
-    <v-pagination
-      v-model="page"
-      class=" flex-grow-0 flex-shrink-0 elevation-4"
-      :length="nbPages"
-    ></v-pagination>
+          <div>
+            <v-avatar
+              :style="{ backgroundColor: 'grey' }"
+              size="36"
+              class="ma-2 white--text"
+            >
+              {{ item.initiales }}
+            </v-avatar>
+            <v-icon class="handle-chauffeur">
+              {{ "mdi-arrow-all" }}
+            </v-icon>
+          </div>
+          <div class="d-flex justify-center align-center">
+            <v-text-field
+              label="Regular"
+              single-line
+              :value="item.name"
+              class="mx-2 flex-grow-1"
+              placeholder="Nom"
+              @change="changeName($event, item)"
+            ></v-text-field>
+            <v-btn text icon color="red" @click="deleteModal(item)">
+              <v-icon>mdi-delete-forever</v-icon>
+            </v-btn>
+          </div>
+        </v-card>
+      </draggable>
+    </div>
   </div>
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import Chauffeur from "@/models/Chauffeur";
 export default {
   name: "Chauffeurs",
+  components: {
+    draggable
+  },
   data() {
     return {
       dialog: false,
       searchTerms: "",
-      page: 1,
       newChauffeur: {
         name: null,
         phone: null
@@ -155,13 +165,20 @@ export default {
     };
   },
   computed: {
-    chauffeurs() {
-      return Chauffeur.query()
-        .orderBy("name", "asc")
-        .get();
-    },
-    nbPages() {
-      return Math.ceil(this.filteredChauffeurs.length / 15);
+    chauffeurs: {
+      get() {
+        return Chauffeur.query()
+          .orderBy("order", "asc")
+          .orderBy("name", "asc")
+          .get();
+      },
+      set(chauffeurs) {
+        chauffeurs.forEach((chauffeur, index) => {
+          if (chauffeur.order !== index) {
+            chauffeur.update({ order: index });
+          }
+        });
+      }
     },
     search() {
       return this.searchTerms.toLowerCase().split(" ");
@@ -175,12 +192,6 @@ export default {
         });
       }
       return this.chauffeurs;
-    },
-    pageChauffeurs() {
-      return this.filteredChauffeurs.slice(
-        (this.page - 1) * 15,
-        this.page * 15
-      );
     }
   },
   methods: {
@@ -214,5 +225,14 @@ export default {
   position: sticky;
   min-height: 64px;
   top: 0;
+}
+.handle-chauffeur {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+}
+.scroller {
+  overflow-y: auto;
 }
 </style>

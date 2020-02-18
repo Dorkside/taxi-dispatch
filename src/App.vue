@@ -3,7 +3,9 @@
     <vue100vh :css="{ height: '100rvh' }">
       <v-app-bar color="blue accent-4 justify-space-between">
         <v-toolbar-title class="white--text">
-          Taxi OKA
+          <v-chip class="yellow darken-2">SARL OKA</v-chip> |
+          <v-chip class="yellow darken-2">Taxi Cicciu</v-chip> |
+          <v-chip class="yellow darken-2">SAS TAP</v-chip>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <div center class="d-flex align-center justify-center white--text">
@@ -54,10 +56,6 @@
               Départs
             </v-tab>
             <v-tab v-if="admin" to="/series">
-              <v-icon left>mdi-calendar-week</v-icon>
-              Séries
-            </v-tab>
-            <v-tab v-if="admin" to="/patients">
               <v-icon left>mdi-medical-bag</v-icon>
               Patients
             </v-tab>

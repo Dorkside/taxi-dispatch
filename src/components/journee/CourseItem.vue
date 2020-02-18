@@ -4,49 +4,26 @@
       deleted: course.deleted !== '',
       'elevation-0': course.deleted !== ''
     }"
-    :style="`border-left: solid 82px ${course.color} !important;`"
+    :style="
+      `border-left: solid 82px ${course.color} !important; max-width: 600px;`
+    "
   >
     <v-card-text fill-height class="pa-1 pl-4">
       <div class="d-flex justify-space-between align-center nowrap py-0">
-        <div class="mr-2 flex-shrink-0 flex-grow-0" text-center>
+        <div class="mr-2 d-flex flex-shrink-0 flex-grow-0" text-center>
           <v-dialog v-model="dialog" width="unset" persistent>
             <template v-slot:activator="{ on }">
-              <div>
-                <v-btn
-                  :disabled="!admin"
-                  text
-                  class="time-btn"
-                  v-on="on"
-                  @click="newTime = course.time"
-                >
-                  <span :class="`subtitle-1 font-weight-bold`">
-                    {{ course.prettyTime }}
-                  </span>
-                </v-btn>
-                <span
-                  v-if="course.generated && course.patient"
-                  class="flex-grow-1"
-                  :style="{ minWidth: '100px' }"
-                >
-                  {{ course.patient.name }} {{ course.patient.surname }}
-                  <i v-if="course.deleted">Course annulée</i>
-                  <i v-else-if="course.doneDate">Course effectuée</i>
+              <v-btn
+                :disabled="!admin"
+                text
+                class="time-btn white--text"
+                v-on="on"
+                @click="newTime = course.time"
+              >
+                <span :class="`subtitle-1 font-weight-bold`">
+                  {{ course.prettyTime }}
                 </span>
-                <v-combobox
-                  v-else
-                  dense
-                  :value="course.patient"
-                  height="24"
-                  :items="patients"
-                  item-text="name"
-                  label="Nom du patient"
-                  class="combo-width mx-2 flex-shrink-0 flex-grow-0"
-                  autocomplete="no-fill"
-                  :hide-details="true"
-                  outlined
-                  @change="changePatient($event, course)"
-                ></v-combobox>
-              </div>
+              </v-btn>
             </template>
             <v-card>
               <v-time-picker
@@ -67,6 +44,41 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-select
+            v-if="!course.generated"
+            :items="types"
+            :value="course.type"
+            class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
+            label="Type"
+            dense
+            outlined
+            :hide-details="true"
+            @change="changeType($event, course)"
+          ></v-select>
+          <span
+            v-if="course.generated && course.patient"
+            class="flex-grow-1"
+            :style="{ minWidth: '100px' }"
+          >
+            {{ course.patient.fullname }}
+            <i v-if="course.deleted">Course annulée</i>
+            <i v-else-if="course.doneDate">Course effectuée</i>
+          </span>
+          <v-combobox
+            v-else
+            dense
+            :value="course.patient"
+            height="24"
+            :items="patients"
+            item-text="fullname"
+            label="Nom du patient"
+            class="combo-width mx-2 flex-shrink-0 flex-grow-0"
+            autocomplete="no-fill"
+            :hide-details="true"
+            outlined
+            @change="changePatient($event, course)"
+          >
+          </v-combobox>
         </div>
         <template v-if="admin">
           <v-dialog
@@ -118,17 +130,6 @@
           </v-btn>
         </template>
       </div>
-      <v-select
-        v-if="!course.generated"
-        :items="types"
-        :value="course.type"
-        class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
-        label="Type"
-        dense
-        outlined
-        :hide-details="true"
-        @change="changeType($event, course)"
-      ></v-select>
     </v-card-text>
     <v-card-actions
       v-if="course.time"

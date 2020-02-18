@@ -66,6 +66,9 @@
           <v-expansion-panel-content>
             <div class="pa-2">
               <v-label>{{ courses.length }} courses</v-label>
+              <v-btn text class="float-right" @click.stop="print('TAP')">
+                <v-icon>mdi-printer</v-icon> TAP
+              </v-btn>
               <v-btn text class="float-right" @click.stop="print('OKA')">
                 <v-icon>mdi-printer</v-icon> OKA
               </v-btn>

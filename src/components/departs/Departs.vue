@@ -106,10 +106,48 @@ export default {
     };
   },
   created() {
-    this.initTodayCourses();
+    // this.initTodayCourses();
   },
   computed: {
-    ...mapState(["currentDate"]),
+    ...mapState(["currentDate", "admin"]),
+    recurringCourses() {
+      if (this.admin) {
+        return this.patients
+          .filter(patient => {
+            return patient[this.currentDay];
+          })
+          .reduce((result, patient) => {
+            result.push(
+              new Course({
+                ref: `${this.date}.${patient.id}.Aller`,
+                date: this.date,
+                time: patient[this.currentDay],
+                patient: Patient.find(patient.id),
+                generated: true,
+                deleted: "",
+                type: patient.type
+              })
+            );
+            result.push(
+              new Course({
+                ref: `${this.date}.${patient.id}.Retour`,
+                date: this.date,
+                time: patient[this.currentDay + "Retour"],
+                patient: Patient.find(patient.id),
+                generated: true,
+                deleted: "",
+                type: patient.type
+              })
+            );
+            return result;
+          }, [])
+          .filter(
+            _course =>
+              !this.courses.map(course => course.ref).includes(_course.ref)
+          );
+      }
+      return [];
+    },
     chauffeurs: {
       get() {
         return Chauffeur.query()
@@ -138,9 +176,12 @@ export default {
         .with("patient")
         .get();
     },
+    allCourses() {
+      return this.courses.concat(this.recurringCourses);
+    },
     coursesToday() {
       if (this.currentDate) {
-        return this.courses
+        return this.allCourses
           .filter(course => !course.deleted)
           .filter(course => course.date === this.date);
       }
@@ -170,53 +211,6 @@ export default {
             ? chauffeur.id
             : firebase.firestore.FieldValue.delete()
         });
-      }
-    },
-    initTodayCourses() {
-      let _courses = this.patients
-        .filter(patient => {
-          return patient[this.currentDay];
-        })
-        .reduce((result, patient) => {
-          result.push({
-            ref: `${this.date}.${patient.id}.Aller`,
-            date: this.date,
-            time: patient[this.currentDay],
-            patient_id: patient.id,
-            generated: true,
-            deleted: "",
-            type: patient.type
-          });
-          result.push({
-            ref: `${this.date}.${patient.id}.Retour`,
-            date: this.date,
-            time: patient[this.currentDay + "Retour"],
-            patient_id: patient.id,
-            generated: true,
-            deleted: "",
-            type: patient.type
-          });
-          return result;
-        }, []);
-      _courses
-        .filter(
-          _course =>
-            !this.courses.map(course => course.ref).includes(_course.ref)
-        )
-        .forEach(course => {
-          Course.create(course);
-        });
-    }
-  },
-  watch: {
-    currentDate() {
-      if (this.courses ? this.courses.length : false) {
-        this.initTodayCourses();
-      }
-    },
-    patients() {
-      if (this.courses ? this.courses.length : false) {
-        this.initTodayCourses();
       }
     }
   }
