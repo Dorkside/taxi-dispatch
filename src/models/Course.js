@@ -1,6 +1,6 @@
 import { Model } from "@vuex-orm/core";
 import uuid from "uuid";
-import { db, functions } from "../store/db";
+import { db } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
 
@@ -27,16 +27,14 @@ export default class Course extends Model {
   }
 
   static create(data) {
-    if (Array.isArray(data)) {
-      functions.httpsCallable("createCourses")(data);
-    } else {
-      functions.httpsCallable("createCourse")(
+    db.collection("courses")
+      .doc(this.ref || uuid.v4())
+      .set(
         data || {
           date: this.string(new Date().toISOString().substring(0, 10)),
           deleted: ""
         }
       );
-    }
   }
 
   update(data) {
