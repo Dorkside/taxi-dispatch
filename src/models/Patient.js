@@ -10,6 +10,7 @@ export default class Patient extends Model {
       id: this.string(""),
       name: this.string(""),
       surname: this.string(""),
+      societe: this.string(""),
       type: this.string("Consultation"),
       courses: this.hasMany(Course, "patient_id"),
       lundi: this.string(""),

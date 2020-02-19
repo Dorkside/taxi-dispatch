@@ -87,6 +87,7 @@
             <course-item
               :key="`${course.ref}-${course.id}`"
               class="my-1"
+              :style="{ opacity: course.doneDate ? '0.5' : '1' }"
               :course="course"
               :index="index"
             ></course-item>
@@ -145,6 +146,7 @@ export default {
                 time: patient[this.currentDay],
                 patient: Patient.find(patient.id),
                 generated: true,
+                societe: patient.societe,
                 deleted: "",
                 type: patient.type
               })
@@ -156,6 +158,7 @@ export default {
                 time: patient[this.currentDay + "Retour"],
                 patient: Patient.find(patient.id),
                 generated: true,
+                societe: patient.societe,
                 deleted: "",
                 type: patient.type
               })

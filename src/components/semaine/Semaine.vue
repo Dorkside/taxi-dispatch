@@ -57,8 +57,9 @@
           :value="item.type"
           :hide-details="true"
           class="mx-2 type flex-shrink-1"
-          style="max-width: 200px;"
+          style="width: 120px; max-width: 200px;"
           label="Type"
+          outlined
           dense
           @change="changeType($event, item)"
         >
@@ -81,6 +82,19 @@
           class="mx-2 flex-grow-1"
           @change="changeName($event, item)"
         ></v-text-field>
+
+        <v-select
+          :items="societes"
+          label="Société"
+          :hide-details="true"
+          height="24"
+          outlined
+          :value="item.societe"
+          class="flex-shrink-0 flex-grow-0 mx-2"
+          style="width: 120px;"
+          dense
+          @change="changeSociete($event, item)"
+        ></v-select>
 
         <div
           style="width:32px;height: 100%;"
@@ -123,7 +137,8 @@ export default {
       types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"],
       searchTerms: "",
       deleteData: undefined,
-      dialogDelete: false
+      dialogDelete: false,
+      societes: ["OKA", "Cicciu", "TAP"]
     };
   },
   computed: {
@@ -172,6 +187,9 @@ export default {
     deleteModal(item) {
       this.deleteData = item;
       this.dialogDelete = true;
+    },
+    changeSociete($event, patient) {
+      patient.update({ societe: $event });
     }
   }
 };
