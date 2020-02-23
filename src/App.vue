@@ -97,8 +97,7 @@ import { db } from "./store/db";
 import Chauffeur from "./models/Chauffeur";
 import Course from "./models/Course";
 import Patient from "./models/Patient";
-
-import * as dayjs from "dayjs";
+import Phone from "./models/Phone";
 
 export default {
   components: { vue100vh },
@@ -128,7 +127,6 @@ export default {
       } else {
         if (
           [
-            "+330123456789",
             "+33123456789",
             "+33762686070",
             "+33761610703",
@@ -137,6 +135,28 @@ export default {
           ].includes(user.phoneNumber)
         ) {
           this.$store.commit("setAdmin", true);
+
+          db.collection("phones").onSnapshot(function(querySnapshot) {
+            querySnapshot.docChanges().forEach(function(change) {
+              if (change.type === "added") {
+                Phone.insert({
+                  data: {
+                    ...change.doc.data(),
+                    id: change.doc.id
+                  }
+                });
+              }
+              if (change.type === "modified") {
+                Phone.update({
+                  where: change.doc.id,
+                  data: change.doc.data()
+                });
+              }
+              if (Phone.type === "removed") {
+                Phone.delete(change.doc.id);
+              }
+            });
+          });
 
           db.collection("chauffeurs")
             .where("deleted", "==", "")

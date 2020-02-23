@@ -13,17 +13,20 @@
         @input="page = 1"
       >
       </v-text-field>
-      <v-dialog v-model="dialog" persistent max-width="600px">
-        <template v-slot:activator="{ on }">
-          <v-btn text v-on="on">
-            <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            <span class="headline">Créer un nouveau chauffeur</span>
-          </v-card-title>
-          <v-card-text>
+    </div>
+
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <template v-slot:activator="{ on }">
+        <v-btn text v-on="on">
+          <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
+        </v-btn>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Créer un nouveau chauffeur</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form v-model="valid">
             <v-text-field
               v-model="newChauffeur.name"
               label="Nom"
@@ -34,36 +37,38 @@
             <v-text-field
               v-model="newChauffeur.phone"
               label="Numéro de téléphone"
+              :rules="phoneRules"
               prepend-inner-icon="mdi-phone"
               autocomplete="nofill"
               required
             ></v-text-field>
-          </v-card-text>
-          <v-card-actions>
-            <div class="flex-grow-1"></div>
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="
-                resetData();
-                dialog = false;
-              "
-            >
-              Annuler
-            </v-btn>
-            <v-btn
-              color="primary darken-1"
-              @click="
-                createChauffeur(newChauffeur);
-                dialog = false;
-              "
-            >
-              Enregistrer
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="
+              resetData();
+              dialog = false;
+            "
+          >
+            Annuler
+          </v-btn>
+          <v-btn
+            color="primary darken-1"
+            :disabled="!valid"
+            @click="
+              createChauffeur(newChauffeur);
+              dialog = false;
+            "
+          >
+            Enregistrer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-dialog v-model="dialogDelete" persistent max-width="290">
       <v-card>
@@ -110,7 +115,7 @@
         <v-card
           v-for="item of chauffeurs"
           :key="item.id"
-          style="width: 300px; height: 128px;"
+          style="width: 300px; "
           class="pa-0 ma-2 chauffeur align-start justify-start"
         >
           <div>
@@ -125,19 +130,43 @@
               {{ "mdi-arrow-all" }}
             </v-icon>
           </div>
-          <div class="d-flex justify-center align-center">
-            <v-text-field
-              label="Regular"
-              single-line
-              :value="item.name"
-              class="mx-2 flex-grow-1"
-              placeholder="Nom"
-              @change="changeName($event, item)"
-            ></v-text-field>
-            <v-btn text icon color="red" @click="deleteModal(item)">
-              <v-icon>mdi-delete-forever</v-icon>
-            </v-btn>
+          <div class="d-flex flex-column pa-2">
+            <div class="d-flex justify-center align-center">
+              <v-text-field
+                label="Regular"
+                single-line
+                :value="item.name"
+                class="mr-2 flex-grow-1"
+                placeholder="Nom"
+                @change="changeName($event, item)"
+              ></v-text-field>
+            </div>
+            <v-form
+              v-for="phone of item.phones"
+              :key="phone.id"
+              v-model="validPhones[phone.id]"
+            >
+              <v-text-field
+                prepend-inner-icon="mdi-phone"
+                label="Regular"
+                single-line
+                :value="phone.value"
+                placeholder="Téléphone"
+                :rules="phoneRules"
+                @change="changeValue($event, phone)"
+              ></v-text-field>
+            </v-form>
           </div>
+          <v-card-actions>
+            <v-btn
+              text
+              color="red"
+              class="float-right"
+              @click="deleteModal(item)"
+            >
+              <v-icon>mdi-delete-forever</v-icon> Supprimer
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </draggable>
     </div>
@@ -158,16 +187,25 @@ export default {
       searchTerms: "",
       newChauffeur: {
         name: null,
-        phone: null
+        phones: []
       },
       deleteData: undefined,
-      dialogDelete: false
+      dialogDelete: false,
+      valid: false,
+      phoneRules: [
+        v => !!v || "Numéro obligatoire",
+        v =>
+          /^(\+33)[1-9][0-9]{8}$/g.test(v) ||
+          "Numéro invalide (doit commencer par +33)"
+      ],
+      validPhones: []
     };
   },
   computed: {
     chauffeurs: {
       get() {
         return Chauffeur.query()
+          .with("phones")
           .orderBy("order", "asc")
           .orderBy("name", "asc")
           .get();
@@ -200,13 +238,13 @@ export default {
       this.dialogDelete = true;
     },
     createChauffeur(data) {
-      Chauffeur.create(data);
+      Chauffeur.create({ ...data, phones: data.phone });
       this.resetData();
     },
     resetData() {
       this.newChauffeur = {
         name: null,
-        phone: null
+        phones: []
       };
     },
     changeName($event, chauffeur) {
@@ -214,6 +252,11 @@ export default {
     },
     deleteChauffeur(chauffeur) {
       chauffeur.delete();
+    },
+    changeValue($event, phone) {
+      if (this.validPhones[phone.id]) {
+        phone.update({ value: $event });
+      }
     }
   }
 };

@@ -2,6 +2,7 @@ import { Model } from "@vuex-orm/core";
 import * as firebase from "firebase";
 import { db } from "../store/db";
 import Course from "./Course";
+import Phone from "./Phone";
 
 export default class Chauffeur extends Model {
   static entity = "chauffeurs";
@@ -12,27 +13,24 @@ export default class Chauffeur extends Model {
       name: this.string(""),
       courses: this.hasMany(Course, "chauffeur_id"),
       deleted: this.string(""),
-      order: this.number(0)
+      order: this.number(0),
+      phones: this.hasMany(Phone, "chauffeur_id")
     };
   }
 
   static create(data = null) {
-    if (data.phone) {
-      db.collection("chauffeurs")
-        .doc(data.phone)
-        .set({
-          name: data.name || "Nouveau chauffeur",
-          phone: data.phone || "",
-          deleted: "",
-          order: 0
-        });
-    } else {
-      db.collection("chauffeurs").add({
+    db.collection("chauffeurs")
+      .add({
         name: data.name || "Nouveau chauffeur",
-        phone: "",
-        deleted: ""
+        deleted: "",
+        order: 0
+      })
+      .then(result => {
+        db.collection("phones").add({
+          value: data.phone,
+          chauffeur_id: result.id
+        });
       });
-    }
   }
 
   update(data) {
@@ -48,6 +46,12 @@ export default class Chauffeur extends Model {
       .forEach(course => {
         course.update({ chauffeur_id: firebase.firestore.FieldValue.delete() });
       });
+
+    Phone.query()
+      .where("chauffeur_id", this.$id)
+      .get()
+      .forEach(phone => phone.delete());
+
     db.collection("chauffeurs")
       .doc(this.id)
       .update({ deleted: new Date().toISOString() });
