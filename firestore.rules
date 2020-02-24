@@ -5,7 +5,7 @@ service cloud.firestore {
       return exists(/databases/$(database)/documents/admins/$(request.auth.token.phone_number));
     }
   	function isChauffeur() {
-      return exists(/databases/$(database)/documents/chauffeurs/$(request.auth.token.phone_number));
+      return exists(/databases/$(database)/documents/chauffeurPhones/$(request.auth.token.phone_number));
     }
 
     match /{document=**} {
@@ -16,10 +16,10 @@ service cloud.firestore {
       allow read: if request.auth != null && (isAdmin() || isChauffeur());
     }
     match /courses/{document=**} {
-      allow read: if request.auth != null && (isAdmin() || (isChauffeur() && resource.data.chauffeur_id == request.auth.token.phone_number));
+      allow read: if request.auth != null && (isAdmin() || (isChauffeur() && resource.data.chauffeur_id == get(/databases/$(database)/documents/phones/$(request.auth.token.phone_number)).chauffeur_id);
     }
     match /chauffeurs/{chauffeurId}/{document=**} {
-      allow read: if request.auth != null && (isAdmin() || (isChauffeur() && chauffeurId == request.auth.token.phone_number));
+      allow read: if request.auth != null && (isAdmin() || (isChauffeur() && chauffeurId == get(/databases/$(database)/documents/phones/$(request.auth.token.phone_number)).chauffeur_id));
     }
   }
 }

@@ -14,7 +14,9 @@ export default class Chauffeur extends Model {
       courses: this.hasMany(Course, "chauffeur_id"),
       deleted: this.string(""),
       order: this.number(0),
-      phones: this.hasMany(Phone, "chauffeur_id")
+      phones: this.hasMany(Phone, "chauffeur_id"),
+      newPhone: this.string(""),
+      validNewPhone: this.boolean(false)
     };
   }
 
@@ -26,11 +28,15 @@ export default class Chauffeur extends Model {
         order: 0
       })
       .then(result => {
-        db.collection("phones").add({
+        Phone.create({
           value: data.phone,
           chauffeur_id: result.id
         });
       });
+  }
+
+  addPhone(phone) {
+    Phone.create({ value: phone, chauffeur_id: this.id });
   }
 
   update(data) {

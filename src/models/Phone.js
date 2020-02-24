@@ -15,10 +15,12 @@ export default class Phone extends Model {
   }
 
   static create(data = null) {
-    db.collection("phones").add({
-      value: data.value,
-      deleted: ""
-    });
+    db.collection("phones")
+      .doc(data.value)
+      .set({
+        chauffeur_id: data.chauffeur_id,
+        value: data.value
+      });
   }
 
   update(data) {
@@ -31,5 +33,6 @@ export default class Phone extends Model {
     db.collection("phones")
       .doc(this.id)
       .delete();
+    Phone.delete(this.id);
   }
 }

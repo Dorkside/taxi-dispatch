@@ -138,13 +138,15 @@
                 :value="item.name"
                 class="mr-2 flex-grow-1"
                 placeholder="Nom"
+                dense
                 @change="changeName($event, item)"
               ></v-text-field>
             </div>
             <v-form
-              v-for="phone of item.phones"
-              :key="phone.id"
+              v-for="(phone, index) of item.phones"
+              :key="index"
               v-model="validPhones[phone.id]"
+              class="d-flex"
             >
               <v-text-field
                 prepend-inner-icon="mdi-phone"
@@ -152,9 +154,36 @@
                 single-line
                 :value="phone.value"
                 placeholder="Téléphone"
+                dense
                 :rules="phoneRules"
                 @change="changeValue($event, phone)"
               ></v-text-field>
+              <v-btn icon text @click="deletePhone(phone)">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-form>
+            <v-form
+              v-if="newPhones[item.id]"
+              v-model="newPhones[item.id].valid"
+              class="d-flex align-center"
+            >
+              <v-text-field
+                v-model="newPhones[item.id].value"
+                prepend-inner-icon="mdi-phone"
+                label="Regular"
+                single-line
+                placeholder="Ajouter téléphone"
+                dense
+                :rules="newPhoneRules"
+              ></v-text-field>
+              <v-btn
+                :disabled="!newPhones[item.id].valid"
+                text
+                icon
+                @click="addPhone(newPhones[item.id].value, item)"
+              >
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
             </v-form>
           </div>
           <v-card-actions>
@@ -176,6 +205,7 @@
 <script>
 import draggable from "vuedraggable";
 import Chauffeur from "@/models/Chauffeur";
+import Phone from "@/models/Phone";
 export default {
   name: "Chauffeurs",
   components: {
@@ -192,13 +222,8 @@ export default {
       deleteData: undefined,
       dialogDelete: false,
       valid: false,
-      phoneRules: [
-        v => !!v || "Numéro obligatoire",
-        v =>
-          /^(\+33)[1-9][0-9]{8}$/g.test(v) ||
-          "Numéro invalide (doit commencer par +33)"
-      ],
-      validPhones: []
+      validPhones: {},
+      newPhones: []
     };
   },
   computed: {
@@ -218,6 +243,28 @@ export default {
         });
       }
     },
+    phoneRules() {
+      return [
+        v => !!v || "Numéro obligatoire",
+        v =>
+          !v ||
+          /^(\+33)[1-9][0-9]{8}$/g.test(v) ||
+          "Numéro invalide (doit commencer par +33)"
+      ];
+    },
+    newPhoneRules() {
+      return [
+        v =>
+          !v ||
+          /^(\+33)[1-9][0-9]{8}$/g.test(v) ||
+          "Numéro invalide (doit commencer par +33)",
+        v =>
+          !this.phones.map(p => p.value).includes(v) || "Numéro déjà attribué"
+      ];
+    },
+    phones() {
+      return Phone.query().get();
+    },
     search() {
       return this.searchTerms.toLowerCase().split(" ");
     },
@@ -230,6 +277,20 @@ export default {
         });
       }
       return this.chauffeurs;
+    }
+  },
+  watch: {
+    chauffeurs: {
+      handler() {
+        this.newPhones = this.chauffeurs.reduce((result, chauffeur) => {
+          result[chauffeur.id] = {
+            value: "",
+            valid: false
+          };
+          return result;
+        }, {});
+      },
+      immediate: true
     }
   },
   methods: {
@@ -257,6 +318,12 @@ export default {
       if (this.validPhones[phone.id]) {
         phone.update({ value: $event });
       }
+    },
+    addPhone(phone, chauffeur) {
+      chauffeur.addPhone(phone);
+    },
+    deletePhone(phone) {
+      phone.delete();
     }
   }
 };
