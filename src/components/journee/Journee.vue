@@ -1,11 +1,11 @@
 <template>
   <div class="pa-0 ma-0 d-flex align-stretch flex-column day-container">
     <v-subheader
-      v-if="admin"
       class="d-flex flex-grow-0 flex-shrink-0 elevation-2"
       style="z-index: 10;"
     >
       <v-switch
+        v-if="admin"
         v-model="showAll"
         class="flex-shrink-0"
         label="Afficher toutes les courses"
@@ -31,7 +31,7 @@
         </template>
       </v-progress-linear>
       <v-spacer></v-spacer>
-      <v-btn small text @click="addCourse()">
+      <v-btn v-if="admin" small text @click="addCourse()">
         <v-icon>mdi-plus-circle</v-icon> Ajouter course
       </v-btn>
     </v-subheader>
@@ -66,10 +66,10 @@
         </template>
 
         <v-divider
-          v-if="coursesTodayUnplanifiedFiltered.length > 0"
+          v-if="coursesTodayUnplanifiedFiltered.length > 0 && admin"
         ></v-divider>
 
-        <v-subheader>
+        <v-subheader v-if="admin">
           Courses de la journée
           {{ coursesTodayPlanifiedDone.length }}
           / {{ coursesTodayPlanified.length }}

@@ -2,7 +2,7 @@
   <v-app class="overflow-hidden">
     <vue100vh :css="{ height: '100rvh' }">
       <v-app-bar color="blue accent-4 justify-space-between">
-        <v-toolbar-title class="white--text">
+        <v-toolbar-title class="white--text d-none d-md-block">
           <v-chip class="yellow darken-2">SARL OKA</v-chip> |
           <v-chip class="yellow darken-2">Taxi Cicciu</v-chip> |
           <v-chip class="yellow darken-2">SAS TAP</v-chip>
@@ -34,7 +34,7 @@
           </v-btn>
         </div>
         <v-spacer></v-spacer>
-        <v-btn text small dark right @click="logOut">
+        <v-btn text small dark right class="d-none d-md-block" @click="logOut">
           <v-icon left>mdi-close</v-icon>
           Déconnexion
         </v-btn>
@@ -45,7 +45,7 @@
           height: 'calc(100% - 64px)'
         }"
       >
-        <div class="elevation-8 pa-0 z-index-10 align-center">
+        <div class="elevation-8 pa-0 z-index-10 align-center d-none d-md-block">
           <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
             <v-tab to="/journee">
               <v-icon left>mdi-view-sequential</v-icon>
@@ -208,7 +208,6 @@ export default {
             .get()
             .then(doc => {
               const { chauffeur_id } = doc.data();
-              console.log(chauffeur_id);
 
               db.collection("chauffeurs")
                 .doc(chauffeur_id)

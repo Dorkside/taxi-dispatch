@@ -12,14 +12,14 @@ import wb from "./registerServiceWorker";
 
 dayjs.locale("fr");
 
+Vue.use(VueVirtualScroller);
+Vue.use(VueRouter);
+
 Vue.prototype.$workbox = wb;
 
 Vue.prototype.$workbox.addEventListener("waiting", () => {
   Vue.prototype.$workbox.messageSW({ type: "SKIP_WAITING" });
 });
-
-Vue.use(VueVirtualScroller);
-Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: "history",

@@ -31,7 +31,10 @@ firebase.firestore().settings({
   cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
 });
 
-firebase.firestore().enablePersistence();
+firebase
+  .firestore()
+  .enablePersistence()
+  .catch();
 
 export const db = firebase.firestore();
 export const functions = firebase.functions();
