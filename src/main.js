@@ -22,7 +22,6 @@ Vue.prototype.$workbox.addEventListener("waiting", () => {
 });
 
 const router = new VueRouter({
-  mode: "history",
   routes
 });
 

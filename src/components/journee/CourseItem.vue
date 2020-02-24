@@ -190,6 +190,7 @@
     >
       <v-spacer></v-spacer>
       <v-btn
+        v-if="admin"
         text
         :color="!course.doneDate ? 'green' : 'grey'"
         :disabled="!course.chauffeur || !course.time"
