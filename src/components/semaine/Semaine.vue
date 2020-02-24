@@ -55,7 +55,7 @@
         <v-select
           :items="types"
           :value="item.type"
-          :hide-details="true"
+          hide-details
           class="mx-2 type flex-shrink-1"
           style="width: 120px; max-width: 200px;"
           label="Type"
@@ -68,7 +68,7 @@
         <v-text-field
           label="Nom"
           dense
-          :hide-details="true"
+          hide-details
           :value="item.surname"
           class="mx-2 flex-grow-1"
           @change="changeSurname($event, item)"
@@ -77,7 +77,7 @@
         <v-text-field
           label="Prénom"
           dense
-          :hide-details="true"
+          hide-details
           :value="item.name"
           class="mx-2 flex-grow-1"
           @change="changeName($event, item)"
@@ -86,7 +86,7 @@
         <v-select
           :items="societes"
           label="Société"
-          :hide-details="true"
+          hide-details
           height="24"
           outlined
           :value="item.societe"

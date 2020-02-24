@@ -118,21 +118,25 @@
           style="width: 300px; "
           class="pa-0 ma-2 chauffeur align-start justify-start"
         >
-          <div>
-            <v-avatar
-              :style="{ backgroundColor: 'grey' }"
-              size="36"
-              class="ma-2 white--text"
-            >
-              {{ item.initiales }}
-            </v-avatar>
-            <v-icon class="handle-chauffeur">
-              {{ "mdi-arrow-all" }}
-            </v-icon>
-          </div>
-          <div class="d-flex flex-column pa-2">
+          <div
+            class="d-flex flex-column pa-2"
+            :style="{ backgroundColor: '#333333' }"
+          >
+            <div class="d-flex">
+              <v-avatar
+                :style="{ backgroundColor: 'grey' }"
+                size="36"
+                class="ma-2 white--text"
+              >
+                {{ item.initiales }}
+              </v-avatar>
+              <v-icon dark class="handle-chauffeur">
+                {{ "mdi-arrow-all" }}
+              </v-icon>
+            </div>
             <div class="d-flex justify-center align-center">
               <v-text-field
+                dark
                 label="Regular"
                 single-line
                 :value="item.name"
@@ -142,6 +146,8 @@
                 @change="changeName($event, item)"
               ></v-text-field>
             </div>
+          </div>
+          <div class="pa-2">
             <v-form
               v-for="(phone, index) of item.phones"
               :key="index"
@@ -155,6 +161,8 @@
                 :value="phone.value"
                 placeholder="Téléphone"
                 dense
+                outlined
+                hide-details
                 :rules="phoneRules"
                 @change="changeValue($event, phone)"
               ></v-text-field>
@@ -171,6 +179,7 @@
                 v-model="newPhones[item.id].value"
                 prepend-inner-icon="mdi-phone"
                 label="Regular"
+                hide-details
                 single-line
                 placeholder="Ajouter téléphone"
                 dense

@@ -52,7 +52,7 @@
             label="Type"
             dense
             outlined
-            :hide-details="true"
+            hide-details
             @change="changeType($event, course)"
           ></v-select>
           <span
@@ -74,7 +74,7 @@
             label="Nom du patient"
             class="combo-width mx-2 flex-shrink-0 flex-grow-0"
             autocomplete="no-fill"
-            :hide-details="true"
+            hide-details
             outlined
             @change="changePatient($event, course)"
           >
@@ -163,7 +163,7 @@
         item-text="name"
         label="Chauffeur"
         class="combo-width flex-shrink-0 flex-grow-0 mx-2"
-        :hide-details="true"
+        hide-details
         autocomplete="off"
         outlined
         clearable
@@ -174,7 +174,7 @@
         v-if="!hideChauffeur && admin"
         :items="societes"
         label="Société"
-        :hide-details="true"
+        hide-details
         height="24"
         outlined
         :value="course.societe"
