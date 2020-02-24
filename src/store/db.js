@@ -27,6 +27,8 @@ firebase.initializeApp(
   process.env.NODE_ENV === "development" ? firebaseConfigDev : firebaseConfig
 );
 
+firebase.analytics();
+
 firebase.firestore().settings({
   cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
 });
