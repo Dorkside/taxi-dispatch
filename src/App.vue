@@ -126,13 +126,9 @@ export default {
         this.$store.commit("setAdmin", false);
       } else {
         if (
-          [
-            "+33123456789",
-            "+33762686070",
-            "+33761610703",
-            "+33760910409",
-            "+33668666606"
-          ].includes(user.phoneNumber)
+          ["+33762686070", "+33761610703", "+33668666606"].includes(
+            user.phoneNumber
+          )
         ) {
           this.$store.commit("setAdmin", true);
 
@@ -207,40 +203,48 @@ export default {
             });
           });
         } else {
-          db.collection("chauffeurs")
+          db.collection("phones")
             .doc(user.phoneNumber)
-            .onSnapshot(function(doc) {
-              Chauffeur.insert({
-                data: {
-                  ...doc.data(),
-                  id: doc.id
-                }
-              });
-            });
+            .get()
+            .then(doc => {
+              const { chauffeur_id } = doc.data();
+              console.log(chauffeur_id);
 
-          db.collection("courses")
-            .where("deleted", "==", "")
-            .where("chauffeur_id", "==", user.phoneNumber)
-            .onSnapshot(function(querySnapshot) {
-              querySnapshot.docChanges().forEach(function(change) {
-                if (change.type === "added") {
-                  Course.insert({
+              db.collection("chauffeurs")
+                .doc(chauffeur_id)
+                .onSnapshot(function(doc) {
+                  Chauffeur.insert({
                     data: {
-                      ...change.doc.data(),
-                      id: change.doc.id
+                      ...doc.data(),
+                      id: doc.id
                     }
                   });
-                }
-                if (change.type === "modified") {
-                  Course.update({
-                    where: change.doc.id,
-                    data: change.doc.data()
+                });
+
+              db.collection("courses")
+                .where("deleted", "==", "")
+                .where("chauffeur_id", "==", chauffeur_id)
+                .onSnapshot(function(querySnapshot) {
+                  querySnapshot.docChanges().forEach(function(change) {
+                    if (change.type === "added") {
+                      Course.insert({
+                        data: {
+                          ...change.doc.data(),
+                          id: change.doc.id
+                        }
+                      });
+                    }
+                    if (change.type === "modified") {
+                      Course.update({
+                        where: change.doc.id,
+                        data: change.doc.data()
+                      });
+                    }
+                    if (change.type === "removed") {
+                      Course.delete(change.doc.id);
+                    }
                   });
-                }
-                if (change.type === "removed") {
-                  Course.delete(change.doc.id);
-                }
-              });
+                });
             });
         }
 
