@@ -49,7 +49,7 @@ export default class Course extends Model {
             ...JSON.parse(
               JSON.stringify({
                 ...this.$toJson(),
-                patient_id: this.$toJson().patient.id,
+                patient_id: this.$toJson().patient && this.$toJson().patient.id,
                 patient: undefined
               })
             ),

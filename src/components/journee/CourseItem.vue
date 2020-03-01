@@ -8,6 +8,15 @@
       `border-left: solid 82px ${course.color} !important; max-width: 600px;`
     "
   >
+    <v-chip
+      v-if="course.patient && !preventUpdate"
+      class="elevation-2"
+      :color="course.patient.societe ? 'yellow' : 'red'"
+      style="position:absolute; right: -16px; top: -16px;"
+      small
+    >
+      {{ (course.patient && course.patient.societe) || "Aucune société" }}
+    </v-chip>
     <v-card-text fill-height class="pa-1 pl-4">
       <div class="d-flex justify-space-between align-center nowrap py-0">
         <div class="mr-2 d-flex flex-shrink-0 flex-grow-0" text-center>
@@ -88,7 +97,7 @@
             max-width="290"
           >
             <template v-slot:activator="{ on }">
-              <v-btn text icon color="red" v-on="on">
+              <v-btn v-if="!preventUpdate" text icon color="red" v-on="on">
                 <v-icon>mdi-delete-forever</v-icon>
               </v-btn>
             </template>
@@ -119,22 +128,13 @@
             </v-card>
           </v-dialog>
 
-          <v-btn
-            v-else
-            text
-            color="black"
-            v-on="on"
-            @click="undeleteCourse(course)"
-          >
+          <v-btn v-else text color="black" @click="undeleteCourse(course)">
             <v-icon>mdi-restore</v-icon> Restaurer
           </v-btn>
         </template>
       </div>
     </v-card-text>
-    <v-card-actions
-      v-if="course.time"
-      class="d-flex justify-space-between align-center"
-    >
+    <v-card-actions class="d-flex justify-space-between align-center">
       <v-icon v-if="course.direction">
         {{
           course.direction === "Aller"
@@ -155,7 +155,7 @@
       </span>
       <v-spacer></v-spacer>
       <v-combobox
-        v-if="!hideChauffeur && admin"
+        v-if="course.time && !hideChauffeur && admin"
         dense
         :value="course.chauffeur"
         height="24"
@@ -170,22 +170,12 @@
         @click:clear="changeChauffeur(null, course)"
         @change="changeChauffeur($event, course)"
       ></v-combobox>
-      <v-select
-        v-if="!hideChauffeur && admin"
-        :items="societes"
-        label="Société"
-        hide-details
-        height="24"
-        outlined
-        :value="course.societe"
-        class="combo-width flex-shrink-0 flex-grow-0 mx-2"
-        dense
-        @change="changeSociete($event, course)"
-      ></v-select>
+
+      <slot name="actions"></slot>
     </v-card-actions>
 
     <v-card-actions
-      v-if="course.time && course.chauffeur && course.societe"
+      v-if="course.time && course.chauffeur"
       class="d-flex justify-space-between align-center"
     >
       <v-spacer></v-spacer>
@@ -211,8 +201,8 @@ export default {
   name: "CourseItem",
   props: {
     course: { type: Object, default: undefined },
-    index: { type: Number, default: undefined },
-    hideChauffeur: { type: Boolean, default: false }
+    hideChauffeur: { type: Boolean, default: false },
+    preventUpdate: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -237,9 +227,13 @@ export default {
       this.dialog = false;
     },
     changeTime() {
-      this.course.update({
-        time: this.newTime
-      });
+      if (!this.preventUpdate) {
+        this.course.update({
+          time: this.newTime
+        });
+      } else {
+        this.course.time = this.newTime;
+      }
       this.dialog = false;
     },
     async changePatient($event, course) {
@@ -250,9 +244,13 @@ export default {
             name: patient
           });
         }
-        course.update({
-          patient_id: patient.id
-        });
+        if (!this.preventUpdate) {
+          course.update({
+            patient_id: patient.id
+          });
+        } else {
+          course.patient = patient;
+        }
       }
     },
     changeChauffeur($event, course) {
@@ -264,9 +262,13 @@ export default {
       }
     },
     changeType($event, course) {
-      course.update({
-        type: $event
-      });
+      if (!this.preventUpdate) {
+        course.update({
+          type: $event
+        });
+      } else {
+        course.type = $event;
+      }
     },
     doCourse(course) {
       if (!course.doneDate) {

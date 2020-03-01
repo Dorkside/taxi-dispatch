@@ -31,9 +31,30 @@
         </template>
       </v-progress-linear>
       <v-spacer></v-spacer>
-      <v-btn v-if="admin" small text @click="addCourse()">
-        <v-icon>mdi-plus-circle</v-icon> Ajouter course
-      </v-btn>
+
+      <v-dialog v-if="admin" v-model="dialog" width="600">
+        <template v-slot:activator="{ on }">
+          <v-btn small text v-on="on">
+            <v-icon>mdi-plus-circle</v-icon> Ajouter course
+          </v-btn>
+        </template>
+
+        <course-item
+          :course="newCourse"
+          :hide-chauffeur="true"
+          :prevent-update="true"
+        >
+          <template slot="actions">
+            <v-btn text @click="resetNewCourse()">Annuler</v-btn>
+            <v-btn
+              text
+              :disabled="!newCourse.time || !newCourse.patient"
+              @click="addCourse(newCourse)"
+              >Valider</v-btn
+            >
+          </template>
+        </course-item>
+      </v-dialog>
     </v-subheader>
     <div
       ref="coursesList"
@@ -121,7 +142,13 @@ export default {
         "Vendredi",
         "Samedi"
       ],
-      showAll: false
+      showAll: false,
+      dialog: false,
+      newCourse: new Course({
+        date: this.date,
+        deleted: "",
+        ref: `${this.date}.${uuid.v4()}`
+      })
     };
   },
   created() {
@@ -243,12 +270,17 @@ export default {
     }
   },
   methods: {
-    addCourse() {
-      Course.create({
+    addCourse(course) {
+      Course.create(JSON.parse(JSON.stringify(course.$toJson())));
+      this.resetNewCourse();
+    },
+    resetNewCourse() {
+      this.newCourse = new Course({
         date: this.date,
         deleted: "",
         ref: `${this.date}.${uuid.v4()}`
       });
+      this.dialog = false;
     },
     async scrollToNow() {
       let coursesAfter = this.coursesTodayPlanified.filter(course => {

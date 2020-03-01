@@ -48,7 +48,7 @@
                   <td>{{ prettyDate(course.date) }}</td>
                   <td>{{ course.time }}</td>
                   <td>{{ course.chauffeur.name }}</td>
-                  <td>{{ course.societe }}</td>
+                  <td>{{ course.patient.societe }}</td>
                 </tr>
               </tbody>
             </template>
@@ -165,6 +165,9 @@ export default {
         }, [])
         .sort((a, b) => (a.name > b.name ? 1 : -1));
     },
+    patientsSansSociete() {
+      return this.patients.filter(p => !p.societe);
+    },
     coursesByPatient() {
       return this.monthlyCourses.reduce((patients, course) => {
         if (!patients[course.patient.id]) patients[course.patient.id] = [];
@@ -221,7 +224,9 @@ export default {
 
       Object.entries(this.coursesByPatient).forEach(
         ([patientId, courses], index) => {
-          const societeCourses = courses.filter(c => c.societe === societeName);
+          const societeCourses = courses.filter(
+            c => c.patient.societe === societeName
+          );
           if (societeCourses.length) {
             const patient = this.patients.find(
               patient => patient.id === patientId
@@ -326,7 +331,6 @@ export default {
               null,
               "right"
             );
-
 
             doc.setFontType("normal");
 
