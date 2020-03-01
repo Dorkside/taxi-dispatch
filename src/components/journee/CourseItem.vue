@@ -1,7 +1,6 @@
 <template>
   <v-card
     :class="{
-      deleted: course.deleted !== '',
       'elevation-0': course.deleted !== ''
     }"
     :style="
@@ -97,7 +96,13 @@
             max-width="290"
           >
             <template v-slot:activator="{ on }">
-              <v-btn v-if="!preventUpdate" text icon color="red" v-on="on">
+              <v-btn
+                v-if="!preventUpdate && !course.doneDate"
+                text
+                icon
+                color="red"
+                v-on="on"
+              >
                 <v-icon>mdi-delete-forever</v-icon>
               </v-btn>
             </template>
@@ -155,7 +160,13 @@
       </span>
       <v-spacer></v-spacer>
       <v-combobox
-        v-if="course.time && !hideChauffeur && admin"
+        v-if="
+          course.time &&
+            !hideChauffeur &&
+            admin &&
+            !course.doneDate &&
+            !course.deleted
+        "
         dense
         :value="course.chauffeur"
         height="24"
@@ -291,9 +302,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.deleted {
-  opacity: 0.3;
-}
 .full-width {
   width: 100%;
 }

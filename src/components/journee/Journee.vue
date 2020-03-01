@@ -108,7 +108,9 @@
             <course-item
               :key="`${course.ref}-${course.id}`"
               class="my-1"
-              :style="{ opacity: course.doneDate ? '0.5' : '1' }"
+              :style="{
+                opacity: course.deleted ? '0.3' : '1'
+              }"
               :course="course"
               :index="index"
             ></course-item>
@@ -304,9 +306,6 @@ export default {
 }
 .unplanned {
   width: 400px;
-}
-.ghost {
-  opacity: 0.5;
 }
 .show-overflow {
   overflow: visible;

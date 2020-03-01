@@ -76,6 +76,18 @@
                 <v-icon>mdi-printer</v-icon> Cicciu
               </v-btn>
             </div>
+            <div class="pa-2">
+              <v-label>
+                {{ patientsSansSociete.length }} patients sans société
+                <v-chip
+                  v-for="patient in patientsSansSociete"
+                  :key="patient.id"
+                  x-small
+                >
+                  {{ patient.surname }} {{ patient.name }}
+                </v-chip>
+              </v-label>
+            </div>
             <v-list>
               <v-list-item
                 v-for="patient in filteredPatients"
@@ -169,11 +181,13 @@ export default {
       return this.patients.filter(p => !p.societe);
     },
     coursesByPatient() {
-      return this.monthlyCourses.reduce((patients, course) => {
-        if (!patients[course.patient.id]) patients[course.patient.id] = [];
-        patients[course.patient.id].push(course);
-        return patients;
-      }, {});
+      return this.monthlyCourses
+        .filter(course => !!course.patient)
+        .reduce((patients, course) => {
+          if (!patients[course.patient.id]) patients[course.patient.id] = [];
+          patients[course.patient.id].push(course);
+          return patients;
+        }, {});
     },
     search() {
       return this.searchTerms.toLowerCase().split(" ");
