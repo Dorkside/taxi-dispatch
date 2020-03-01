@@ -109,6 +109,7 @@
 <script>
 import Course from "@/models/Course";
 import * as dayjs from "dayjs";
+import uuid from "uuid";
 import jsPDF from "jspdf";
 export default {
   name: "Facturation",
@@ -226,68 +227,56 @@ export default {
               patient => patient.id === patientId
             );
 
-            doc.setFontSize(20);
+            doc.setFontSize(14);
+            doc.text(societe.name, 20, 20, null, null, "left");
+
+            doc.setFontSize(12);
+            doc.text(societe.telephone, 20, 25, null, null, "left");
+
+            doc.setFontSize(14);
             doc.text(
-              societe.name,
-              doc.internal.pageSize.width / 2,
+              "Relevé de transport",
+              doc.internal.pageSize.width - 20,
               20,
               null,
               null,
-              "center"
+              "right"
             );
 
-            doc.setFontSize(18);
-            doc.text(
-              societe.telephone,
-              doc.internal.pageSize.width / 2,
-              27,
-              null,
-              null,
-              "center"
-            );
-
-            doc.setFontSize(16);
-            doc.text(
-              "Relevé de transport",
-              doc.internal.pageSize.width / 2,
-              35,
-              null,
-              null,
-              "center"
-            );
-
-            doc.setFontSize(16);
+            doc.setFontSize(12);
             doc.text(
               dayjs(this.currentMonth)
                 .format("MMMM YYYY")
                 .toUpperCase(),
-              doc.internal.pageSize.width / 2,
-              42,
+              doc.internal.pageSize.width - 20,
+              25,
               null,
               null,
-              "center"
+              "right"
             );
 
-            doc.setFontSize(18);
+            doc.setFontSize(14);
             doc.text(
               `${patient.surname.toUpperCase()} ${patient.name}`,
-              doc.internal.pageSize.width / 2,
+              doc.internal.pageSize.width - 20,
               50,
               null,
               null,
-              "center"
+              "right"
             );
 
-            const jours = societeCourses.reduce((_jours, course) => {
-              let date = this.prettyDate(course.date);
-              let c = course.ref.includes("Retour") ? "R" : "A";
-              if (!_jours[date]) {
-                _jours[date] = [c];
-              } else {
-                _jours[date].push(c);
-              }
-              return _jours;
-            }, {});
+            const jours = societeCourses
+              .sort((a, b) => (a.date < b.date ? -1 : 1))
+              .reduce((_jours, course) => {
+                let date = this.prettyDate(course.date);
+                let c = course.ref.includes("Retour") ? "R" : "A";
+                if (!_jours[date]) {
+                  _jours[date] = [c];
+                } else {
+                  _jours[date].push(c);
+                }
+                return _jours;
+              }, {});
 
             doc.setFontSize(12);
 
@@ -312,7 +301,7 @@ export default {
             doc.setFontSize(14);
             doc.text(
               `Soit ${allers} Aller${allers > 1 ? "s" : ""}`,
-              (doc.internal.pageSize.width * 3) / 4,
+              doc.internal.pageSize.width - 30,
               230,
               null,
               null,
@@ -320,7 +309,7 @@ export default {
             );
             doc.text(
               `et ${retours} Retour${retours > 1 ? "s" : ""}`,
-              (doc.internal.pageSize.width * 3) / 4,
+              doc.internal.pageSize.width - 30,
               237,
               null,
               null,
@@ -331,12 +320,15 @@ export default {
             doc.setFontType("italic");
             doc.text(
               `Le ${new dayjs().format("DD MMMM YYYY")}`,
-              (doc.internal.pageSize.width * 3) / 4,
+              doc.internal.pageSize.width - 30,
               250,
               null,
               null,
-              "center"
+              "right"
             );
+
+
+            doc.setFontType("normal");
 
             if (index < Object.keys(this.coursesByPatient).length - 1) {
               doc.addPage();
