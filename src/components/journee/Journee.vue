@@ -165,33 +165,39 @@ export default {
       if (this.admin) {
         return this.patients
           .filter(patient => {
-            return patient[this.currentDay];
+            return (
+              patient[this.currentDay] || patient[`${this.currentDay}Retour`]
+            );
           })
           .reduce((result, patient) => {
-            result.push(
-              new Course({
-                ref: `${this.date}.${patient.id}.Aller`,
-                date: this.date,
-                time: patient[this.currentDay],
-                patient: Patient.find(patient.id),
-                generated: true,
-                societe: patient.societe,
-                deleted: "",
-                type: patient.type
-              })
-            );
-            result.push(
-              new Course({
-                ref: `${this.date}.${patient.id}.Retour`,
-                date: this.date,
-                time: patient[this.currentDay + "Retour"],
-                patient: Patient.find(patient.id),
-                generated: true,
-                societe: patient.societe,
-                deleted: "",
-                type: patient.type
-              })
-            );
+            if (patient[this.currentDay]) {
+              result.push(
+                new Course({
+                  ref: `${this.date}.${patient.id}.Aller`,
+                  date: this.date,
+                  time: patient[this.currentDay],
+                  patient: Patient.find(patient.id),
+                  generated: true,
+                  societe: patient.societe,
+                  deleted: "",
+                  type: patient.type
+                })
+              );
+            }
+            if (patient[`${this.currentDay}Retour`]) {
+              result.push(
+                new Course({
+                  ref: `${this.date}.${patient.id}.Retour`,
+                  date: this.date,
+                  time: patient[this.currentDay + "Retour"],
+                  patient: Patient.find(patient.id),
+                  generated: true,
+                  societe: patient.societe,
+                  deleted: "",
+                  type: patient.type
+                })
+              );
+            }
             return result;
           }, [])
           .filter(
