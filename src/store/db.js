@@ -22,19 +22,21 @@ export const firebaseConfig = {
   appId: "1:380468446614:web:9eb1e4a626ea5600"
 };
 
-// Initialize Cloud Firestore through Firebase
 firebase.initializeApp(
   process.env.NODE_ENV === "development" ? firebaseConfigDev : firebaseConfig
 );
-
 firebase.firestore().settings({
   cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
 });
 
+export let db;
+export let functions;
+
 firebase
   .firestore()
   .enablePersistence()
+  .then(() => {
+    db = firebase.firestore();
+    functions = firebase.functions();
+  })
   .catch();
-
-export const db = firebase.firestore();
-export const functions = firebase.functions();
