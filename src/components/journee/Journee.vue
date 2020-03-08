@@ -153,12 +153,6 @@ export default {
       })
     };
   },
-  created() {
-    // this.initTodayCourses();
-  },
-  mounted() {
-    this.scrollToNow();
-  },
   computed: {
     ...mapState(["currentDate", "admin"]),
     recurringCourses() {
@@ -279,7 +273,8 @@ export default {
   },
   methods: {
     addCourse(course) {
-      Course.create(JSON.parse(JSON.stringify(course.$toJson())));
+      const _c = JSON.parse(JSON.stringify(course.$toJson()));
+      Course.create({ ..._c, date: this.date });
       this.resetNewCourse();
     },
     resetNewCourse() {
@@ -289,18 +284,6 @@ export default {
         ref: `${this.date}.${uuid.v4()}`
       });
       this.dialog = false;
-    },
-    async scrollToNow() {
-      let coursesAfter = this.coursesTodayPlanified.filter(course => {
-        return dayjs(`${course.date} ${course.time}`).isAfter();
-      });
-      if (coursesAfter.length > 0) {
-        await this.$nextTick();
-        let ref = `${coursesAfter[0].ref}-${coursesAfter[0].id}`;
-        if (this.$refs[ref]) {
-          this.$refs[ref][0].scrollIntoView(true);
-        }
-      }
     }
   }
 };

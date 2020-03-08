@@ -183,6 +183,21 @@ export default {
     coursesByPatient() {
       return this.monthlyCourses
         .filter(course => !!course.patient)
+        .sort((a, b) => {
+          if (a.patient.surname > b.patient.surname) {
+            return 1;
+          }
+          if (a.patient.surname < b.patient.surname) {
+            return -1;
+          }
+          if (a.patient.name > b.patient.name) {
+            return 1;
+          }
+          if (a.patient.name < b.patient.name) {
+            return -1;
+          }
+          return 0;
+        })
         .reduce((patients, course) => {
           if (!patients[course.patient.id]) patients[course.patient.id] = [];
           patients[course.patient.id].push(course);
