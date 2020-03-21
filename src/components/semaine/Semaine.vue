@@ -199,6 +199,38 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="dialogDelete" persistent max-width="290">
+      <v-card v-if="deleteData">
+        Etes-vous sûrs de vouloir supprimer le patient
+        {{ deleteData.surname }} {{ deleteData.name }} ?
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              dialogDelete = false;
+              deleteData = undefined;
+            "
+          >
+            Annuler
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              deletePatient(deleteData);
+              deleteData = undefined;
+              dialogDelete = false;
+              dialogPatient = false;
+            "
+          >
+            Confirmer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
