@@ -115,7 +115,7 @@
         <v-card
           v-for="item of chauffeurs"
           :key="item.id"
-          style="width: 300px; "
+          style="width: 300px;"
           class="pa-0 ma-2 chauffeur align-start justify-start"
         >
           <div

@@ -89,7 +89,7 @@ export default class Patient extends Model {
       case "Dialyse":
         return "D";
       case "HDJ":
-        return "HDJ";
+        return "H";
       case "Kiné / Rééducation":
         return "K";
       case "Consultation":

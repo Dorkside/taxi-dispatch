@@ -4,7 +4,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
     "lint": "vue-cli-service lint",
-    "deploy": "yarn build && firebase deploy"
+    "deploy": "yarn build && firebase deploy",
+    "deploy:prod": "firebase use taxi-oka && yarn build && firebase deploy",
+    "deploy:staging": "firebase use taxi-oka-dev && yarn build && firebase deploy"
   },
   "dependencies": {
     "@vuex-orm/core": "^0.32.1",

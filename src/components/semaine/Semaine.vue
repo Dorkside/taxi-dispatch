@@ -20,104 +20,185 @@
       </v-btn>
     </div>
 
-    <div class="pa-0 d-flex justify-end days-label-container">
-      <v-spacer></v-spacer>
-      <span
-        v-for="day of days"
-        :key="day"
-        class="day-label pt-1 flex-grow-0 flex-shrink-0 text-center"
-        style="width: 80px;"
+    <section class="scroller d-flex flex-wrap">
+      <v-card
+        v-for="item in filteredPatients"
+        :key="item.id"
+        class="ma-4"
+        style="width: 250px;"
       >
-        {{ day }}
-      </span>
-    </div>
-    <RecycleScroller
-      v-slot="{ item }"
-      class="scroller pa-2 pt-10"
-      :style="{ height: '100%' }"
-      :items="filteredPatients"
-      :item-size="72"
-      key-field="id"
-    >
-      <v-divider></v-divider>
-      <div class="pa-0 patient d-flex justify-end align-center">
-        <v-btn text icon color="red" @click="deleteModal(item)">
-          <v-icon>mdi-delete-forever</v-icon>
-        </v-btn>
-        <v-avatar
-          :style="{ backgroundColor: item.color }"
-          size="36"
-          class="white--text"
-        >
-          {{ item.shortType }}
-        </v-avatar>
-
-        <v-select
-          :items="types"
-          :value="item.type"
-          hide-details
-          class="mx-2 type flex-shrink-1"
-          style="width: 120px; max-width: 200px;"
-          label="Type"
-          outlined
-          dense
-          @change="changeType($event, item)"
-        >
-        </v-select>
-
-        <v-text-field
-          label="Nom"
-          dense
-          hide-details
-          :value="item.surname"
-          class="mx-2 flex-grow-1"
-          @change="changeSurname($event, item)"
-        ></v-text-field>
-
-        <v-text-field
-          label="Prénom"
-          dense
-          hide-details
-          :value="item.name"
-          class="mx-2 flex-grow-1"
-          @change="changeName($event, item)"
-        ></v-text-field>
-
-        <v-select
-          :items="societes"
-          label="Société"
-          hide-details
-          height="24"
-          outlined
-          :value="item.societe"
-          class="flex-shrink-0 flex-grow-0 mx-2"
-          style="width: 120px;"
-          dense
-          @change="changeSociete($event, item)"
-        ></v-select>
-
         <div
-          style="width:32px;height: 100%;"
-          class="d-flex flex-column justify-space-around"
+          style="display: flex; flex-flow: row nowrap; align-items: center; min-width: 200px;"
+          class="py-6 px-4"
         >
-          <v-icon>
-            mdi-arrow-right
-          </v-icon>
-          <v-icon>
-            mdi-arrow-left
-          </v-icon>
+          <v-chip style="position: absolute; left: -16px; bottom: -12px;">
+            <v-avatar
+              size="24"
+              left
+              :style="{ backgroundColor: item.color, marginRight: '4px' }"
+              class="white--text"
+            >
+              {{ item.shortType }}
+            </v-avatar>
+            {{ item.type }}
+          </v-chip>
+
+          <v-chip
+            v-if="item"
+            class="elevation-2"
+            style="position:absolute; right: -16px; top: -12px;"
+          >
+            {{ item.societe || "Aucune société" }}
+          </v-chip>
+          <span class="flex-grow-1">{{ item.surname }} {{ item.name }}</span>
+          <v-btn
+            icon
+            @click="
+              dialogPatient = true;
+              dialogPatientData = item;
+            "
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </div>
+      </v-card>
+    </section>
+
+    <v-dialog v-model="dialogPatient" center width="600">
+      <v-card v-if="dialogPatientData" class="pa-2">
+        <v-card-title>
+          <span>
+            {{ dialogPatientData.surname }} {{ dialogPatientData.name }}
+          </span>
+          <v-spacer></v-spacer>
+          <v-btn text color="red" @click="deleteModal(dialogPatientData)">
+            <v-icon>mdi-delete-forever</v-icon> Supprimer
+          </v-btn>
+        </v-card-title>
+        <div class="pa-0 d-flex justify-center align-center">
+          <v-text-field
+            v-model="dialogPatientData.surname"
+            label="Nom"
+            hide-details
+            :value="dialogPatientData.surname"
+            class="ma-2"
+            @change="changeSurname($event, dialogPatientData)"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="dialogPatientData.name"
+            label="Prénom"
+            hide-details
+            :value="dialogPatientData.name"
+            class="ma-2"
+            @change="changeName($event, dialogPatientData)"
+          ></v-text-field>
         </div>
 
-        <patient-day-cell
-          v-for="day of days"
-          :key="day"
-          class="flex-grow-0 flex-shrink-0 text-center"
-          width="80px"
-          :patient="item"
-          :day="day"
-        />
-      </div>
-    </RecycleScroller>
+        <div class="pa-0 d-flex justify-center align-center">
+          <v-select
+            v-model="dialogPatientData.type"
+            label="Type"
+            :items="types"
+            :value="dialogPatientData.type"
+            hide-details
+            class="ma-2 type"
+            @change="changeType($event, dialogPatientData)"
+          >
+            <template v-slot:selection>
+              <div
+                style="display: flex; flex-flow: row nowrap; align-items: center;"
+              >
+                <v-avatar
+                  size="24"
+                  :style="{
+                    backgroundColor: dialogPatientData.color,
+                    marginRight: '4px'
+                  }"
+                  class="white--text"
+                >
+                  {{ dialogPatientData.shortType }}
+                </v-avatar>
+                <div>
+                  {{ dialogPatientData.type }}
+                </div>
+              </div>
+            </template>
+            <template v-slot:item="{ item: type }">
+              <div
+                style="display: flex; flex-flow: row nowrap; align-items: center;"
+              >
+                <v-avatar
+                  :style="{
+                    backgroundColor: color(type),
+                    marginRight: '4px'
+                  }"
+                  size="24"
+                  class="white--text"
+                >
+                  {{ shortType(type) }}
+                </v-avatar>
+                <div>
+                  {{ type }}
+                </div>
+              </div>
+            </template>
+          </v-select>
+        </div>
+
+        <div class="pa-0 d-flex justify-center align-center">
+          <v-select
+            v-model="dialogPatientData.societe"
+            :items="societes"
+            label="Société"
+            hide-details
+            height="24"
+            :value="dialogPatientData.societe"
+            class="ma-2"
+            @change="changeSociete($event, dialogPatientData)"
+          ></v-select>
+        </div>
+
+        <div class="pa-2 d-flex justify-end">
+          <b>Horaires</b>
+          <v-spacer></v-spacer>
+          <span
+            v-for="day of days"
+            :key="day"
+            class="day-label pt-1 flex-grow-0 flex-shrink-0 text-center"
+            style="width: 80px;"
+          >
+            {{ day }}
+          </span>
+        </div>
+
+        <div
+          class="pa-2 patient d-flex justify-end align-center"
+          style="overflow:hidden;"
+        >
+          <div
+            style="width:32px;height: 72px;"
+            class="d-flex flex-column justify-space-around"
+          >
+            <v-icon>
+              mdi-arrow-right
+            </v-icon>
+            <v-icon>
+              mdi-arrow-left
+            </v-icon>
+          </div>
+
+          <patient-day-cell
+            v-for="day of days"
+            :key="day"
+            class="flex-grow-0 flex-shrink-0 text-center"
+            width="80px"
+            :patient="dialogPatientData"
+            :day="day"
+          ></patient-day-cell>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -132,6 +213,8 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogPatient: false,
+      dialogPatientData: undefined,
       newTime: "",
       days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
       types: [
@@ -171,6 +254,12 @@ export default {
     }
   },
   methods: {
+    color(type) {
+      return new Patient({ type }).color;
+    },
+    shortType(type) {
+      return new Patient({ type }).shortType;
+    },
     cancel() {
       this.dialog = false;
     },
@@ -203,12 +292,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.days-label-container {
-  position: absolute;
-  top: 64px;
-  left: 0;
-  right: 0;
-  z-index: 10;
+.patient {
+  height: 72px;
 }
 .scroll {
   overflow-y: scroll;
@@ -222,8 +307,5 @@ export default {
 }
 .scroller {
   width: 100%;
-}
-.patient {
-  height: 72px;
 }
 </style>

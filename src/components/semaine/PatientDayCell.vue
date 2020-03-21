@@ -54,7 +54,6 @@
 </template>
 
 <script>
-import Patient from "../../models/Patient";
 export default {
   name: "PatientDayCell",
   props: {
@@ -83,6 +82,13 @@ export default {
         [this.day.toLowerCase() + (this.r ? "Retour" : "")]: this.newTime
       });
       this.dialog = false;
+    }
+  },
+  watch: {
+    newTime() {
+      this.patient[
+        this.day.toLowerCase() + (this.r ? "Retour" : "")
+      ] = this.newTime;
     }
   }
 };
