@@ -220,7 +220,14 @@ export default {
       dialog: false,
       dialogDelete: false,
       newTime: this.course ? this.course.time : "",
-      types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"],
+      types: [
+        "Dialyse",
+        "HDJ",
+        "Consultation",
+        "Kiné / Rééducation",
+        "Chimiothérapie",
+        "Sortie d'hôpital"
+      ],
       societes: ["OKA", "Cicciu", "TAP"]
     };
   },

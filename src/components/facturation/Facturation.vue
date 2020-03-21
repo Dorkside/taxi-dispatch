@@ -142,7 +142,9 @@ export default {
         .with("patient")
         .get()
         .filter(course => !!course.chauffeur)
-        .filter(course => course.type !== "Consultation");
+        .filter(
+          course => !["Consultation", "Sortie d'hôpital"].includes(course.type)
+        );
     },
     months() {
       return this.courses

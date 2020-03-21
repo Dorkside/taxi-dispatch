@@ -159,7 +159,14 @@ export default {
   name: "Patients",
   data() {
     return {
-      types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"],
+      types: [
+        "Dialyse",
+        "HDJ",
+        "Consultation",
+        "Kiné / Rééducation",
+        "Chimiothérapie",
+        "Sortie d'hôpital"
+      ],
       searchTerms: "",
       page: 1,
       newPatient: {

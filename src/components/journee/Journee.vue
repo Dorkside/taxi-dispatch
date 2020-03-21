@@ -39,21 +39,59 @@
           </v-btn>
         </template>
 
-        <course-item
-          :course="newCourse"
-          :hide-chauffeur="true"
-          :prevent-update="true"
-        >
-          <template slot="actions">
-            <v-btn text @click="resetNewCourse()">Annuler</v-btn>
+        <v-card>
+          <v-card-title>
+            Ajouter course
+            <v-spacer></v-spacer>
+            <v-btn icon @click="resetNewCourses()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            Aller
+            <course-item
+              :course="newCourseAller"
+              :hide-chauffeur="true"
+              :prevent-update="true"
+            >
+            </course-item>
+            Retour
+            <course-item
+              :course="newCourseRetour"
+              :hide-chauffeur="true"
+              :prevent-update="true"
+            >
+            </course-item>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
             <v-btn
               text
-              :disabled="!newCourse.time || !newCourse.patient"
-              @click="addCourse(newCourse)"
-              >Valider</v-btn
+              :disabled="!(newCourseAller.time && newCourseAller.patient)"
+              @click="addCourse(newCourseAller)"
             >
-          </template>
-        </course-item>
+              Créer Aller
+            </v-btn>
+            <v-btn
+              text
+              :disabled="!(newCourseRetour.time && newCourseRetour.patient)"
+              @click="addCourse(newCourseRetour)"
+            >
+              Créer Retour
+            </v-btn>
+            <v-btn
+              text
+              :disabled="
+                !(newCourseAller.time && newCourseAller.patient) ||
+                  !(newCourseRetour.time && newCourseRetour.patient)
+              "
+              @click="addCourses([newCourseAller, newCourseRetour])"
+            >
+              Créer Aller/Retour
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
     </v-subheader>
     <div
@@ -150,6 +188,16 @@ export default {
         date: this.date,
         deleted: "",
         ref: `${this.date}.${uuid.v4()}`
+      }),
+      newCourseAller: new Course({
+        date: this.date,
+        deleted: "",
+        ref: `${this.date}.${uuid.v4()}.Aller`
+      }),
+      newCourseRetour: new Course({
+        date: this.date,
+        deleted: "",
+        ref: `${this.date}.${uuid.v4()}.Retour`
       })
     };
   },
@@ -271,17 +319,59 @@ export default {
       return this.days[new Date(this.currentDate).getDay()].toLowerCase();
     }
   },
+  watch: {
+    "newCourseAller.type": {
+      handler() {
+        this.newCourseRetour.type = this.newCourseAller.type;
+      }
+    },
+    "newCourseAller.patient": {
+      handler() {
+        this.newCourseRetour.patient = this.newCourseAller.patient;
+      }
+    },
+    "newCourseRetour.type": {
+      handler() {
+        this.newCourseAller.type = this.newCourseRetour.type;
+      }
+    },
+    "newCourseRetour.patient": {
+      handler() {
+        this.newCourseAller.patient = this.newCourseRetour.patient;
+      }
+    }
+  },
   methods: {
     addCourse(course) {
       const _c = JSON.parse(JSON.stringify(course.$toJson()));
       Course.create({ ..._c, date: this.date });
       this.resetNewCourse();
     },
+    addCourses(courses) {
+      courses.forEach(course => {
+        const _c = JSON.parse(JSON.stringify(course.$toJson()));
+        Course.create({ ..._c, date: this.date });
+      });
+      this.resetNewCourses();
+    },
     resetNewCourse() {
       this.newCourse = new Course({
         date: this.date,
         deleted: "",
         ref: `${this.date}.${uuid.v4()}`
+      });
+      this.dialog = false;
+    },
+    resetNewCourses() {
+      this.newCourseAller = new Course({
+        date: this.date,
+        deleted: "",
+        ref: `${this.date}.${uuid.v4()}.Aller`
+      });
+      this.newCourseRetour = new Course({
+        date: this.date,
+        deleted: "",
+        ref: `${this.date}.${uuid.v4()}.Retour`
       });
       this.dialog = false;
     }

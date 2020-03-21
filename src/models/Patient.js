@@ -71,6 +71,10 @@ export default class Patient extends Model {
         return "grey";
       case "Consultation":
         return "ForestGreen";
+      case "Chimiothérapie":
+        return "MediumOrchid";
+      case "Sortie d'hôpital":
+        return "orange";
       default:
         return "grey";
     }
@@ -90,6 +94,10 @@ export default class Patient extends Model {
         return "K";
       case "Consultation":
         return "C";
+      case "Chimiothérapie":
+        return "CH";
+      case "Sortie d'hôpital":
+        return "S";
       default:
         return "?";
     }

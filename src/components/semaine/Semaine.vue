@@ -134,7 +134,14 @@ export default {
       dialog: false,
       newTime: "",
       days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
-      types: ["Dialyse", "HDJ", "Consultation", "Kiné / Rééducation"],
+      types: [
+        "Dialyse",
+        "HDJ",
+        "Consultation",
+        "Kiné / Rééducation",
+        "Chimiothérapie",
+        "Sortie d'hôpital"
+      ],
       searchTerms: "",
       deleteData: undefined,
       dialogDelete: false,

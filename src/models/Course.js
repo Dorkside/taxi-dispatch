@@ -113,6 +113,10 @@ export default class Course extends Model {
           return "grey";
         case "Consultation":
           return "ForestGreen";
+        case "Chimiothérapie":
+          return "MediumOrchid";
+        case "Sortie d'hôpital":
+          return "orange";
         default:
           return "grey";
       }
