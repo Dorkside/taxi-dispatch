@@ -1,8 +1,5 @@
 <template>
   <v-card
-    :class="{
-      'elevation-0': course.deleted !== ''
-    }"
     :style="
       `border-left: solid 82px ${course.color} !important; max-width: 600px;`
     "
