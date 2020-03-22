@@ -10,7 +10,6 @@
         label="Recherche"
         dense
         clearable
-        @input="page = 1"
       >
       </v-text-field>
     </div>
@@ -186,7 +185,6 @@
                 :rules="newPhoneRules"
               ></v-text-field>
               <v-btn
-                :disabled="!newPhones[item.id].valid"
                 text
                 icon
                 @click="addPhone(newPhones[item.id].value, item)"

@@ -33,14 +33,18 @@ export default class Patient extends Model {
     db.collection("patients").doc();
   }
 
-  static create(patientData) {
-    db.collection("patients").add({
-      ...patientData,
-      name: patientData
-        ? patientData.name || "Nouveau patient"
-        : "Nouveau patient",
-      deleted: ""
-    });
+  static async create(patientData) {
+    return new Patient(
+      await db.collection("patients").add({
+        ...patientData,
+        name: patientData
+          ? patientData.surname || patientData.name
+            ? `${patientData.surname} ${patientData.name}`
+            : "Nouveau patient"
+          : "Nouveau patient",
+        deleted: ""
+      })
+    );
   }
 
   update(data) {
@@ -101,6 +105,39 @@ export default class Patient extends Model {
       default:
         return "?";
     }
+  }
+
+  get schedules() {
+    return [
+      "lundi",
+      "lundiRetour",
+      "mardi",
+      "mardiRetour",
+      "mercredi",
+      "mercrediRetour",
+      "jeudi",
+      "jeudiRetour",
+      "vendredi",
+      "vendrediRetour",
+      "samedi",
+      "samediRetour"
+    ].reduce((schedules, day) => {
+      if (!schedules) {
+        schedules = {};
+      }
+      const _day = day.slice(0, 2).toUpperCase();
+      if (!schedules[_day]) {
+        schedules[_day] = { a: "--:--", r: "--:--" };
+      }
+      if (this[day]) {
+        if (day.includes("Retour")) {
+          schedules[_day].r = this[day];
+        } else {
+          schedules[_day].a = this[day];
+        }
+      }
+      return schedules;
+    }, undefined);
   }
 
   prettyTime(day, r = false) {

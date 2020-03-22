@@ -20,47 +20,90 @@
       </v-btn>
     </div>
 
-    <section class="scroller d-flex flex-wrap">
+    <section class="scroller d-flex flex-column justify-start align-center">
       <v-card
         v-for="item in filteredPatients"
         :key="item.id"
         class="ma-4"
-        style="width: 250px;"
+        style="width: 450px; min-height: 200px; margin-right: 100px !important;"
       >
+        <v-card-title class="flex-grow-1">
+          {{ item.surname }} {{ item.name }}
+        </v-card-title>
+
+        <v-chip
+          class="elevation-2"
+          style="position: absolute; right: -16px; top: -12px;"
+        >
+          <v-avatar
+            size="24"
+            left
+            :style="{ backgroundColor: item.color, marginRight: '4px' }"
+            class="white--text"
+          >
+            {{ item.shortType }}
+          </v-avatar>
+          {{ item.type }}
+        </v-chip>
+
+        <v-chip
+          v-if="item"
+          class="elevation-2"
+          style="position:absolute; left: -16px; bottom: -12px;"
+        >
+          {{ item.societe || "Aucune société" }}
+        </v-chip>
+
         <div
+          v-if="item.schedules"
+          class="d-flex flex-column align-start"
+          style="position:absolute; right: 12px; top:32px; transform: translateX(100%)"
+        >
+          <v-chip
+            v-for="day in Object.entries(item.schedules)"
+            :key="day[0]"
+            small
+            class="pa-1 pl-0 mb-1 elevation-2"
+            :style="{
+              opacity:
+                day[1].a === '--:--' && day[1].r === '--:--' ? '0.5' : '1'
+            }"
+          >
+            <v-avatar
+              size="24"
+              :style="{
+                backgroundColor: item.color,
+                marginRight: '4px'
+              }"
+              class="white--text"
+            >
+              {{ day[0] }}
+            </v-avatar>
+            {{ day[1].a }} / {{ day[1].r }}
+          </v-chip>
+        </div>
+
+        <v-card-text
           style="display: flex; flex-flow: row nowrap; align-items: center; min-width: 200px;"
           class="py-6 px-4"
         >
-          <v-chip style="position: absolute; left: -16px; bottom: -12px;">
-            <v-avatar
-              size="24"
-              left
-              :style="{ backgroundColor: item.color, marginRight: '4px' }"
-              class="white--text"
-            >
-              {{ item.shortType }}
-            </v-avatar>
-            {{ item.type }}
-          </v-chip>
+          <v-spacer></v-spacer>
+        </v-card-text>
 
-          <v-chip
-            v-if="item"
-            class="elevation-2"
-            style="position:absolute; right: -16px; top: -12px;"
-          >
-            {{ item.societe || "Aucune société" }}
-          </v-chip>
-          <span class="flex-grow-1">{{ item.surname }} {{ item.name }}</span>
-          <v-btn
-            icon
-            @click="
-              dialogPatient = true;
-              dialogPatientData = item;
-            "
-          >
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-        </div>
+        <v-btn text style="position:absolute; bottom: 24px; left: 8px;">
+          <v-icon>mdi-clock-outline</v-icon> Historique
+        </v-btn>
+
+        <v-btn
+          text
+          style="position:absolute; bottom: 16px; right: 16px;"
+          @click="
+            dialogPatient = true;
+            dialogPatientData = item;
+          "
+        >
+          <v-icon>mdi-pencil</v-icon> Modifier
+        </v-btn>
       </v-card>
     </section>
 
@@ -197,6 +240,10 @@
             :day="day"
           ></patient-day-cell>
         </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="dialogPatient = false">Valider</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
 
@@ -267,6 +314,7 @@ export default {
     patients() {
       return Patient.query()
         .orderBy("surname", "asc")
+        .orderBy("name", "asc")
         .get();
     },
     search() {
@@ -295,8 +343,9 @@ export default {
     cancel() {
       this.dialog = false;
     },
-    addPatient() {
-      Patient.create();
+    async addPatient() {
+      this.dialogPatientData = await Patient.create();
+      this.dialogPatient = true;
     },
     deletePatient(patient) {
       patient.delete();
@@ -327,9 +376,6 @@ export default {
 .patient {
   height: 72px;
 }
-.scroll {
-  overflow-y: scroll;
-}
 .action-bar {
   z-index: 2;
   position: sticky;
@@ -339,5 +385,6 @@ export default {
 }
 .scroller {
   width: 100%;
+  overflow-y: scroll;
 }
 </style>

@@ -69,6 +69,7 @@ export default {
   },
   methods: {
     async remove() {
+      this.newTime = "";
       await this.patient.update({
         [this.day.toLowerCase() + (this.r ? "Retour" : "")]: ""
       });
