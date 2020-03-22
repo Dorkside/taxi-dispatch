@@ -5,6 +5,7 @@
     >
       <v-text-field
         v-model="searchTerms"
+        hide-details
         prepend-inner-icon="mdi-magnify"
         class="flex-grow-1"
         label="Recherche"
@@ -12,62 +13,62 @@
         clearable
       >
       </v-text-field>
-    </div>
 
-    <v-dialog v-model="dialog" persistent max-width="600px">
-      <template v-slot:activator="{ on }">
-        <v-btn text v-on="on">
-          <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>
-          <span class="headline">Créer un nouveau chauffeur</span>
-        </v-card-title>
-        <v-card-text>
-          <v-form v-model="valid">
-            <v-text-field
-              v-model="newChauffeur.name"
-              label="Nom"
-              autocomplete="nofill"
-              prepend-inner-icon="mdi-account"
-              required
-            ></v-text-field>
-            <v-text-field
-              v-model="newChauffeur.phone"
-              label="Numéro de téléphone"
-              :rules="phoneRules"
-              prepend-inner-icon="mdi-phone"
-              autocomplete="nofill"
-              required
-            ></v-text-field>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="
-              resetData();
-              dialog = false;
-            "
-          >
-            Annuler
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <template v-slot:activator="{ on }">
+          <v-btn text v-on="on">
+            <v-icon>mdi-plus-circle</v-icon> Ajouter chauffeur
           </v-btn>
-          <v-btn
-            color="primary darken-1"
-            :disabled="!valid"
-            @click="
-              createChauffeur(newChauffeur);
-              dialog = false;
-            "
-          >
-            Enregistrer
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="headline">Créer un nouveau chauffeur</span>
+          </v-card-title>
+          <v-card-text>
+            <v-form v-model="valid">
+              <v-text-field
+                v-model="newChauffeur.name"
+                label="Nom"
+                autocomplete="nofill"
+                prepend-inner-icon="mdi-account"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="newChauffeur.phone"
+                label="Numéro de téléphone"
+                :rules="phoneRules"
+                prepend-inner-icon="mdi-phone"
+                autocomplete="nofill"
+                required
+              ></v-text-field>
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="
+                resetData();
+                dialog = false;
+              "
+            >
+              Annuler
+            </v-btn>
+            <v-btn
+              color="primary darken-1"
+              :disabled="!valid"
+              @click="
+                createChauffeur(newChauffeur);
+                dialog = false;
+              "
+            >
+              Enregistrer
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
 
     <v-dialog v-model="dialogDelete" persistent max-width="290">
       <v-card>
@@ -118,7 +119,7 @@
           class="pa-0 ma-2 chauffeur align-start justify-start"
         >
           <div
-            class="d-flex flex-column pa-2"
+            class="d-flex flex-row pa-2"
             :style="{ backgroundColor: '#333333' }"
           >
             <div class="d-flex">
@@ -153,21 +154,19 @@
               v-model="validPhones[phone.id]"
               class="d-flex"
             >
-              <v-text-field
-                prepend-inner-icon="mdi-phone"
-                label="Regular"
-                single-line
-                :value="phone.value"
-                placeholder="Téléphone"
-                dense
-                outlined
-                hide-details
-                :rules="phoneRules"
-                @change="changeValue($event, phone)"
-              ></v-text-field>
-              <v-btn icon text @click="deletePhone(phone)">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
+              <v-chip class="ma-1" close @click:close="deletePhone(phone)">
+                <v-text-field
+                  prepend-inner-icon="mdi-phone"
+                  label="Regular"
+                  single-line
+                  :value="phone.value"
+                  placeholder="Téléphone"
+                  dense
+                  hide-details
+                  :rules="phoneRules"
+                  @change="changeValue($event, phone)"
+                ></v-text-field>
+              </v-chip>
             </v-form>
             <v-form
               v-if="newPhones[item.id]"
@@ -194,6 +193,7 @@
             </v-form>
           </div>
           <v-card-actions>
+            <v-spacer></v-spacer>
             <v-btn
               text
               color="red"

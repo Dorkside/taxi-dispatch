@@ -3,15 +3,16 @@
     <div
       class="d-flex blue accent-1 action-bar py-0 px-4 elevation-2 align-center flex-grow-0 flex-shrink-0"
     >
-      <v-text-field
-        v-model="searchTerms"
-        prepend-inner-icon="mdi-magnify"
-        class="flex-grow-1 flex-shrink-0"
-        label="Recherche"
-        dense
-        clearable
-      >
-      </v-text-field>
+      <v-spacer></v-spacer>
+      <v-btn text class="float-right" @click.stop="print('TAP')">
+        <v-icon>mdi-printer</v-icon> TAP
+      </v-btn>
+      <v-btn text class="float-right" @click.stop="print('OKA')">
+        <v-icon>mdi-printer</v-icon> OKA
+      </v-btn>
+      <v-btn text class="float-right" @click.stop="print('Cicciu')">
+        <v-icon>mdi-printer</v-icon> Cicciu
+      </v-btn>
     </div>
 
     <v-dialog v-model="dialog" width="500" class="pa-0">
@@ -29,91 +30,109 @@
           </v-btn>
         </v-card-title>
 
-        <v-card-text>
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">Date</th>
-                  <th class="text-left">Heure</th>
-                  <th class="text-left">Chauffeur</th>
-                  <th class="text-left">Société</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="course in coursesByPatient[dialogData.id]"
-                  :key="course.id"
-                >
-                  <td>{{ prettyDate(course.date) }}</td>
-                  <td>{{ course.time }}</td>
-                  <td>{{ course.chauffeur.name }}</td>
-                  <td>{{ course.patient.societe }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
+        <v-card-text class="pa-0">
+          <div style="height: 50vh; max-height: 50vh; overflow-y: auto;">
+            <v-simple-table>
+              <template v-slot:default>
+                <thead style="position: sticky; top: 0;">
+                  <tr>
+                    <th class="text-left">Date</th>
+                    <th class="text-left">Heure</th>
+                    <th class="text-left">Chauffeur</th>
+                    <th class="text-left">Société</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="course in coursesByPatient[dialogData.id]"
+                    :key="course.id"
+                  >
+                    <td>{{ prettyDate(course.date) }}</td>
+                    <td>{{ course.time }}</td>
+                    <td>
+                      <span v-if="course.chauffeur">
+                        {{ course.chauffeur.name }}
+                      </span>
+                    </td>
+                    <td>
+                      <span v-if="course.patient">
+                        {{ course.patient.societe }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </div>
         </v-card-text>
       </v-card>
     </v-dialog>
 
-    <div class="scroller flex-grow-1 flex-shrink-1">
-      <v-expansion-panels v-if="courses.length > 0" :value="0">
-        <v-expansion-panel v-for="(month, i) in months" :key="i">
-          <v-expansion-panel-header @click="setMonth(month.date)">
-            <span>{{ month.string }}</span>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <div class="pa-2">
-              <v-label>{{ courses.length }} courses</v-label>
-              <v-btn text class="float-right" @click.stop="print('TAP')">
-                <v-icon>mdi-printer</v-icon> TAP
-              </v-btn>
-              <v-btn text class="float-right" @click.stop="print('OKA')">
-                <v-icon>mdi-printer</v-icon> OKA
-              </v-btn>
-              <v-btn text class="float-right" @click.stop="print('Cicciu')">
-                <v-icon>mdi-printer</v-icon> Cicciu
-              </v-btn>
-            </div>
-            <div class="pa-2">
-              <v-label>
-                {{ patientsSansSociete.length }} patients sans société
-                <v-chip
-                  v-for="patient in patientsSansSociete"
-                  :key="patient.id"
-                  x-small
-                >
-                  {{ patient.surname }} {{ patient.name }}
-                </v-chip>
-              </v-label>
-            </div>
-            <v-list>
-              <v-list-item
-                v-for="patient in filteredPatients"
-                :key="patient.id"
-                class="pa-0 patient d-flex align-center"
-              >
-                <span class="mx-2 flex-grow-1">
-                  {{ patient.surname }} {{ patient.name }}
-                </span>
+    <div
+      class="flex-grow-1 flex-shrink-1 d-flex flex-nowrap flex-row justify-stretch"
+      style="overflow: hidden;"
+    >
+      <div class="scroller flex-grow-1 flex-shrink-1" style="max-width: 300px;">
+        <v-timeline dense class="pr-4" style="min-height: 100%;">
+          <v-timeline-item v-for="(month, i) in months" :key="i" small fill-dot>
+            <v-chip
+              :color="currentMonth === month.date + '-01' ? 'primary' : ''"
+              @click="setMonth(month.date)"
+            >
+              {{ month.string }}
+            </v-chip>
+          </v-timeline-item>
+        </v-timeline>
+      </div>
+      <div class="scroller elevation-1 flex-grow-1 pa-4">
+        <v-chip>{{ courses.length }} courses</v-chip>
+        <div class="pa-2">
+          <v-label v-if="patientsSansSociete.length">
+            {{ patientsSansSociete.length }} patients sans société
+            <v-chip
+              v-for="patient in patientsSansSociete"
+              :key="patient.id"
+              x-small
+            >
+              {{ patient.surname }} {{ patient.name }}
+            </v-chip>
+          </v-label>
+        </div>
 
-                <v-btn
-                  dark
-                  @click="
-                    dialogData = patient;
-                    dialog = true;
-                  "
-                >
-                  {{ coursesByPatient[patient.id].length }} course{{
-                    coursesByPatient[patient.id].length > 1 ? "s" : ""
-                  }}
-                </v-btn>
-              </v-list-item>
-            </v-list>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+        <v-text-field
+          v-model="searchTerms"
+          prepend-inner-icon="mdi-magnify"
+          class="flex-grow-1 flex-shrink-0"
+          label="Recherche"
+          dense
+          clearable
+        >
+        </v-text-field>
+
+        <v-list style="background-color: transparent;">
+          <v-list-item
+            v-for="patient in filteredPatients"
+            :key="patient.id"
+            class="pa-0 patient d-flex align-center"
+          >
+            <span class="mx-2 flex-grow-1">
+              {{ patient.surname }} {{ patient.name }}
+            </span>
+
+            <v-btn
+              dark
+              @click="
+                dialogData = patient;
+                dialog = true;
+              "
+            >
+              {{ coursesByPatient[patient.id].length }} course{{
+                coursesByPatient[patient.id].length > 1 ? "s" : ""
+              }}
+            </v-btn>
+          </v-list-item>
+        </v-list>
+      </div>
     </div>
   </div>
 </template>
@@ -121,7 +140,6 @@
 <script>
 import Course from "@/models/Course";
 import * as dayjs from "dayjs";
-import uuid from "uuid";
 import jsPDF from "jspdf";
 export default {
   name: "Facturation",

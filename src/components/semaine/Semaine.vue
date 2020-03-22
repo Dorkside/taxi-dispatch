@@ -8,6 +8,7 @@
     >
       <v-text-field
         v-model="searchTerms"
+        hide-details
         prepend-inner-icon="mdi-magnify"
         class="flex-grow-1"
         label="Recherche"
@@ -90,7 +91,14 @@
           <v-spacer></v-spacer>
         </v-card-text>
 
-        <v-btn text style="position:absolute; bottom: 24px; left: 8px;">
+        <v-btn
+          text
+          style="position:absolute; bottom: 24px; left: 8px;"
+          @click="
+            dialogHistory = true;
+            dialogPatientData = item;
+          "
+        >
           <v-icon>mdi-clock-outline</v-icon> Historique
         </v-btn>
 
@@ -107,6 +115,85 @@
       </v-card>
     </section>
 
+    <v-dialog v-model="dialogHistory" width="800" class="pa-0">
+      <v-card v-if="dialogPatientData">
+        <v-card-title
+          class="headline grey lighten-2 d-flex space-between"
+          primary-title
+        >
+          <span class="flex-grow-1">
+            {{ dialogPatientData.surname }} {{ dialogPatientData.name }}
+          </span>
+
+          <v-btn text icon @click="dialogHistory = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text class="pa-0">
+          <div
+            class="flex-grow-1 flex-shrink-1 d-flex flex-nowrap flex-row justify-stretch"
+            style="overflow: hidden;"
+          >
+            <div
+              class="scroller flex-grow-1 flex-shrink-1"
+              style="max-width: 300px;"
+            >
+              <v-timeline dense class="pr-4" style="min-height: 100%;">
+                <v-timeline-item
+                  v-for="(month, i) in months"
+                  :key="i"
+                  small
+                  fill-dot
+                >
+                  <v-chip
+                    :color="
+                      currentMonth === month.date + '-01' ? 'primary' : ''
+                    "
+                    @click="setMonth(month.date)"
+                  >
+                    {{ month.string }}
+                  </v-chip>
+                </v-timeline-item>
+              </v-timeline>
+            </div>
+            <div
+              class="scroller elevation-1 flex-grow-1 pa-0"
+              style="height: 50vh; max-height: 50vh;"
+            >
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">Date</th>
+                      <th class="text-left">Heure</th>
+                      <th class="text-left">Chauffeur</th>
+                      <th class="text-left">Société</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="course in dialogPatientDataCourses"
+                      :key="course.id"
+                    >
+                      <td>{{ prettyDate(course.date) }}</td>
+                      <td>{{ course.time }}</td>
+                      <td>
+                        <span v-if="course.chauffeur">
+                          {{ course.chauffeur.name }}
+                        </span>
+                      </td>
+                      <td>{{ dialogPatientData.societe }}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="dialogPatient" center width="600">
       <v-card v-if="dialogPatientData" class="pa-2">
         <v-card-title>
@@ -114,93 +201,97 @@
             {{ dialogPatientData.surname }} {{ dialogPatientData.name }}
           </span>
           <v-spacer></v-spacer>
-          <v-btn text color="red" @click="deleteModal(dialogPatientData)">
-            <v-icon>mdi-delete-forever</v-icon> Supprimer
+          <v-btn icon @click="dialogPatient = false">
+            <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-        <div class="pa-0 d-flex justify-center align-center">
-          <v-text-field
-            v-model="dialogPatientData.surname"
-            label="Nom"
-            hide-details
-            :value="dialogPatientData.surname"
-            class="ma-2"
-            @change="changeSurname($event, dialogPatientData)"
-          ></v-text-field>
+        <v-card>
+          <v-card-text>
+            <div class="pa-0 d-flex justify-center align-center">
+              <v-text-field
+                v-model="dialogPatientData.surname"
+                label="Nom"
+                hide-details
+                :value="dialogPatientData.surname"
+                class="ma-2"
+                @change="changeSurname($event, dialogPatientData)"
+              ></v-text-field>
 
-          <v-text-field
-            v-model="dialogPatientData.name"
-            label="Prénom"
-            hide-details
-            :value="dialogPatientData.name"
-            class="ma-2"
-            @change="changeName($event, dialogPatientData)"
-          ></v-text-field>
-        </div>
+              <v-text-field
+                v-model="dialogPatientData.name"
+                label="Prénom"
+                hide-details
+                :value="dialogPatientData.name"
+                class="ma-2"
+                @change="changeName($event, dialogPatientData)"
+              ></v-text-field>
+            </div>
 
-        <div class="pa-0 d-flex justify-center align-center">
-          <v-select
-            v-model="dialogPatientData.type"
-            label="Type"
-            :items="types"
-            :value="dialogPatientData.type"
-            hide-details
-            class="ma-2 type"
-            @change="changeType($event, dialogPatientData)"
-          >
-            <template v-slot:selection>
-              <div
-                style="display: flex; flex-flow: row nowrap; align-items: center;"
+            <div class="pa-0 d-flex justify-center align-center">
+              <v-select
+                v-model="dialogPatientData.type"
+                label="Type"
+                :items="types"
+                :value="dialogPatientData.type"
+                hide-details
+                class="ma-2 type"
+                @change="changeType($event, dialogPatientData)"
               >
-                <v-avatar
-                  size="24"
-                  :style="{
-                    backgroundColor: dialogPatientData.color,
-                    marginRight: '4px'
-                  }"
-                  class="white--text"
-                >
-                  {{ dialogPatientData.shortType }}
-                </v-avatar>
-                <div>
-                  {{ dialogPatientData.type }}
-                </div>
-              </div>
-            </template>
-            <template v-slot:item="{ item: type }">
-              <div
-                style="display: flex; flex-flow: row nowrap; align-items: center;"
-              >
-                <v-avatar
-                  :style="{
-                    backgroundColor: color(type),
-                    marginRight: '4px'
-                  }"
-                  size="24"
-                  class="white--text"
-                >
-                  {{ shortType(type) }}
-                </v-avatar>
-                <div>
-                  {{ type }}
-                </div>
-              </div>
-            </template>
-          </v-select>
-        </div>
+                <template v-slot:selection>
+                  <div
+                    style="display: flex; flex-flow: row nowrap; align-items: center;"
+                  >
+                    <v-avatar
+                      size="24"
+                      :style="{
+                        backgroundColor: dialogPatientData.color,
+                        marginRight: '4px'
+                      }"
+                      class="white--text"
+                    >
+                      {{ dialogPatientData.shortType }}
+                    </v-avatar>
+                    <div>
+                      {{ dialogPatientData.type }}
+                    </div>
+                  </div>
+                </template>
+                <template v-slot:item="{ item: type }">
+                  <div
+                    style="display: flex; flex-flow: row nowrap; align-items: center;"
+                  >
+                    <v-avatar
+                      :style="{
+                        backgroundColor: color(type),
+                        marginRight: '4px'
+                      }"
+                      size="24"
+                      class="white--text"
+                    >
+                      {{ shortType(type) }}
+                    </v-avatar>
+                    <div>
+                      {{ type }}
+                    </div>
+                  </div>
+                </template>
+              </v-select>
+            </div>
 
-        <div class="pa-0 d-flex justify-center align-center">
-          <v-select
-            v-model="dialogPatientData.societe"
-            :items="societes"
-            label="Société"
-            hide-details
-            height="24"
-            :value="dialogPatientData.societe"
-            class="ma-2"
-            @change="changeSociete($event, dialogPatientData)"
-          ></v-select>
-        </div>
+            <div class="pa-0 d-flex justify-center align-center">
+              <v-select
+                v-model="dialogPatientData.societe"
+                :items="societes"
+                label="Société"
+                hide-details
+                height="24"
+                :value="dialogPatientData.societe"
+                class="ma-2"
+                @change="changeSociete($event, dialogPatientData)"
+              ></v-select>
+            </div>
+          </v-card-text>
+        </v-card>
 
         <div class="pa-2 d-flex justify-end">
           <b>Horaires</b>
@@ -241,6 +332,9 @@
           ></patient-day-cell>
         </div>
         <v-card-actions>
+          <v-btn text color="red" @click="deleteModal(dialogPatientData)">
+            <v-icon>mdi-delete-forever</v-icon> Supprimer
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn text @click="dialogPatient = false">Valider</v-btn>
         </v-card-actions>
@@ -249,8 +343,11 @@
 
     <v-dialog v-model="dialogDelete" persistent max-width="290">
       <v-card v-if="deleteData">
-        Etes-vous sûrs de vouloir supprimer le patient
-        {{ deleteData.surname }} {{ deleteData.name }} ?
+        <v-card-title>
+          Etes-vous sûrs de vouloir supprimer le patient
+          <v-chip> {{ deleteData.surname }} {{ deleteData.name }} </v-chip>
+          ?
+        </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -264,7 +361,7 @@
             Annuler
           </v-btn>
           <v-btn
-            color="green darken-1"
+            color="red darken-1"
             text
             @click="
               deletePatient(deleteData);
@@ -273,7 +370,7 @@
               dialogPatient = false;
             "
           >
-            Confirmer
+            SUPPRIMER
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -282,6 +379,7 @@
 </template>
 
 <script>
+import * as dayjs from "dayjs";
 import Patient from "@/models/Patient";
 import PatientDayCell from "@/components/semaine/PatientDayCell.vue";
 export default {
@@ -293,6 +391,7 @@ export default {
     return {
       dialog: false,
       dialogPatient: false,
+      dialogHistory: false,
       dialogPatientData: undefined,
       newTime: "",
       days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
@@ -307,14 +406,41 @@ export default {
       searchTerms: "",
       deleteData: undefined,
       dialogDelete: false,
-      societes: ["OKA", "Cicciu", "TAP"]
+      societes: ["OKA", "Cicciu", "TAP"],
+      currentMonth: dayjs().format("YYYY-MM") + "-01"
     };
   },
   computed: {
+    dialogPatientDataCourses() {
+      return this.dialogPatientData.courses.filter(course => {
+        return dayjs(course.date).isSame(this.currentMonth, "month");
+      });
+    },
+    months() {
+      if (this.dialogPatientData) {
+        return this.dialogPatientData.courses
+          .reduce((months, course) => {
+            const month = course.date.slice(0, 7);
+            if (!months.includes(month)) {
+              months.push(month);
+            }
+            return months;
+          }, [])
+          .sort()
+          .reverse()
+          .map(month => ({
+            date: month,
+            string: dayjs(`${month}-01`).format("MMMM YYYY")
+          }));
+      }
+      return [];
+    },
     patients() {
       return Patient.query()
         .orderBy("surname", "asc")
         .orderBy("name", "asc")
+        .with("courses")
+        .with("courses.chauffeur")
         .get();
     },
     search() {
@@ -334,6 +460,12 @@ export default {
     }
   },
   methods: {
+    setMonth(date) {
+      this.currentMonth = date + "-01";
+    },
+    prettyDate(date) {
+      return dayjs(date).format("dddd D MMMM YYYY");
+    },
     color(type) {
       return new Patient({ type }).color;
     },

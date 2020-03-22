@@ -79,7 +79,7 @@
             height="24"
             :items="patients"
             item-text="fullname"
-            label="Nom du patient"
+            label="Patient"
             class="combo-width mx-2 flex-shrink-0 flex-grow-0"
             autocomplete="no-fill"
             hide-details
@@ -139,7 +139,11 @@
         </template>
       </div>
     </v-card-text>
-    <v-card-actions class="d-flex justify-space-between align-center">
+
+    <v-chip
+      class="elevation-2"
+      style="position: absolute; left: -100px; bottom: -16px;"
+    >
       <v-icon v-if="course.direction">
         {{
           course.direction === "Aller"
@@ -158,6 +162,9 @@
             : ""
         }}
       </span>
+    </v-chip>
+
+    <v-card-actions class="d-flex justify-space-between align-center">
       <v-spacer></v-spacer>
       <v-combobox
         v-if="
