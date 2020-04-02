@@ -66,8 +66,7 @@
             :style="{ minWidth: '100px' }"
           >
             {{ course.patient.fullname }}
-            <i v-if="course.deleted">Course annulée</i>
-            <i v-else-if="course.doneDate">Course effectuée</i>
+            <small v-if="course.patient.deleted">(Patient supprimé)</small>
           </span>
           <v-combobox
             v-else

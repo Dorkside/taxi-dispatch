@@ -311,7 +311,6 @@ export default {
       return Course.query()
         .with("chauffeur")
         .with("patient")
-        .where("patient.deleted", "")
         .get();
     },
     patients() {
