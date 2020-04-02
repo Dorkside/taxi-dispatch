@@ -4,6 +4,13 @@
       class="d-flex flex-grow-0 flex-shrink-0 elevation-2"
       style="z-index: 10;"
     >
+      <v-switch
+        v-if="admin"
+        v-model="showAll"
+        class="flex-shrink-0"
+        label="Afficher toutes les courses"
+      >
+      </v-switch>
       <v-spacer></v-spacer>
       <v-progress-linear
         height="20"
@@ -27,7 +34,7 @@
 
       <v-dialog v-if="admin" v-model="dialog" width="600">
         <template v-slot:activator="{ on }">
-          <v-btn small text style="position: absolute; right: 16px;" v-on="on">
+          <v-btn small text v-on="on">
             <v-icon>mdi-plus-circle</v-icon> Ajouter course
           </v-btn>
         </template>
@@ -87,124 +94,67 @@
         </v-card>
       </v-dialog>
     </v-subheader>
-
     <div
       ref="coursesList"
-      class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch"
-      style="position: relative; overflow:hidden;"
+      class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch pa-2 scroll"
+      style="position: relative;"
     >
-      <v-tabs
-        v-model="tab"
-        centered
-        class="flex-grow-0 elevation-1"
-        style="z-index: 1;"
-      >
-        <v-tab key="journee">Courses de la journée</v-tab>
-        <v-tab key="validees">Courses validées</v-tab>
-        <v-tab key="annulees">Courses annulées</v-tab>
-      </v-tabs>
-      <v-tabs-items
-        v-model="tab"
-        class="flex-grow-1"
-        style="overflow-y: auto; z-index: 0;"
-      >
-        <v-tab-item key="journee">
-          <v-list class="transparent pa-2" dense>
-            <v-subheader v-if="coursesTodayUnplanifiedFiltered.length > 0">
-              Courses à planifier
-            </v-subheader>
+      <v-list class="flex-grow-1 transparent pa-0" dense>
+        <v-subheader v-if="coursesTodayUnplanifiedFiltered.length > 0">
+          Courses à planifier
+        </v-subheader>
 
-            <template
-              v-if="admin && coursesTodayUnplanifiedFiltered.length > 0"
+        <template v-if="admin && coursesTodayUnplanifiedFiltered.length > 0">
+          <v-list-item
+            v-for="(course, index) in coursesTodayUnplanifiedFiltered"
+            :key="`${course.ref}-${course.id}`"
+            :index="index"
+            class="mx-2 pa-0"
+          >
+            <v-list-item-content
+              class="show-overflow justify-center align-center"
             >
-              <v-list-item
-                v-for="(course, index) in coursesTodayUnplanifiedFiltered"
-                :key="`${course.ref}-${course.id}`"
+              <course-item
+                :course="course"
+                class="my-1"
                 :index="index"
-                class="mx-2 pa-0"
-              >
-                <v-list-item-content
-                  class="show-overflow justify-center align-center"
-                >
-                  <course-item
-                    :course="course"
-                    class="my-1"
-                    :index="index"
-                    :hide-chauffeur="true"
-                  ></course-item>
-                </v-list-item-content>
-              </v-list-item>
-            </template>
+                :hide-chauffeur="true"
+              ></course-item>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
 
-            <v-divider
-              v-if="coursesTodayUnplanifiedFiltered.length > 0 && admin"
-            ></v-divider>
+        <v-divider
+          v-if="coursesTodayUnplanifiedFiltered.length > 0 && admin"
+        ></v-divider>
 
-            <v-list-item
-              v-for="(course, index) in coursesTodayPlanifiedFiltered"
+        <v-subheader v-if="admin">
+          Courses de la journée
+          {{ coursesTodayPlanifiedDone.length }}
+          / {{ coursesTodayPlanified.length }}
+        </v-subheader>
+
+        <v-list-item
+          v-for="(course, index) in coursesTodayPlanifiedFiltered"
+          :key="`${course.ref}-${course.id}`"
+          :index="index"
+          class="mx-2 pa-0"
+        >
+          <v-list-item-content
+            class="show-overflow justify-center align-center"
+          >
+            <course-item
               :key="`${course.ref}-${course.id}`"
+              class="my-1"
+              :style="{
+                opacity: course.deleted ? '0.3' : '1'
+              }"
+              :course="course"
               :index="index"
-              class="mx-2 pa-0"
-            >
-              <v-list-item-content
-                class="show-overflow justify-center align-center"
-              >
-                <course-item
-                  :key="`${course.ref}-${course.id}`"
-                  class="my-1"
-                  :style="{
-                    opacity: course.deleted ? '0.3' : '1'
-                  }"
-                  :course="course"
-                  :index="index"
-                ></course-item>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-tab-item>
-        <v-tab-item key="validees">
-          <v-list class="transparent pa-2" dense>
-            <v-list-item
-              v-for="(course, index) in coursesTodayValidated"
-              :key="`${course.ref}-${course.id}`"
-              :index="index"
-              class="mx-2 pa-0"
-            >
-              <v-list-item-content
-                class="show-overflow justify-center align-center"
-              >
-                <course-item
-                  :key="`${course.ref}-${course.id}`"
-                  class="my-1"
-                  :course="course"
-                  :index="index"
-                ></course-item>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-tab-item>
-        <v-tab-item key="annulees">
-          <v-list class="transparent pa-2" dense>
-            <v-list-item
-              v-for="(course, index) in coursesTodayDeleted"
-              :key="`${course.ref}-${course.id}`"
-              :index="index"
-              class="mx-2 pa-0"
-            >
-              <v-list-item-content
-                class="show-overflow justify-center align-center"
-              >
-                <course-item
-                  :key="`${course.ref}-${course.id}`"
-                  class="my-1"
-                  :course="course"
-                  :index="index"
-                ></course-item>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-tab-item>
-      </v-tabs-items>
+            ></course-item>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </div>
   </div>
 </template>
@@ -214,6 +164,7 @@ import Course from "@/models/Course";
 import Patient from "@/models/Patient";
 import CourseItem from "./CourseItem";
 import { mapState } from "vuex";
+import * as dayjs from "dayjs";
 import uuid from "uuid";
 export default {
   name: "Journee",
@@ -222,7 +173,6 @@ export default {
   },
   data() {
     return {
-      tab: "",
       days: [
         "Dimanche",
         "Lundi",
@@ -232,6 +182,7 @@ export default {
         "Vendredi",
         "Samedi"
       ],
+      showAll: false,
       dialog: false,
       newCourse: new Course({
         date: this.date,
@@ -360,20 +311,14 @@ export default {
         });
       }
     },
-    coursesTodayDeleted() {
-      return this.coursesToday.filter(course => !!course.deleted);
-    },
-    coursesTodayValidated() {
-      return this.coursesToday.filter(course => !!course.doneDate);
-    },
     coursesTodayUnplanifiedFiltered() {
       return this.coursesTodayUnplanified.filter(
-        course => !course.doneDate && !course.deleted
+        course => (!course.doneDate && !course.deleted) || this.showAll
       );
     },
     coursesTodayPlanifiedFiltered() {
       return this.coursesTodayPlanified.filter(
-        course => !course.doneDate && !course.deleted
+        course => (!course.doneDate && !course.deleted) || this.showAll
       );
     },
     currentDay() {
