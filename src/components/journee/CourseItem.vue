@@ -189,7 +189,7 @@
     </v-card-actions>
 
     <v-card-actions
-      v-if="course.time && course.chauffeur"
+      v-if="course.time && course.chauffeur && !course.deleted"
       class="d-flex justify-space-between align-center"
     >
       <v-spacer></v-spacer>
