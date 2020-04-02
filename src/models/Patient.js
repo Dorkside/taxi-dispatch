@@ -42,7 +42,7 @@ export default class Patient extends Model {
             ? `${patientData.surname} ${patientData.name}`
             : "Nouveau patient"
           : "Nouveau patient",
-        deleted: ""
+        deleted: patientData ? patientData.deleted || "" : ""
       })
     );
   }
@@ -56,9 +56,11 @@ export default class Patient extends Model {
   delete() {
     Course.query()
       .where("patient_id", this.$id)
+      .where("deleted", "")
+      .where("doneDate", "")
       .get()
       .forEach(course => {
-        course.delete();
+        course.delete(true);
       });
     db.collection("patients")
       .doc(this.id)

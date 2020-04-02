@@ -113,6 +113,7 @@ export default {
     recurringCourses() {
       if (this.admin) {
         return this.patients
+          .filter(patient => !patient.deleted)
           .filter(patient => {
             return patient[this.currentDay];
           })
@@ -125,6 +126,7 @@ export default {
                 patient: Patient.find(patient.id),
                 generated: true,
                 deleted: "",
+                doneDate: "",
                 type: patient.type
               })
             );
@@ -136,6 +138,7 @@ export default {
                 patient: Patient.find(patient.id),
                 generated: true,
                 deleted: "",
+                doneDate: "",
                 type: patient.type
               })
             );

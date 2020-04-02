@@ -31,8 +31,9 @@ export default class Course extends Model {
       .doc(this.ref || uuid.v4())
       .set(
         data || {
-          date: this.string(new Date().toISOString().substring(0, 10)),
-          deleted: ""
+          date: new Date().toISOString().substring(0, 10),
+          deleted: "",
+          doneDate: ""
         }
       );
   }
@@ -58,10 +59,25 @@ export default class Course extends Model {
       });
   }
 
-  delete() {
-    db.collection("courses")
-      .doc(this.id)
-      .update({ deleted: new Date().toISOString() });
+  delete(skipCreate = false) {
+    console.log(skipCreate);
+    if (this.id) {
+      db.collection("courses")
+        .doc(this.id)
+        .update({ deleted: new Date().toISOString() });
+    } else {
+      console.log("INSERT");
+      if (!skipCreate) {
+        db.collection("courses")
+          .doc(this.ref || uuid.v4())
+          .set({
+            ...JSON.parse(JSON.stringify(this.$toJson())),
+            deleted: new Date().toISOString()
+          });
+      } else {
+        Course.delete(this);
+      }
+    }
   }
 
   undelete() {

@@ -247,29 +247,27 @@ export default {
             });
         }
 
-        db.collection("patients")
-          .where("deleted", "==", "")
-          .onSnapshot(function(querySnapshot) {
-            querySnapshot.docChanges().forEach(function(change) {
-              if (change.type === "added") {
-                Patient.insert({
-                  data: {
-                    ...change.doc.data(),
-                    id: change.doc.id
-                  }
-                });
-              }
-              if (change.type === "modified") {
-                Patient.update({
-                  where: change.doc.id,
-                  data: change.doc.data()
-                });
-              }
-              if (change.type === "removed") {
-                Patient.delete(change.doc.id);
-              }
-            });
+        db.collection("patients").onSnapshot(function(querySnapshot) {
+          querySnapshot.docChanges().forEach(function(change) {
+            if (change.type === "added") {
+              Patient.insert({
+                data: {
+                  ...change.doc.data(),
+                  id: change.doc.id
+                }
+              });
+            }
+            if (change.type === "modified") {
+              Patient.update({
+                where: change.doc.id,
+                data: change.doc.data()
+              });
+            }
+            if (change.type === "removed") {
+              Patient.delete(change.doc.id);
+            }
           });
+        });
       }
     });
   },
@@ -314,7 +312,6 @@ export default {
         });
 
       setTimeout(() => {
-        console.log(this.patients);
         contacts.forEach(contact => {
           if (!this.patients.some(patient => patient.name === contact.name)) {
             console.log(`Creating ${contact}`);

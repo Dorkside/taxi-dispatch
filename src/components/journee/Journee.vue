@@ -236,16 +236,19 @@ export default {
       newCourse: new Course({
         date: this.date,
         deleted: "",
+        doneDate: "",
         ref: `${this.date}.${uuid.v4()}`
       }),
       newCourseAller: new Course({
         date: this.date,
         deleted: "",
+        doneDate: "",
         ref: `${this.date}.${uuid.v4()}.Aller`
       }),
       newCourseRetour: new Course({
         date: this.date,
         deleted: "",
+        doneDate: "",
         ref: `${this.date}.${uuid.v4()}.Retour`
       })
     };
@@ -255,6 +258,7 @@ export default {
     recurringCourses() {
       if (this.admin) {
         return this.patients
+          .filter(patient => !patient.deleted)
           .filter(patient => {
             return (
               patient[this.currentDay] || patient[`${this.currentDay}Retour`]
@@ -271,6 +275,7 @@ export default {
                   generated: true,
                   societe: patient.societe,
                   deleted: "",
+                  doneDate: "",
                   type: patient.type
                 })
               );
@@ -285,6 +290,7 @@ export default {
                   generated: true,
                   societe: patient.societe,
                   deleted: "",
+                  doneDate: "",
                   type: patient.type
                 })
               );
@@ -305,6 +311,7 @@ export default {
       return Course.query()
         .with("chauffeur")
         .with("patient")
+        .where("patient.deleted", "")
         .get();
     },
     patients() {
@@ -413,6 +420,7 @@ export default {
       this.newCourse = new Course({
         date: this.date,
         deleted: "",
+        doneDate: "",
         ref: `${this.date}.${uuid.v4()}`
       });
       this.dialog = false;
@@ -421,11 +429,13 @@ export default {
       this.newCourseAller = new Course({
         date: this.date,
         deleted: "",
+        doneDate: "",
         ref: `${this.date}.${uuid.v4()}.Aller`
       });
       this.newCourseRetour = new Course({
         date: this.date,
         deleted: "",
+        doneDate: "",
         ref: `${this.date}.${uuid.v4()}.Retour`
       });
       this.dialog = false;

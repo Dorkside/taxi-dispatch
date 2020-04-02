@@ -437,6 +437,7 @@ export default {
     },
     patients() {
       return Patient.query()
+        .where("deleted", "")
         .orderBy("surname", "asc")
         .orderBy("name", "asc")
         .with("courses")
