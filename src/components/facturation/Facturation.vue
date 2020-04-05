@@ -85,7 +85,7 @@
         </v-timeline>
       </div>
       <div class="scroller elevation-1 flex-grow-1 pa-4">
-        <v-chip>{{ courses.length }} courses</v-chip>
+        <v-chip>{{ monthlyCourses.length }} courses</v-chip>
         <div class="pa-2">
           <v-label v-if="patientsSansSociete.length">
             {{ patientsSansSociete.length }} patients sans société
