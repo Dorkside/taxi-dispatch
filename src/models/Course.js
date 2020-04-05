@@ -3,6 +3,7 @@ import uuid from "uuid";
 import { db } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
+import { database } from "firebase";
 
 export default class Course extends Model {
   static entity = "courses";
@@ -39,13 +40,21 @@ export default class Course extends Model {
   }
 
   update(data) {
+    let id = this.id || this.ref || uuid.v4();
+    Course.insertOrUpdate({
+      data: {
+        ...this.$toJson(),
+        ...data,
+        id
+      }
+    });
     db.collection("courses")
-      .doc(this.id || this.ref || uuid.v4())
+      .doc(id)
       .update(data)
       .then(() => {})
       .catch(error => {
         db.collection("courses")
-          .doc(this.ref || uuid.v4())
+          .doc(id)
           .set({
             ...JSON.parse(
               JSON.stringify({

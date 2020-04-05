@@ -101,7 +101,7 @@ import Phone from "./models/Phone";
 
 const subscribeToChanges = (Model, querySnapshot) => {
   const docChanges = querySnapshot.docChanges();
-  Model.insert({
+  Model.insertOrUpdate({
     data: docChanges
       .filter(change => change.type === "added")
       .map(change => ({
@@ -109,7 +109,7 @@ const subscribeToChanges = (Model, querySnapshot) => {
         id: change.doc.id
       }))
   });
-  Model.update({
+  Model.insertOrUpdate({
     data: docChanges
       .filter(change => change.type === "modified")
       .map(change => ({

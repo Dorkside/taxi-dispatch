@@ -5,7 +5,7 @@
   >
     <v-list
       width="300px"
-      class="d-flex flex-column flex-shrink-0 elevation-8 scroll"
+      class="d-flex flex-column flex-shrink-0 elevation-8 scroll pa-0"
     >
       <v-subheader class="title-scroll flex-grow-0 flex-shrink-0">
         <v-chip class="overline">Courses non attribuées</v-chip>
@@ -47,11 +47,11 @@
           {{ "mdi-arrow-all" }}
         </v-icon>
         <v-list
-          class="px-2 d-flex flex-column align-stretch overflow-y-auto"
+          class="pa-0 d-flex flex-column align-stretch overflow-y-auto"
           :style="{ height: '100%', background: 'transparent' }"
         >
-          <v-subheader class="title-scroll">
-            <v-chip class="mt-4">
+          <v-subheader class="title-scroll gradient">
+            <v-chip class="mt-2">
               {{ chauffeur.name }}
             </v-chip>
           </v-subheader>
@@ -67,7 +67,7 @@
               v-for="(course, index) in chauffeur.courses"
               :key="`${course.ref}-${course.id}`"
               :course="course"
-              class="my-1"
+              class="my-1 px-2"
               :index="index"
             ></depart-item>
           </draggable>
@@ -238,6 +238,13 @@ export default {
 }
 .title-scroll {
   position: fixed;
+  &.gradient {
+    background: linear-gradient(
+      rgba(255, 255, 255, 1),
+      rgba(255, 255, 255, 1),
+      rgba(255, 255, 255, 0)
+    );
+  }
 }
 .handle-chauffeur {
   position: absolute;
