@@ -321,6 +321,7 @@ export default {
     coursesTodayPlanified() {
       return this.coursesToday
         .filter(course => course.time !== "")
+        .filter(course => !course.deleted)
         .sort((a, b) => {
           if (a.time === "") return 0;
           if (b.time === "") return 0;
