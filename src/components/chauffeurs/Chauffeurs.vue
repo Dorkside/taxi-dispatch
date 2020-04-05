@@ -237,6 +237,7 @@ export default {
     chauffeurs: {
       get() {
         return Chauffeur.query()
+          .where("deleted", "")
           .with("phones")
           .orderBy("order", "asc")
           .orderBy("name", "asc")

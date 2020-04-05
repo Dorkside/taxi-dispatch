@@ -99,9 +99,41 @@ import Course from "./models/Course";
 import Patient from "./models/Patient";
 import Phone from "./models/Phone";
 
+const subscribeToChanges = (Model, querySnapshot) => {
+  const docChanges = querySnapshot.docChanges();
+  Model.insert({
+    data: docChanges
+      .filter(change => change.type === "added")
+      .map(change => ({
+        ...change.doc.data(),
+        id: change.doc.id
+      }))
+  });
+  Model.update({
+    data: docChanges
+      .filter(change => change.type === "modified")
+      .map(change => ({
+        ...change.doc.data(),
+        id: change.doc.id
+      }))
+  });
+  Model.delete({
+    data: docChanges
+      .filter(change => change.type === "removed")
+      .map(change => ({
+        id: change.doc.id
+      }))
+  });
+};
+
 export default {
   components: { vue100vh },
   store,
+  data() {
+    return {
+      dialog: false
+    };
+  },
   computed: {
     ...mapState(["currentDate", "admin"]),
     prettyDate() {
@@ -122,159 +154,66 @@ export default {
   },
   mounted() {
     firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        this.$store.commit("setAdmin", false);
-      } else {
-        if (
-          ["+33762686070", "+33761610703", "+33668666606"].includes(
-            user.phoneNumber
-          )
-        ) {
-          this.$store.commit("setAdmin", true);
+      firebase
+        .firestore()
+        .disableNetwork()
+        .then(() => {
+          if (!user) {
+            this.$store.commit("setAdmin", false);
+          } else {
+            if (
+              ["+33762686070", "+33761610703", "+33668666606"].includes(
+                user.phoneNumber
+              )
+            ) {
+              this.$store.commit("setAdmin", true);
 
-          db.collection("phones").onSnapshot(function(querySnapshot) {
-            querySnapshot.docChanges().forEach(function(change) {
-              if (change.type === "added") {
-                Phone.insert({
-                  data: {
-                    ...change.doc.data(),
-                    id: change.doc.id
-                  }
-                });
-              }
-              if (change.type === "modified") {
-                Phone.update({
-                  where: change.doc.id,
-                  data: change.doc.data()
-                });
-              }
-              if (Phone.type === "removed") {
-                Phone.delete(change.doc.id);
-              }
-            });
-          });
-
-          db.collection("chauffeurs")
-            .where("deleted", "==", "")
-            .onSnapshot(function(querySnapshot) {
-              querySnapshot.docChanges().forEach(function(change) {
-                if (change.type === "added") {
-                  Chauffeur.insert({
-                    data: {
-                      ...change.doc.data(),
-                      id: change.doc.id
-                    }
-                  });
-                }
-                if (change.type === "modified") {
-                  Chauffeur.update({
-                    where: change.doc.id,
-                    data: change.doc.data()
-                  });
-                }
-                if (change.type === "removed") {
-                  Chauffeur.delete(change.doc.id);
-                }
+              db.collection("phones").onSnapshot(function(querySnapshot) {
+                subscribeToChanges(Phone, querySnapshot);
               });
-            });
 
-          db.collection("courses").onSnapshot(function(querySnapshot) {
-            querySnapshot.docChanges().forEach(function(change) {
-              if (change.type === "added") {
-                Course.insert({
-                  data: {
-                    ...change.doc.data(),
-                    id: change.doc.id
-                  }
-                });
-              }
-              if (change.type === "modified") {
-                Course.update({
-                  where: change.doc.id,
-                  data: {
-                    chauffeur_id: undefined,
-                    ...change.doc.data()
-                  }
-                });
-              }
-              if (change.type === "removed") {
-                Course.delete(change.doc.id);
-              }
-            });
-          });
-        } else {
-          db.collection("phones")
-            .doc(user.phoneNumber)
-            .get()
-            .then(doc => {
-              const { chauffeur_id } = doc.data();
+              db.collection("chauffeurs").onSnapshot(function(querySnapshot) {
+                subscribeToChanges(Chauffeur, querySnapshot);
+              });
 
-              db.collection("chauffeurs")
-                .doc(chauffeur_id)
-                .onSnapshot(function(doc) {
-                  Chauffeur.insert({
-                    data: {
-                      ...doc.data(),
-                      id: doc.id
-                    }
-                  });
-                });
+              db.collection("courses").onSnapshot(function(querySnapshot) {
+                subscribeToChanges(Course, querySnapshot);
+              });
+            } else {
+              db.collection("phones")
+                .doc(user.phoneNumber)
+                .get()
+                .then(doc => {
+                  const { chauffeur_id } = doc.data();
 
-              db.collection("courses")
-                .where("deleted", "==", "")
-                .where("chauffeur_id", "==", chauffeur_id)
-                .onSnapshot(function(querySnapshot) {
-                  querySnapshot.docChanges().forEach(function(change) {
-                    if (change.type === "added") {
-                      Course.insert({
+                  db.collection("chauffeurs")
+                    .doc(chauffeur_id)
+                    .onSnapshot(function(doc) {
+                      Chauffeur.insert({
                         data: {
-                          ...change.doc.data(),
-                          id: change.doc.id
+                          ...doc.data(),
+                          id: doc.id
                         }
                       });
-                    }
-                    if (change.type === "modified") {
-                      Course.update({
-                        where: change.doc.id,
-                        data: change.doc.data()
-                      });
-                    }
-                    if (change.type === "removed") {
-                      Course.delete(change.doc.id);
-                    }
-                  });
-                });
-            });
-        }
+                    });
 
-        db.collection("patients").onSnapshot(function(querySnapshot) {
-          querySnapshot.docChanges().forEach(function(change) {
-            if (change.type === "added") {
-              Patient.insert({
-                data: {
-                  ...change.doc.data(),
-                  id: change.doc.id
-                }
-              });
+                  db.collection("courses")
+                    .where("deleted", "==", "")
+                    .where("chauffeur_id", "==", chauffeur_id)
+                    .onSnapshot(function(querySnapshot) {
+                      subscribeToChanges(Course, querySnapshot);
+                    });
+                });
             }
-            if (change.type === "modified") {
-              Patient.update({
-                where: change.doc.id,
-                data: change.doc.data()
-              });
-            }
-            if (change.type === "removed") {
-              Patient.delete(change.doc.id);
-            }
-          });
+
+            db.collection("patients").onSnapshot(function(querySnapshot) {
+              subscribeToChanges(Patient, querySnapshot);
+            });
+          }
+
+          firebase.firestore().enableNetwork();
         });
-      }
     });
-  },
-  data() {
-    return {
-      dialog: false
-    };
   },
   methods: {
     setDate(event) {

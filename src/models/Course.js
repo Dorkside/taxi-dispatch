@@ -98,6 +98,10 @@ export default class Course extends Model {
       .update({ doneDate: "" });
   }
 
+  get fullRef() {
+    return `${this.ref}-${this.id}`;
+  }
+
   get direction() {
     if (this.ref) {
       let _ref = this.ref.split(".");

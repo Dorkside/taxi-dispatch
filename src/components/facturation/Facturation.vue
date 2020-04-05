@@ -110,27 +110,29 @@
         </v-text-field>
 
         <v-list style="background-color: transparent;">
-          <v-list-item
+          <v-lazy
             v-for="patient in filteredPatients"
             :key="patient.id"
-            class="pa-0 patient d-flex align-center"
+            min-height="44"
           >
-            <span class="mx-2 flex-grow-1">
-              {{ patient.surname }} {{ patient.name }}
-            </span>
+            <v-list-item class="pa-0 patient d-flex align-center">
+              <span class="mx-2 flex-grow-1">
+                {{ patient.surname }} {{ patient.name }}
+              </span>
 
-            <v-btn
-              dark
-              @click="
-                dialogData = patient;
-                dialog = true;
-              "
-            >
-              {{ coursesByPatient[patient.id].length }} course{{
-                coursesByPatient[patient.id].length > 1 ? "s" : ""
-              }}
-            </v-btn>
-          </v-list-item>
+              <v-btn
+                dark
+                @click="
+                  dialogData = patient;
+                  dialog = true;
+                "
+              >
+                {{ coursesByPatient[patient.id].length }} course{{
+                  coursesByPatient[patient.id].length > 1 ? "s" : ""
+                }}
+              </v-btn>
+            </v-list-item></v-lazy
+          >
         </v-list>
       </div>
     </div>
@@ -412,7 +414,7 @@ export default {
   overflow-y: auto;
 }
 .patient {
-  height: 72px;
+  height: 44px;
   .type {
     width: 200px;
   }

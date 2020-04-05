@@ -22,97 +22,101 @@
     </div>
 
     <section class="scroller d-flex flex-column justify-start align-center">
-      <v-card
+      <v-lazy
         v-for="item in filteredPatients"
         :key="item.id"
-        class="ma-4"
-        style="width: 450px; min-height: 200px; margin-right: 100px !important;"
+        min-height="200"
+        class="ma-4 bgTest"
       >
-        <v-card-title class="flex-grow-1">
-          {{ item.surname }} {{ item.name }}
-        </v-card-title>
-
-        <v-chip
-          class="elevation-2"
-          style="position: absolute; right: -16px; top: -12px;"
+        <v-card
+          style="width: 450px; min-height: 200px; margin-right: 100px !important;"
         >
-          <v-avatar
-            size="24"
-            left
-            :style="{ backgroundColor: item.color, marginRight: '4px' }"
-            class="white--text"
-          >
-            {{ item.shortType }}
-          </v-avatar>
-          {{ item.type }}
-        </v-chip>
+          <v-card-title class="flex-grow-1">
+            {{ item.surname }} {{ item.name }}
+          </v-card-title>
 
-        <v-chip
-          v-if="item"
-          class="elevation-2"
-          style="position:absolute; left: -16px; bottom: -12px;"
-        >
-          {{ item.societe || "Aucune société" }}
-        </v-chip>
-
-        <div
-          v-if="item.schedules"
-          class="d-flex flex-column align-start"
-          style="position:absolute; right: 12px; top:32px; transform: translateX(100%)"
-        >
           <v-chip
-            v-for="day in Object.entries(item.schedules)"
-            :key="day[0]"
-            small
-            class="pa-1 pl-0 mb-1 elevation-2"
-            :style="{
-              opacity:
-                day[1].a === '--:--' && day[1].r === '--:--' ? '0.5' : '1'
-            }"
+            class="elevation-2"
+            style="position: absolute; right: -16px; top: -12px;"
           >
             <v-avatar
               size="24"
-              :style="{
-                backgroundColor: item.color,
-                marginRight: '4px'
-              }"
+              left
+              :style="{ backgroundColor: item.color, marginRight: '4px' }"
               class="white--text"
             >
-              {{ day[0] }}
+              {{ item.shortType }}
             </v-avatar>
-            {{ day[1].a }} / {{ day[1].r }}
+            {{ item.type }}
           </v-chip>
-        </div>
 
-        <v-card-text
-          style="display: flex; flex-flow: row nowrap; align-items: center; min-width: 200px;"
-          class="py-6 px-4"
-        >
-          <v-spacer></v-spacer>
-        </v-card-text>
+          <v-chip
+            v-if="item"
+            class="elevation-2"
+            style="position:absolute; left: -16px; bottom: -12px;"
+          >
+            {{ item.societe || "Aucune société" }}
+          </v-chip>
 
-        <v-btn
-          text
-          style="position:absolute; bottom: 24px; left: 8px;"
-          @click="
-            dialogHistory = true;
-            dialogPatientData = item;
-          "
-        >
-          <v-icon>mdi-clock-outline</v-icon> Historique
-        </v-btn>
+          <div
+            v-if="item.schedules"
+            class="d-flex flex-column align-start"
+            style="position:absolute; right: 12px; top:32px; transform: translateX(100%)"
+          >
+            <v-chip
+              v-for="day in Object.entries(item.schedules)"
+              :key="day[0]"
+              small
+              class="pa-1 pl-0 mb-1 elevation-2"
+              :style="{
+                opacity:
+                  day[1].a === '--:--' && day[1].r === '--:--' ? '0.5' : '1'
+              }"
+            >
+              <v-avatar
+                size="24"
+                :style="{
+                  backgroundColor: item.color,
+                  marginRight: '4px'
+                }"
+                class="white--text"
+              >
+                {{ day[0] }}
+              </v-avatar>
+              {{ day[1].a }} / {{ day[1].r }}
+            </v-chip>
+          </div>
 
-        <v-btn
-          text
-          style="position:absolute; bottom: 16px; right: 16px;"
-          @click="
-            dialogPatient = true;
-            dialogPatientData = item;
-          "
-        >
-          <v-icon>mdi-pencil</v-icon> Modifier
-        </v-btn>
-      </v-card>
+          <v-card-text
+            style="display: flex; flex-flow: row nowrap; align-items: center; min-width: 200px;"
+            class="py-6 px-4"
+          >
+            <v-spacer></v-spacer>
+          </v-card-text>
+
+          <v-btn
+            text
+            style="position:absolute; bottom: 24px; left: 8px;"
+            @click="
+              dialogHistory = true;
+              dialogPatientData = item;
+            "
+          >
+            <v-icon>mdi-clock-outline</v-icon> Historique
+          </v-btn>
+
+          <v-btn
+            text
+            style="position:absolute; bottom: 16px; right: 16px;"
+            @click="
+              dialogPatient = true;
+              dialogPatientData = item;
+            "
+          >
+            <v-icon>mdi-pencil</v-icon> Modifier
+          </v-btn>
+        </v-card>
+      </v-lazy>
     </section>
 
     <v-dialog v-model="dialogHistory" width="800" class="pa-0">

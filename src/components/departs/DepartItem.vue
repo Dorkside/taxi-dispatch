@@ -1,46 +1,45 @@
 <template>
-  <v-card
-    class="full-width"
-    :style="
-      `border-left: solid 82px ${course.color} !important; overflow:visible;`
-    "
-  >
-    <v-card-text class="pa-2 full-width" style="overflow:visible;">
-      <div class="d-flex flex-row justify-center align-center pa-0">
-        <span
-          class="time-span mr-2 flex-shrink-0 flex-grow-0 subtitle-1 font-weight-bold white--text"
-        >
-          {{ course.prettyTime }}
-        </span>
-        <v-icon class="ml-1 flex-shrink-0 flex-grow-0">
-          {{
-            course.direction === "Aller"
-              ? "mdi-arrow-right"
-              : course.direction === "Retour"
-              ? "mdi-arrow-left"
-              : ""
-          }}
-        </v-icon>
-        <div class="flex-grow-1 text-wrap">
-          <span v-if="course.patient">
-            {{ course.patient.name }} {{ course.patient.surname }}
+  <v-lazy min-height="44">
+    <v-card
+      class="full-width"
+      :style="
+        `border-left: solid 82px ${course.color} !important; overflow:visible;`
+      "
+    >
+      <v-card-text class="pa-2 full-width" style="overflow:visible;">
+        <div class="d-flex flex-row justify-center align-center pa-0">
+          <span
+            class="time-span mr-2 flex-shrink-0 flex-grow-0 subtitle-1 font-weight-bold white--text"
+          >
+            {{ course.prettyTime }}
           </span>
-          <span v-else>
-            <i>NA</i>
-          </span>
+          <v-icon class="ml-1 flex-shrink-0 flex-grow-0">
+            {{
+              course.direction === "Aller"
+                ? "mdi-arrow-right"
+                : course.direction === "Retour"
+                ? "mdi-arrow-left"
+                : ""
+            }}
+          </v-icon>
+          <div class="flex-grow-1 text-wrap">
+            <span v-if="course.patient">
+              {{ course.patient.name }} {{ course.patient.surname }}
+            </span>
+            <span v-else>
+              <i>NA</i>
+            </span>
+          </div>
+          <v-icon class="flex-shrink-0 flex-grow-0 handle">
+            {{ "mdi-arrow-all" }}
+          </v-icon>
         </div>
-        <v-icon class="flex-shrink-0 flex-grow-0 handle">
-          {{ "mdi-arrow-all" }}
-        </v-icon>
-      </div>
-    </v-card-text>
-  </v-card>
+      </v-card-text>
+    </v-card>
+  </v-lazy>
 </template>
 
 <script>
-import Patient from "@/models/Patient";
-import Course from "@/models/Course";
-import Chauffeur from "@/models/Chauffeur";
 export default {
   name: "DepartItem",
   props: {

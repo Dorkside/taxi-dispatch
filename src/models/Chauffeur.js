@@ -48,6 +48,8 @@ export default class Chauffeur extends Model {
   delete() {
     Course.query()
       .where("chauffeur_id", this.$id)
+      .where("deleted", "")
+      .where("doneDate", "")
       .get()
       .forEach(course => {
         course.update({ chauffeur_id: firebase.firestore.FieldValue.delete() });

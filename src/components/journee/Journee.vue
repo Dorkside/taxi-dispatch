@@ -104,6 +104,7 @@
         <v-tab key="annulees">Courses annulées</v-tab>
       </v-tabs>
       <v-tabs-items
+        ref="tab-container"
         v-model="tab"
         class="flex-grow-1"
         style="overflow-y: auto; z-index: 0;"
@@ -121,14 +122,12 @@
                 v-for="(course, index) in coursesTodayUnplanifiedFiltered"
                 :key="`${course.ref}-${course.id}`"
                 :index="index"
-                class="mx-2 pa-0"
               >
                 <v-list-item-content
                   class="show-overflow justify-center align-center"
                 >
                   <course-item
                     :course="course"
-                    class="my-1"
                     :index="index"
                     :hide-chauffeur="true"
                   ></course-item>
@@ -144,14 +143,12 @@
               v-for="(course, index) in coursesTodayPlanifiedFiltered"
               :key="`${course.ref}-${course.id}`"
               :index="index"
-              class="mx-2 pa-0"
             >
               <v-list-item-content
                 class="show-overflow justify-center align-center"
               >
                 <course-item
                   :key="`${course.ref}-${course.id}`"
-                  class="my-1"
                   :style="{
                     opacity: course.deleted ? '0.3' : '1'
                   }"
@@ -168,14 +165,12 @@
               v-for="(course, index) in coursesTodayValidated"
               :key="`${course.ref}-${course.id}`"
               :index="index"
-              class="mx-2 pa-0"
             >
               <v-list-item-content
                 class="show-overflow justify-center align-center"
               >
                 <course-item
                   :key="`${course.ref}-${course.id}`"
-                  class="my-1"
                   :course="course"
                   :index="index"
                 ></course-item>
@@ -189,14 +184,12 @@
               v-for="(course, index) in coursesTodayDeleted"
               :key="`${course.ref}-${course.id}`"
               :index="index"
-              class="mx-2 pa-0"
             >
               <v-list-item-content
                 class="show-overflow justify-center align-center"
               >
                 <course-item
                   :key="`${course.ref}-${course.id}`"
-                  class="my-1"
                   :course="course"
                   :index="index"
                 ></course-item>
@@ -381,6 +374,9 @@ export default {
     }
   },
   watch: {
+    currentDate() {
+      this.$refs["tab-container"].$el.scrollTop = 0;
+    },
     "newCourseAller.type": {
       handler() {
         this.newCourseRetour.type = this.newCourseAller.type;
