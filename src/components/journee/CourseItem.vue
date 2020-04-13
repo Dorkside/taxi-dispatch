@@ -148,7 +148,7 @@
           style="color:white;"
           :style="{ backgroundColor: course.color }"
         >
-          {{ course.patient.shortType }}
+          {{ course.shortType }}
         </v-avatar>
         <v-icon v-if="course.direction">
           {{

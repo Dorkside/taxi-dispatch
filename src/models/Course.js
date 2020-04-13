@@ -157,4 +157,25 @@ export default class Course extends Model {
       return "grey";
     }
   }
+
+  get shortType() {
+    switch (this.type) {
+      case "Dialyse":
+        return "D";
+      case "HDJ":
+        return "H";
+      case "Kiné / Rééducation":
+        return "K";
+      case "Consultation":
+        return "C";
+      case "Chimiothérapie":
+        return "CH";
+      case "Sortie d'hôpital":
+        return "S";
+      case "Entrée d'hôpital":
+        return "E";
+      default:
+        return "?";
+    }
+  }
 }
