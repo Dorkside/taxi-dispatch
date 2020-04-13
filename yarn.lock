@@ -5714,6 +5714,11 @@ jsonify@~0.0.0:
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
   integrity sha1-LHS27kHZPKUbe1qu6PUDYx0lKnM=
 
+jspdf-autotable@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/jspdf-autotable/-/jspdf-autotable-3.4.3.tgz#3cf81f52e091bb5c25549adb263b4f412cd7d855"
+  integrity sha512-9/Ox0d0qiSYfBoE3Ic3/IJeXOE4EO3OuWTsrf7X2jpz6RjUqmp8KSSeeLYM+fSMiwOXeeCoGyUkWtocGZ18XvQ==
+
 jspdf@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/jspdf/-/jspdf-1.5.3.tgz#5a12c011479defabef5735de55c913060ed219f2"

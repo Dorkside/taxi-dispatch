@@ -143,6 +143,8 @@
 import Course from "@/models/Course";
 import * as dayjs from "dayjs";
 import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 export default {
   name: "Facturation",
   data() {
@@ -162,8 +164,8 @@ export default {
         .with("patient")
         .get()
         .filter(course => !!course.chauffeur)
-        .filter(
-          course => !["Consultation", "Sortie d'hôpital"].includes(course.type)
+        .filter(course =>
+          ["Dialyse", "HDJ", "Kiné / Rééducation"].includes(course.type)
         );
     },
     months() {
@@ -320,6 +322,16 @@ export default {
               null,
               "right"
             );
+            doc.text(
+              `${dayjs(this.currentMonth)
+                .format("MMMM YYYY")
+                .toUpperCase()}`,
+              20,
+              55,
+              null,
+              null,
+              "left"
+            );
 
             const jours = societeCourses
               .sort((a, b) => (a.date < b.date ? -1 : 1))
@@ -336,41 +348,46 @@ export default {
 
             doc.setFontSize(12);
 
-            Object.keys(jours).forEach((jour, index) => {
-              doc.text(
-                `- ${jour} (${jours[jour].length} trajets)`,
-                doc.internal.pageSize.width / 4,
-                60 + (31 - Object.keys(jours).length) * 2.5 + 5 * index,
-                null,
-                null,
-                "left"
-              );
+            doc.autoTable({
+              theme: "plain",
+              styles: { lineWidth: 0.1, cellPadding: 0.6, fontSize: 10 },
+              headStyles: { fillColor: [230, 230, 230] },
+              footStyles: { halign: "right", fillColor: [230, 230, 230] },
+              columnStyles: {
+                1: { halign: "right" },
+                2: { halign: "right" },
+                3: { halign: "right", fillColor: [230, 230, 230] }
+              },
+              startY: 60,
+              head: [["Date", "Allers", "Retours", "Total"]],
+              body: [
+                ...Object.keys(jours).map(jour => {
+                  return [
+                    jour,
+                    jours[jour].filter(c => c !== "R").length,
+                    jours[jour].filter(c => c === "R").length,
+                    jours[jour].length
+                  ];
+                }),
+                ...new Array(32 - Object.keys(jours).length).fill([
+                  "",
+                  "",
+                  "",
+                  ""
+                ])
+              ],
+              foot: [
+                Object.keys(jours).reduce(
+                  (result, jour) => {
+                    result[1] += jours[jour].filter(c => c !== "R").length;
+                    result[2] += jours[jour].filter(c => c === "R").length;
+                    result[3] += jours[jour].length;
+                    return result;
+                  },
+                  ["Total", 0, 0, 0]
+                )
+              ]
             });
-
-            const allers = Object.values(jours)
-              .flat()
-              .filter(j => j === "A").length;
-            const retours = Object.values(jours)
-              .flat()
-              .filter(j => j === "R").length;
-
-            doc.setFontSize(14);
-            doc.text(
-              `Soit ${allers} Aller${allers > 1 ? "s" : ""}`,
-              doc.internal.pageSize.width - 30,
-              230,
-              null,
-              null,
-              "right"
-            );
-            doc.text(
-              `et ${retours} Retour${retours > 1 ? "s" : ""}`,
-              doc.internal.pageSize.width - 30,
-              237,
-              null,
-              null,
-              "right"
-            );
 
             doc.setFontSize(12);
             doc.setFontType("italic");
