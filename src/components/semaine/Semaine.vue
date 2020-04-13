@@ -405,7 +405,8 @@ export default {
         "Consultation",
         "Kiné / Rééducation",
         "Chimiothérapie",
-        "Sortie d'hôpital"
+        "Sortie d'hôpital",
+        "Entrée d'hôpital"
       ],
       searchTerms: "",
       deleteData: undefined,

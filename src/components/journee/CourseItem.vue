@@ -139,9 +139,17 @@
       </v-card-text>
 
       <v-chip
+        pill
         class="elevation-2"
         style="position: absolute; left: -100px; bottom: -16px;"
       >
+        <v-avatar
+          left
+          style="color:white;"
+          :style="{ backgroundColor: course.color }"
+        >
+          {{ course.patient.shortType }}
+        </v-avatar>
         <v-icon v-if="course.direction">
           {{
             course.direction === "Aller"
@@ -232,7 +240,8 @@ export default {
         "Consultation",
         "Kiné / Rééducation",
         "Chimiothérapie",
-        "Sortie d'hôpital"
+        "Sortie d'hôpital",
+        "Entrée d'hôpital"
       ],
       societes: ["OKA", "Cicciu", "TAP"]
     };

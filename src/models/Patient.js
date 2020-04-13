@@ -81,6 +81,8 @@ export default class Patient extends Model {
         return "MediumOrchid";
       case "Sortie d'hôpital":
         return "orange";
+      case "Entrée d'hôpital":
+        return "gold";
       default:
         return "grey";
     }
@@ -104,6 +106,8 @@ export default class Patient extends Model {
         return "CH";
       case "Sortie d'hôpital":
         return "S";
+      case "Entrée d'hôpital":
+        return "E";
       default:
         return "?";
     }

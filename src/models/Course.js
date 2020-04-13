@@ -146,6 +146,8 @@ export default class Course extends Model {
           return "MediumOrchid";
         case "Sortie d'hôpital":
           return "orange";
+        case "Entrée d'hôpital":
+          return "gold";
         default:
           return "grey";
       }
