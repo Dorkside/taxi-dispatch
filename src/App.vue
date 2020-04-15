@@ -154,65 +154,70 @@ export default {
   },
   mounted() {
     firebase.auth().onAuthStateChanged(user => {
-      firebase
-        .firestore()
-        .disableNetwork()
-        .then(() => {
-          if (!user) {
-            this.$store.commit("setAdmin", false);
-          } else {
-            if (
-              ["+33762686070", "+33761610703", "+33668666606"].includes(
-                user.phoneNumber
-              )
-            ) {
-              this.$store.commit("setAdmin", true);
+      // firebase
+      //   .firestore()
+      //   .disableNetwork()
+      //   .then(() => {
+      if (!user) {
+        this.$store.commit("setAdmin", false);
+      } else {
+        if (
+          ["+33762686070", "+33761610703", "+33668666606"].includes(
+            user.phoneNumber
+          )
+        ) {
+          this.$store.commit("setAdmin", true);
 
-              db.collection("phones").onSnapshot(function(querySnapshot) {
-                subscribeToChanges(Phone, querySnapshot);
-              });
+          db.collection("phones").onSnapshot(function(querySnapshot) {
+            subscribeToChanges(Phone, querySnapshot);
+          });
 
-              db.collection("chauffeurs").onSnapshot(function(querySnapshot) {
-                subscribeToChanges(Chauffeur, querySnapshot);
-              });
+          db.collection("chauffeurs").onSnapshot(function(querySnapshot) {
+            subscribeToChanges(Chauffeur, querySnapshot);
+          });
 
-              db.collection("courses").onSnapshot(function(querySnapshot) {
-                subscribeToChanges(Course, querySnapshot);
-              });
-            } else {
-              db.collection("phones")
-                .doc(user.phoneNumber)
-                .get()
-                .then(doc => {
-                  const { chauffeur_id } = doc.data();
+          db.collection("courses").onSnapshot(function(querySnapshot) {
+            subscribeToChanges(Course, querySnapshot);
+          });
+        } else {
+          db.collection("phones")
+            .doc(user.phoneNumber)
+            .get()
+            .then(doc => {
+              const { chauffeur_id } = doc.data();
 
-                  db.collection("chauffeurs")
-                    .doc(chauffeur_id)
-                    .onSnapshot(function(doc) {
-                      Chauffeur.insert({
-                        data: {
-                          ...doc.data(),
-                          id: doc.id
-                        }
-                      });
-                    });
-
-                  db.collection("courses")
-                    .where("deleted", "==", "")
-                    .where("chauffeur_id", "==", chauffeur_id)
-                    .onSnapshot(function(querySnapshot) {
-                      subscribeToChanges(Course, querySnapshot);
-                    });
+              db.collection("chauffeurs")
+                .doc(chauffeur_id)
+                .onSnapshot(function(doc) {
+                  Chauffeur.insert({
+                    data: {
+                      ...doc.data(),
+                      id: doc.id
+                    }
+                  });
                 });
-            }
 
-            db.collection("patients").onSnapshot(function(querySnapshot) {
-              subscribeToChanges(Patient, querySnapshot);
+              db.collection("courses")
+                .where("deleted", "==", "")
+                .where("chauffeur_id", "==", chauffeur_id)
+                .onSnapshot(function(querySnapshot) {
+                  subscribeToChanges(Course, querySnapshot);
+                });
             });
-          }
+        }
 
-          firebase.firestore().enableNetwork();
+        db.collection("patients").onSnapshot(function(querySnapshot) {
+          subscribeToChanges(Patient, querySnapshot);
         });
+      }
+
+      // firebase
+      //   .firestore()
+      //   .enableNetwork()
+      //   .then(() => {
+      //     console.log("ONLINE");
+      //   });
+      // });
     });
   },
   methods: {

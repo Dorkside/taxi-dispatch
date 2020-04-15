@@ -15,11 +15,13 @@ dayjs.locale("fr");
 Vue.use(VueVirtualScroller);
 Vue.use(VueRouter);
 
-Vue.prototype.$workbox = wb;
+if (wb) {
+  Vue.prototype.$workbox = wb;
 
-Vue.prototype.$workbox.addEventListener("waiting", () => {
-  Vue.prototype.$workbox.messageSW({ type: "SKIP_WAITING" });
-});
+  Vue.prototype.$workbox.addEventListener("waiting", () => {
+    Vue.prototype.$workbox.messageSW({ type: "SKIP_WAITING" });
+  });
+}
 
 const router = new VueRouter({
   routes

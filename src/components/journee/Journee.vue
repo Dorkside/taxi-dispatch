@@ -1,6 +1,7 @@
 <template>
   <div class="pa-0 ma-0 d-flex align-stretch flex-column day-container">
     <v-subheader
+      v-if="admin"
       class="d-flex flex-grow-0 flex-shrink-0 elevation-2"
       style="z-index: 10;"
     >
@@ -25,7 +26,7 @@
       </v-progress-linear>
       <v-spacer></v-spacer>
 
-      <v-dialog v-if="admin" v-model="dialog" width="600">
+      <v-dialog v-model="dialog" width="600">
         <template v-slot:activator="{ on }">
           <v-btn small text style="position: absolute; right: 16px;" v-on="on">
             <v-icon>mdi-plus-circle</v-icon> Ajouter course
@@ -88,6 +89,17 @@
       </v-dialog>
     </v-subheader>
 
+    <v-subheader
+      v-if="!admin"
+      class="d-flex flex-grow-0 flex-shrink-0 elevation-2"
+      style="z-index: 10;"
+    >
+      <v-spacer></v-spacer>
+      <v-btn color="primary" right @click="logOut">
+        <v-icon left>mdi-close</v-icon>
+        Déconnexion
+      </v-btn>
+    </v-subheader>
     <div
       ref="coursesList"
       class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch"
@@ -100,8 +112,8 @@
         style="z-index: 1;"
       >
         <v-tab key="journee">Courses de la journée</v-tab>
-        <v-tab key="validees">Courses validées</v-tab>
-        <v-tab key="annulees">Courses annulées</v-tab>
+        <v-tab v-if="admin" key="validees">Courses validées</v-tab>
+        <v-tab v-if="admin" key="annulees">Courses annulées</v-tab>
       </v-tabs>
       <v-tabs-items
         ref="tab-container"
@@ -159,7 +171,7 @@
             </v-list-item>
           </v-list>
         </v-tab-item>
-        <v-tab-item key="validees">
+        <v-tab-item v-if="admin" key="validees">
           <v-list class="transparent pa-2" dense>
             <v-list-item
               v-for="(course, index) in coursesTodayValidated"
@@ -178,7 +190,7 @@
             </v-list-item>
           </v-list>
         </v-tab-item>
-        <v-tab-item key="annulees">
+        <v-tab-item v-if="admin" key="annulees">
           <v-list class="transparent pa-2" dense>
             <v-list-item
               v-for="(course, index) in coursesTodayDeleted"
@@ -203,6 +215,7 @@
 </template>
 
 <script>
+import firebase from "firebase";
 import Course from "@/models/Course";
 import Patient from "@/models/Patient";
 import CourseItem from "./CourseItem";
@@ -400,6 +413,9 @@ export default {
     }
   },
   methods: {
+    logOut() {
+      firebase.auth().signOut();
+    },
     addCourse(course) {
       const _c = JSON.parse(JSON.stringify(course.$toJson()));
       Course.create({ ..._c, date: this.date });
