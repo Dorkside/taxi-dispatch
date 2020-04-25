@@ -220,8 +220,9 @@
 <script>
 import { mapState } from "vuex";
 import Patient from "@/models/Patient";
-import Course from "@/models/Course";
 import Chauffeur from "@/models/Chauffeur";
+import Types from "../../database/types";
+
 export default {
   name: "CourseItem",
   props: {
@@ -234,15 +235,7 @@ export default {
       dialog: false,
       dialogDelete: false,
       newTime: this.course ? this.course.time : "",
-      types: [
-        "Dialyse",
-        "HDJ",
-        "Consultation",
-        "Kiné / Rééducation",
-        "Chimiothérapie",
-        "Sortie d'hôpital",
-        "Entrée d'hôpital"
-      ],
+      types: Object.keys(Types),
       societes: ["OKA", "Cicciu", "TAP"]
     };
   },

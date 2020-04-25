@@ -3,7 +3,7 @@ import uuid from "uuid";
 import { db } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
-import { database } from "firebase";
+import Types from "../database/types";
 
 export default class Course extends Model {
   static entity = "courses";
@@ -52,7 +52,7 @@ export default class Course extends Model {
       .doc(id)
       .update(data)
       .then(() => {})
-      .catch(error => {
+      .catch(() => {
         db.collection("courses")
           .doc(id)
           .set({
@@ -133,24 +133,7 @@ export default class Course extends Model {
 
   get color() {
     if (this.type) {
-      switch (this.type) {
-        case "Dialyse":
-          return "CornflowerBlue";
-        case "HDJ":
-          return "Tomato";
-        case "Kiné / Rééducation":
-          return "grey";
-        case "Consultation":
-          return "ForestGreen";
-        case "Chimiothérapie":
-          return "MediumOrchid";
-        case "Sortie d'hôpital":
-          return "orange";
-        case "Entrée d'hôpital":
-          return "gold";
-        default:
-          return "grey";
-      }
+      return Types[this.type].color;
     } else if (this.patient) {
       return this.patient.color;
     } else {
@@ -159,23 +142,6 @@ export default class Course extends Model {
   }
 
   get shortType() {
-    switch (this.type) {
-      case "Dialyse":
-        return "D";
-      case "HDJ":
-        return "H";
-      case "Kiné / Rééducation":
-        return "K";
-      case "Consultation":
-        return "C";
-      case "Chimiothérapie":
-        return "CH";
-      case "Sortie d'hôpital":
-        return "S";
-      case "Entrée d'hôpital":
-        return "E";
-      default:
-        return "?";
-    }
+    return Types[this.type].shortName;
   }
 }

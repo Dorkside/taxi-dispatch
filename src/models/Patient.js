@@ -1,6 +1,7 @@
 import { Model } from "@vuex-orm/core";
 import { db } from "../store/db";
 import Course from "./Course";
+import Types from "../database/types";
 
 export default class Patient extends Model {
   static entity = "patients";
@@ -68,24 +69,7 @@ export default class Patient extends Model {
   }
 
   get color() {
-    switch (this.type) {
-      case "Dialyse":
-        return "CornflowerBlue";
-      case "HDJ":
-        return "Tomato";
-      case "Kiné / Rééducation":
-        return "grey";
-      case "Consultation":
-        return "ForestGreen";
-      case "Chimiothérapie":
-        return "MediumOrchid";
-      case "Sortie d'hôpital":
-        return "orange";
-      case "Entrée d'hôpital":
-        return "gold";
-      default:
-        return "grey";
-    }
+    return Types[this.type].color;
   }
 
   get fullname() {
@@ -93,24 +77,7 @@ export default class Patient extends Model {
   }
 
   get shortType() {
-    switch (this.type) {
-      case "Dialyse":
-        return "D";
-      case "HDJ":
-        return "H";
-      case "Kiné / Rééducation":
-        return "K";
-      case "Consultation":
-        return "C";
-      case "Chimiothérapie":
-        return "CH";
-      case "Sortie d'hôpital":
-        return "S";
-      case "Entrée d'hôpital":
-        return "E";
-      default:
-        return "?";
-    }
+    return Types[this.type].shortName;
   }
 
   get schedules() {

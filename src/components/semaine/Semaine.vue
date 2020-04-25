@@ -386,6 +386,8 @@
 import * as dayjs from "dayjs";
 import Patient from "@/models/Patient";
 import PatientDayCell from "@/components/semaine/PatientDayCell.vue";
+import Types from "../../database/types";
+
 export default {
   name: "Semaine",
   components: {
@@ -399,15 +401,7 @@ export default {
       dialogPatientData: undefined,
       newTime: "",
       days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
-      types: [
-        "Dialyse",
-        "HDJ",
-        "Consultation",
-        "Kiné / Rééducation",
-        "Chimiothérapie",
-        "Sortie d'hôpital",
-        "Entrée d'hôpital"
-      ],
+      types: Object.keys(Types),
       searchTerms: "",
       deleteData: undefined,
       dialogDelete: false,
