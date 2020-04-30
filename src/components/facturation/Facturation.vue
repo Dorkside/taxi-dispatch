@@ -163,7 +163,6 @@ export default {
         .with("chauffeur")
         .with("patient")
         .get()
-        .filter(course => !!course.chauffeur)
         .filter(course =>
           ["Dialyse", "HDJ", "Kiné / Rééducation"].includes(course.type)
         );
