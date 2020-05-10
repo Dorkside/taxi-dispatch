@@ -5,8 +5,35 @@ import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
 import Types from "../database/types";
 
+const subscribeToChanges = (Model, querySnapshot) => {
+  const docChanges = querySnapshot.docChanges();
+  Model.insertOrUpdate({
+    data: docChanges
+      .filter(change => change.type === "added")
+      .map(change => ({
+        ...change.doc.data(),
+        id: change.doc.id
+      }))
+  });
+  Model.insertOrUpdate({
+    data: docChanges
+      .filter(change => change.type === "modified")
+      .map(change => ({
+        ...change.doc.data(),
+        id: change.doc.id
+      }))
+  });
+  Model.delete({
+    data: docChanges
+      .filter(change => change.type === "removed")
+      .map(change => ({
+        id: change.doc.id
+      }))
+  });
+};
 export default class Course extends Model {
   static entity = "courses";
+  static refs = {};
 
   static fields() {
     return {
@@ -25,6 +52,27 @@ export default class Course extends Model {
       doneDate: this.string(""),
       societe: this.string("")
     };
+  }
+
+  static fetch(date) {
+    if (!Course.refs[date]) {
+      Course.refs[date] = db.collection("courses").where("date", "==", date);
+      Course.refs[date].onSnapshot(function(querySnapshot) {
+        subscribeToChanges(Course, querySnapshot);
+      });
+    }
+  }
+
+  static fetchMonth(date) {
+    if (!Course.refs[date]) {
+      Course.refs[date] = db
+        .collection("courses")
+        .where("date", ">=", `${date}-00`)
+        .where("date", "<=", `${date}-32`);
+      Course.refs[date].onSnapshot(function(querySnapshot) {
+        subscribeToChanges(Course, querySnapshot);
+      });
+    }
   }
 
   static create(data) {

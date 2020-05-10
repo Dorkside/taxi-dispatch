@@ -176,9 +176,9 @@ export default {
             subscribeToChanges(Chauffeur, querySnapshot);
           });
 
-          db.collection("courses").onSnapshot(function(querySnapshot) {
-            subscribeToChanges(Course, querySnapshot);
-          });
+          // db.collection("courses").onSnapshot(function(querySnapshot) {
+          //   subscribeToChanges(Course, querySnapshot);
+          // });
         } else {
           db.collection("phones")
             .doc(user.phoneNumber)
@@ -210,6 +210,8 @@ export default {
           subscribeToChanges(Patient, querySnapshot);
         });
       }
+
+      this.setDate(new Date());
 
       // firebase
       //   .firestore()

@@ -168,20 +168,24 @@ export default {
         );
     },
     months() {
-      return this.courses
-        .reduce((months, course) => {
-          const month = course.date.slice(0, 7);
-          if (!months.includes(month)) {
-            months.push(month);
-          }
-          return months;
-        }, [])
-        .sort()
-        .reverse()
-        .map(month => ({
-          date: month,
-          string: dayjs(`${month}-01`).format("MMMM YYYY")
-        }));
+      const months = [];
+      const startDate = "2020-02";
+      const todayDate = new Date().toISOString().slice(0, 7);
+      const [startYear, startMonth] = startDate.split("-").map(Number);
+      const [todayYear, todayMonth] = todayDate.split("-").map(Number);
+      const totalMonths =
+        (todayYear - startYear) * 12 + (todayMonth - startMonth);
+      for (let i = startMonth; i < startMonth + totalMonths; i += 1) {
+        months.push(
+          `${startYear + Math.floor(i / 12)}-${
+            (i % 12) + 1 < 10 ? "0" : ""
+          }${(i % 12) + 1}`
+        );
+      }
+      return [startDate, ...months].reverse().map(month => ({
+        date: month,
+        string: dayjs(`${month}-01`).format("MMMM YYYY")
+      }));
     },
     monthlyCourses() {
       return this.courses.filter(course => {
@@ -243,9 +247,13 @@ export default {
       return this.patients;
     }
   },
+  mounted() {
+    this.setMonth(dayjs().format("YYYY-MM"));
+  },
   methods: {
     setMonth(date) {
       this.currentMonth = date + "-01";
+      Course.fetchMonth(date);
     },
     prettyDate(date) {
       return dayjs(date).format("dddd D MMMM YYYY");
