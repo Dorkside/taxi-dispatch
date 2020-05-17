@@ -3,6 +3,8 @@ const firestore = require("@google-cloud/firestore");
 const admin = require("firebase-admin");
 const client = new firestore.v1.FirestoreAdminClient();
 
+admin.initializeApp(functions.config().firebase);
+
 // Replace BUCKET_NAME
 const bucket = "gs://taxi-oka.appspot.com";
 
@@ -31,13 +33,3 @@ exports.scheduledFirestoreExport = functions.pubsub
         throw new Error("Export operation failed");
       });
   });
-
-exports.cleanCourses = functions.https.onRequest(async (req, res) => {
-  const db = admin.firestore();
-  db.collection("courses")
-    .where("chauffeur_id", "==", "")
-    .get()
-    .then(data => {
-      console.log(data);
-    });
-});
