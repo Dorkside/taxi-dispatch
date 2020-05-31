@@ -63,6 +63,10 @@
               <v-icon left>mdi-car</v-icon>
               Chauffeurs
             </v-tab>
+            <v-tab v-if="admin" to="/places">
+              <v-icon left>mdi-hospital-building</v-icon>
+              Etablissements
+            </v-tab>
             <v-tab v-if="admin" to="/facturation">
               <v-icon left>mdi-receipt</v-icon>
               Facturation
@@ -98,6 +102,7 @@ import Chauffeur from "./models/Chauffeur";
 import Course from "./models/Course";
 import Patient from "./models/Patient";
 import Phone from "./models/Phone";
+import Place from "./models/Place";
 
 const subscribeToChanges = (Model, querySnapshot) => {
   const docChanges = querySnapshot.docChanges();
@@ -154,10 +159,6 @@ export default {
   },
   mounted() {
     firebase.auth().onAuthStateChanged(user => {
-      // firebase
-      //   .firestore()
-      //   .disableNetwork()
-      //   .then(() => {
       if (!user) {
         this.$store.commit("setAdmin", false);
       } else {
@@ -175,10 +176,6 @@ export default {
           db.collection("chauffeurs").onSnapshot(function(querySnapshot) {
             subscribeToChanges(Chauffeur, querySnapshot);
           });
-
-          // db.collection("courses").onSnapshot(function(querySnapshot) {
-          //   subscribeToChanges(Course, querySnapshot);
-          // });
         } else {
           db.collection("phones")
             .doc(user.phoneNumber)
@@ -209,17 +206,13 @@ export default {
         db.collection("patients").onSnapshot(function(querySnapshot) {
           subscribeToChanges(Patient, querySnapshot);
         });
+
+        db.collection("places").onSnapshot(function(querySnapshot) {
+          subscribeToChanges(Place, querySnapshot);
+        });
       }
 
       this.setDate(new Date());
-
-      // firebase
-      //   .firestore()
-      //   .enableNetwork()
-      //   .then(() => {
-      //     console.log("ONLINE");
-      //   });
-      // });
     });
   },
   methods: {

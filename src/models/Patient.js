@@ -1,6 +1,7 @@
 import { Model } from "@vuex-orm/core";
 import { db } from "../store/db";
 import Course from "./Course";
+import Place from "./Place";
 import Types from "../database/types";
 
 export default class Patient extends Model {
@@ -26,7 +27,9 @@ export default class Patient extends Model {
       vendrediRetour: this.string(""),
       samedi: this.string(""),
       samediRetour: this.string(""),
-      deleted: this.string("")
+      deleted: this.string(""),
+      place: this.belongsTo(Place, "place_id"),
+      place_id: this.string("")
     };
   }
 

@@ -277,7 +277,10 @@ export default {
                   ref: `${this.date}.${patient.id}.Aller`,
                   date: this.date,
                   time: patient[this.currentDay],
-                  patient: Patient.find(patient.id),
+                  patient: {
+                    ...Patient.find(patient.id),
+                    place: patient.place
+                  },
                   generated: true,
                   societe: patient.societe,
                   deleted: "",
@@ -292,7 +295,10 @@ export default {
                   ref: `${this.date}.${patient.id}.Retour`,
                   date: this.date,
                   time: patient[this.currentDay + "Retour"],
-                  patient: Patient.find(patient.id),
+                  patient: {
+                    ...Patient.find(patient.id),
+                    place: patient.place
+                  },
                   generated: true,
                   societe: patient.societe,
                   deleted: "",
@@ -317,10 +323,13 @@ export default {
       return Course.query()
         .with("chauffeur")
         .with("patient")
+        .with("patient.place")
         .get();
     },
     patients() {
-      return Patient.query().get();
+      return Patient.query()
+        .with("place")
+        .get();
     },
     allCourses() {
       return this.courses.concat(this.recurringCourses);

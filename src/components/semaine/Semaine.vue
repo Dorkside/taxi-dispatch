@@ -35,6 +35,11 @@
             {{ item.surname }} {{ item.name }}
           </v-card-title>
 
+          <span style="margin-left: 32px;">
+            <v-icon>mdi-hospital-building</v-icon>
+            {{ item.place ? item.place.name : "?" }}
+          </span>
+
           <v-chip
             class="elevation-2"
             style="position: absolute; right: -16px; top: -12px;"
@@ -284,6 +289,21 @@
 
             <div class="pa-0 d-flex justify-center align-center">
               <v-select
+                v-model="dialogPatientData.place"
+                :items="places"
+                label="Etablissement"
+                hide-details
+                height="24"
+                item-text="name"
+                item-value="id"
+                :value="dialogPatientData.place"
+                class="ma-2"
+                @change="changePlace($event, dialogPatientData)"
+              ></v-select>
+            </div>
+
+            <div class="pa-0 d-flex justify-center align-center">
+              <v-select
                 v-model="dialogPatientData.societe"
                 :items="societes"
                 label="Société"
@@ -385,6 +405,7 @@
 <script>
 import * as dayjs from "dayjs";
 import Patient from "@/models/Patient";
+import Place from "@/models/Place";
 import PatientDayCell from "@/components/semaine/PatientDayCell.vue";
 import Types from "../../database/types";
 
@@ -439,8 +460,14 @@ export default {
         .where("deleted", "")
         .orderBy("surname", "asc")
         .orderBy("name", "asc")
+        .with("place")
         .with("courses")
         .with("courses.chauffeur")
+        .get();
+    },
+    places() {
+      return Place.query()
+        .orderBy("name")
         .get();
     },
     search() {
@@ -496,6 +523,9 @@ export default {
     deleteModal(item) {
       this.deleteData = item;
       this.dialogDelete = true;
+    },
+    changePlace($event, patient) {
+      patient.update({ place_id: $event });
     },
     changeSociete($event, patient) {
       patient.update({ societe: $event });

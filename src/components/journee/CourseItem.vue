@@ -167,6 +167,11 @@
               ? "Retour"
               : ""
           }}
+          {{
+            course.patient && course.patient.place && course.patient.place.name
+              ? `&nbsp;|&nbsp;${course.patient.place.name}`
+              : ""
+          }}
         </span>
       </v-chip>
 
@@ -242,7 +247,9 @@ export default {
   computed: {
     ...mapState(["admin"]),
     patients() {
-      return Patient.query().get();
+      return Patient.query()
+        .with("place")
+        .get();
     },
     chauffeurs() {
       return Chauffeur.query().get();
