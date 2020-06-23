@@ -164,7 +164,9 @@ export default {
         .with("patient")
         .get()
         .filter(course =>
-          ["Dialyse", "HDJ", "Kiné / Rééducation"].includes(course.type)
+          ["Dialyse", "HDJ", "Kiné / Rééducation", "Radiothérapie"].includes(
+            course.type
+          )
         );
     },
     months() {
