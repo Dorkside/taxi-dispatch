@@ -154,6 +154,7 @@ export default {
     chauffeurs: {
       get() {
         return Chauffeur.query()
+          .where("deleted", "")
           .with("courses", query => {
             query.where("date", this.date).orderBy("time", "asc");
           })
