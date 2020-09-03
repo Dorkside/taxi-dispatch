@@ -163,9 +163,13 @@ export default {
         this.$store.commit("setAdmin", false);
       } else {
         if (
-          ["+33762686070", "+33761610703", "+33668666606"].includes(
-            user.phoneNumber
-          )
+          [
+            "+33762686070",
+            "+33761610703",
+            "+33668666606",
+            "+33658474169",
+            "+33769186127"
+          ].includes(user.phoneNumber)
         ) {
           this.$store.commit("setAdmin", true);
 
