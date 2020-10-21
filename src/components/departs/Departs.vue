@@ -43,18 +43,18 @@
         flat
         class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
       >
+        <v-subheader class="title-scroll gradient">
+          <v-chip class="mt-2">
+            {{ chauffeur.name }}
+          </v-chip>
+        </v-subheader>
         <v-icon class="handle-chauffeur">
           {{ "mdi-arrow-all" }}
         </v-icon>
         <v-list
           class="pa-0 d-flex flex-column align-stretch overflow-y-auto"
-          :style="{ height: '100%', background: 'transparent' }"
+          :style="{ height: 'calc(100% - 48px)', background: 'transparent' }"
         >
-          <v-subheader class="title-scroll gradient">
-            <v-chip class="mt-2">
-              {{ chauffeur.name }}
-            </v-chip>
-          </v-subheader>
           <draggable
             :value="chauffeur.courses"
             :sort="true"
