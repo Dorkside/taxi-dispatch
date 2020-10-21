@@ -346,8 +346,8 @@ export default {
 }
 .handle-chauffeur {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 8px;
+  right: 8px;
   z-index: 100;
 }
 .scroller {
