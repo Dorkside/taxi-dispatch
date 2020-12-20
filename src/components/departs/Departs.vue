@@ -101,7 +101,8 @@ export default {
         "Mercredi",
         "Jeudi",
         "Vendredi",
-        "Samedi"
+        "Samedi",
+        "Dimanche"
       ]
     };
   },

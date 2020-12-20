@@ -236,7 +236,8 @@ export default {
         "Mercredi",
         "Jeudi",
         "Vendredi",
-        "Samedi"
+        "Samedi",
+        "Dimanche"
       ],
       dialog: false,
       newCourse: new Course({

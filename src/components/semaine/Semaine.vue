@@ -421,7 +421,15 @@ export default {
       dialogHistory: false,
       dialogPatientData: undefined,
       newTime: "",
-      days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+      days: [
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi",
+        "Dimanche"
+      ],
       types: Object.keys(Types),
       searchTerms: "",
       deleteData: undefined,

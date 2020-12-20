@@ -27,6 +27,8 @@ export default class Patient extends Model {
       vendrediRetour: this.string(""),
       samedi: this.string(""),
       samediRetour: this.string(""),
+      dimanche: this.string(""),
+      dimancheRetour: this.string(""),
       deleted: this.string(""),
       place: this.belongsTo(Place, "place_id"),
       place_id: this.string("")
@@ -96,7 +98,9 @@ export default class Patient extends Model {
       "vendredi",
       "vendrediRetour",
       "samedi",
-      "samediRetour"
+      "samediRetour",
+      "dimanche",
+      "dimancheRetour"
     ].reduce((schedules, day) => {
       if (!schedules) {
         schedules = {};
