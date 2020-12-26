@@ -50,7 +50,8 @@ export default class Course extends Model {
       generated: this.boolean(false),
       deleted: this.string(""),
       doneDate: this.string(""),
-      societe: this.string("")
+      societe: this.string(""),
+      isRead: this.boolean(false)
     };
   }
 
@@ -108,7 +109,8 @@ export default class Course extends Model {
               JSON.stringify({
                 ...this.$toJson(),
                 patient_id: this.$toJson().patient && this.$toJson().patient.id,
-                patient: undefined
+                patient: undefined,
+                isRead: data.chauffeur_id ? false : this.$toJson().isRead
               })
             ),
             ...data
@@ -141,6 +143,12 @@ export default class Course extends Model {
     db.collection("courses")
       .doc(this.id)
       .update({ deleted: "" });
+  }
+
+  read() {
+    db.collection("courses")
+      .doc(this.id)
+      .update({ isRead: true });
   }
 
   done() {

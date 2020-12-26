@@ -1,5 +1,8 @@
 {
   "private": true,
+  "engines": {
+    "node": "12"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",

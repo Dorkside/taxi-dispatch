@@ -177,6 +177,9 @@
 
       <v-card-actions class="d-flex justify-space-between align-center">
         <v-spacer></v-spacer>
+        <v-icon class="mr-2" :color="course.isRead ? 'green' : 'grey'">
+          {{ course.isRead ? "mdi-eye-check" : "mdi-eye-off" }}
+        </v-icon>
         <v-combobox
           v-if="
             course.time &&
@@ -199,23 +202,33 @@
           @click:clear="changeChauffeur(null, course)"
           @change="changeChauffeur($event, course)"
         ></v-combobox>
-
         <slot name="actions"></slot>
       </v-card-actions>
 
       <v-card-actions
-        v-if="course.time && course.chauffeur && !course.deleted"
+        v-if="course.time && !course.deleted"
         class="d-flex justify-space-between align-center"
       >
         <v-spacer></v-spacer>
         <v-btn
-          v-if="admin"
+          v-if="admin && course.chauffeur"
           text
           :color="!course.doneDate ? 'green' : 'grey'"
           :disabled="!course.chauffeur || !course.time"
           @click="doCourse(course)"
         >
           {{ !course.doneDate ? "Valider" : "Annuler" }}
+        </v-btn>
+        <v-btn
+          v-if="!admin"
+          :disabled="course.isRead"
+          small
+          outlined
+          color="green"
+          @click="viewCourse(course)"
+        >
+          <v-icon class="mr-2">mdi-eye-check</v-icon>
+          {{ course.isRead ? "Vu" : "Marquer comme vu" }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -310,6 +323,11 @@ export default {
         course.done();
       } else {
         course.undone();
+      }
+    },
+    viewCourse(course) {
+      if (!course.isRead) {
+        course.read();
       }
     },
     deleteCourse(course) {
