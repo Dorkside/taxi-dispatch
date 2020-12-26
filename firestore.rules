@@ -21,6 +21,7 @@ service cloud.firestore {
     }
     match /courses/{document=**} {
       allow read: if request.auth != null && (isAdmin() || (isChauffeur() && resource.data.chauffeur_id == get(/databases/$(database)/documents/phones/$(request.auth.token.phone_number)).data.chauffeur_id));
+      allow update: if request.auth != null && (isAdmin() || (isChauffeur() && resource.data.chauffeur_id == get(/databases/$(database)/documents/phones/$(request.auth.token.phone_number)).data.chauffeur_id));
     }
     match /chauffeurs/{chauffeurId}/{document=**} {
       allow read: if request.auth != null && (isAdmin() || (isChauffeur() && chauffeurId == get(/databases/$(database)/documents/phones/$(request.auth.token.phone_number)).data.chauffeur_id));
