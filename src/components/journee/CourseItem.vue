@@ -252,7 +252,9 @@ export default {
         .get();
     },
     chauffeurs() {
-      return Chauffeur.query().get();
+      return Chauffeur.query()
+        .where("deleted", "")
+        .get();
     }
   },
   methods: {
