@@ -62,16 +62,46 @@
               hide-details
               @change="changeType($event, course)"
             ></v-select>
-            <span
-              v-if="course.generated && course.patient"
-              class="flex-grow-1"
-              :style="{ minWidth: '100px' }"
-            >
-              {{ course.patient.fullname }}
-              <small v-if="course.patient.deleted">(Patient supprimé)</small>
-            </span>
+            <div class="d-flex flex-column">
+              <span
+                v-if="course.generated && course.patient"
+                class="flex-grow-1 mb-4"
+                :style="{ minWidth: '100px' }"
+              >
+                {{ course.patient.fullname }}
+                <small v-if="course.patient.deleted">(Patient supprimé)</small>
+              </span>
+
+              <div
+                class="d-flex"
+                :class="{
+                  'flex-column': course.direction === 'Aller',
+                  'flex-column-reverse': course.direction === 'Retour'
+                }"
+              >
+                <v-chip
+                  v-if="course.patient"
+                  class="flex-grow-1 mb-1"
+                  :style="{ minWidth: '100px' }"
+                  @click="openMap(course.patient.adresse)"
+                >
+                  <v-icon>mdi-home-map-marker</v-icon>
+                  {{ course.patient.adresse || "???" }}
+                </v-chip>
+                <v-chip
+                  v-if="course.patient.place"
+                  class="flex-grow-1 mb-1"
+                  :style="{ minWidth: '100px' }"
+                  @click="openMap(course.patient.place.adresse)"
+                >
+                  <v-icon>mdi-hospital-marker</v-icon>
+                  {{ course.patient.place.name }},
+                  {{ course.patient.place.adresse || "???" }}
+                </v-chip>
+              </div>
+            </div>
             <v-combobox
-              v-else
+              v-if="!course.generated"
               dense
               :value="course.patient"
               height="24"
@@ -271,6 +301,18 @@ export default {
     }
   },
   methods: {
+    openMap(adresse) {
+      if (
+        /* if we're on iOS, open in Apple Maps */
+        navigator.platform.indexOf("iPhone") != -1 ||
+        navigator.platform.indexOf("iPad") != -1 ||
+        navigator.platform.indexOf("iPod") != -1
+      ) {
+        window.open(`maps://maps.google.com/maps?daddr=${adresse}&amp;ll=`);
+      } else {
+        window.open(`https://maps.google.com/maps?daddr=${adresse}&amp;ll=`);
+      }
+    },
     cancel() {
       this.dialog = false;
     },

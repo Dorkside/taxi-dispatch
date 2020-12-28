@@ -33,6 +33,13 @@
                 prepend-inner-icon="mdi-hospital-building"
                 required
               ></v-text-field>
+              <v-textarea
+                v-model="newPlace.adresse"
+                label="Adresse"
+                autocomplete="nofill"
+                rows="3"
+                prepend-inner-icon="mdi-map-marker"
+              ></v-textarea>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -111,7 +118,7 @@
           class="pa-0 ma-2 place align-start justify-start"
         >
           <div
-            class="d-flex flex-row pa-2"
+            class="d-flex flex-row pa-2 align-stretch"
             :style="{ backgroundColor: '#333333' }"
           >
             <div class="d-flex">
@@ -119,17 +126,26 @@
                 {{ "mdi-arrow-all" }}
               </v-icon>
             </div>
-            <div class="d-flex justify-center align-center">
+            <div class="d-flex flex-grow-1 flex-column">
               <v-text-field
                 dark
-                label="Regular"
                 single-line
                 :value="item.name"
                 class="mr-2 flex-grow-1"
+                autocomplete="nofill"
                 placeholder="Nom"
-                dense
                 @change="changeName($event, item)"
               ></v-text-field>
+              <v-textarea
+                dark
+                label="Adresse"
+                :value="item.adresse"
+                class="mr-2 flex-grow-1"
+                placeholder="Adresse"
+                autocomplete="nofill"
+                rows="3"
+                @change="changeAdresse($event, item)"
+              ></v-textarea>
             </div>
           </div>
           <v-card-actions>
@@ -162,7 +178,8 @@ export default {
       dialog: false,
       searchTerms: "",
       newPlace: {
-        name: null
+        name: null,
+        adresse: null
       },
       deleteData: undefined,
       dialogDelete: false,
@@ -215,6 +232,10 @@ export default {
     },
     changeName($event, place) {
       place.update({ name: $event });
+    },
+    changeAdresse($event, place) {
+      console.log($event);
+      place.update({ adresse: $event });
     },
     deletePlace(place) {
       place.delete();

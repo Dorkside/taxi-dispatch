@@ -11,7 +11,10 @@ export default class Place extends Model {
       name: this.string(""),
       order: this.number(0),
       patient_id: this.string(""),
-      patient: this.hasMany(Patient, "place_id")
+      patient: this.hasMany(Patient, "place_id"),
+      adresse: this.string(""),
+      lat: this.number(0),
+      lng: this.number(0)
     };
   }
 
@@ -19,7 +22,8 @@ export default class Place extends Model {
     db.collection("places")
       .doc(data.name)
       .set({
-        name: data.name
+        name: data.name,
+        adresse: data.adresse
       });
   }
 

@@ -31,7 +31,10 @@ export default class Patient extends Model {
       dimancheRetour: this.string(""),
       deleted: this.string(""),
       place: this.belongsTo(Place, "place_id"),
-      place_id: this.string("")
+      place_id: this.string(""),
+      adresse: this.string(""),
+      lat: this.number(0),
+      lng: this.number(0)
     };
   }
 
@@ -48,6 +51,7 @@ export default class Patient extends Model {
             ? `${patientData.surname} ${patientData.name}`
             : "Nouveau patient"
           : "Nouveau patient",
+        adresse: patientData ? patientData.adresse || "" : "",
         deleted: patientData ? patientData.deleted || "" : ""
       })
     );

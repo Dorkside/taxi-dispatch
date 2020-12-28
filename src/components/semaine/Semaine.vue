@@ -25,20 +25,27 @@
       <v-lazy
         v-for="item in filteredPatients"
         :key="item.id"
-        min-height="200"
+        min-height="228"
         class="ma-4 bgTest"
       >
         <v-card
-          style="width: 450px; min-height: 200px; margin-right: 100px !important;"
+          style="width: 450px; min-height: 228px; margin-right: 100px !important;"
         >
           <v-card-title class="flex-grow-1">
             {{ item.surname }} {{ item.name }}
           </v-card-title>
 
-          <span style="margin-left: 32px;">
+          <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
             <v-icon>mdi-hospital-building</v-icon>
-            {{ item.place ? item.place.name : "?" }}
-          </span>
+            {{ item.place ? item.place.name : "???" }}
+          </v-chip>
+
+          <br/>
+
+          <v-chip class="ml-4" :style="{ minWidth: '100px' }">
+            <v-icon>mdi-home-map-marker</v-icon>
+            {{ item.adresse || "???" }}
+          </v-chip>
 
           <v-chip
             class="elevation-2"
@@ -237,6 +244,18 @@
             </div>
 
             <div class="pa-0 d-flex justify-center align-center">
+              <v-textarea
+                v-model="dialogPatientData.adresse"
+                label="Adresse"
+                rows="3"
+                hide-details
+                :value="dialogPatientData.adresse"
+                class="ma-2"
+                @change="changeAdresse($event, dialogPatientData)"
+              ></v-textarea>
+            </div>
+
+            <div class="pa-0 d-flex justify-center align-center">
               <v-select
                 v-model="dialogPatientData.type"
                 label="Type"
@@ -318,7 +337,6 @@
         </v-card>
 
         <div class="pa-2 d-flex justify-end">
-          <b>Horaires</b>
           <v-spacer></v-spacer>
           <span
             v-for="day of days"
@@ -522,6 +540,9 @@ export default {
     },
     changeSurname($event, patient) {
       patient.update({ surname: $event });
+    },
+    changeAdresse($event, patient) {
+      patient.update({ adresse: $event });
     },
     changeType($event, patient) {
       patient.update({
