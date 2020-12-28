@@ -42,15 +42,15 @@
             </v-btn>
           </v-card-title>
           <v-card-text>
-            Aller
             <course-item
+              class="mb-6"
               :course="newCourseAller"
               :hide-chauffeur="true"
               :prevent-update="true"
             >
             </course-item>
-            Retour
             <course-item
+              class="mb-6"
               :course="newCourseRetour"
               :hide-chauffeur="true"
               :prevent-update="true"

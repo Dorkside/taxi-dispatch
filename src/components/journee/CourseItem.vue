@@ -51,18 +51,35 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-select
-              v-if="!course.generated"
-              :items="types"
-              :value="course.type"
-              class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
-              label="Type"
-              dense
-              outlined
-              hide-details
-              @change="changeType($event, course)"
-            ></v-select>
             <div class="d-flex flex-column">
+              <div class="d-flex flex-row mb-2">
+                <v-select
+                  v-if="!course.generated"
+                  :items="types"
+                  :value="course.type"
+                  class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
+                  label="Type"
+                  dense
+                  outlined
+                  hide-details
+                  @change="changeType($event, course)"
+                ></v-select>
+                <v-combobox
+                  v-if="!course.generated"
+                  dense
+                  :value="course.patient"
+                  height="24"
+                  :items="patients"
+                  item-text="fullname"
+                  label="Patient"
+                  class="combo-width mx-2 flex-shrink-0 flex-grow-0"
+                  autocomplete="no-fill"
+                  hide-details
+                  outlined
+                  @change="changePatient($event, course)"
+                >
+                </v-combobox>
+              </div>
               <span
                 v-if="course.generated && course.patient"
                 class="flex-grow-1 mb-4"
@@ -89,7 +106,7 @@
                   {{ course.patient.adresse || "???" }}
                 </v-chip>
                 <v-chip
-                  v-if="course.patient.place"
+                  v-if="course.patient && course.patient.place"
                   class="flex-grow-1 mb-1"
                   :style="{ minWidth: '100px' }"
                   @click="openMap(course.patient.place.adresse)"
@@ -100,21 +117,6 @@
                 </v-chip>
               </div>
             </div>
-            <v-combobox
-              v-if="!course.generated"
-              dense
-              :value="course.patient"
-              height="24"
-              :items="patients"
-              item-text="fullname"
-              label="Patient"
-              class="combo-width mx-2 flex-shrink-0 flex-grow-0"
-              autocomplete="no-fill"
-              hide-details
-              outlined
-              @change="changePatient($event, course)"
-            >
-            </v-combobox>
           </div>
           <template v-if="admin">
             <v-dialog
