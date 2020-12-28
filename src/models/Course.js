@@ -34,9 +34,11 @@ const subscribeToChanges = (Model, querySnapshot) => {
 
   docChanges.forEach(change => {
     if (change.doc.data().patient) {
+      const patient_id = change.doc.data().patient.id;
       db.collection("courses")
         .doc(change.doc.id)
         .update({
+          patient_id,
           patient: firebase.firestore.FieldValue.delete()
         });
     }
