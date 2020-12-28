@@ -378,10 +378,24 @@ export default {
       }
     },
     coursesTodayDeleted() {
-      return this.coursesToday.filter(course => !!course.deleted);
+      return this.coursesToday
+        .filter(course => !!course.deleted)
+        .sort((a, b) => {
+          if (a.time === "") return 0;
+          if (b.time === "") return 0;
+          if (a.time < b.time) return -1;
+          return 1;
+        });
     },
     coursesTodayValidated() {
-      return this.coursesToday.filter(course => !!course.doneDate);
+      return this.coursesToday
+        .filter(course => !!course.doneDate)
+        .sort((a, b) => {
+          if (a.time === "") return 0;
+          if (b.time === "") return 0;
+          if (a.time < b.time) return -1;
+          return 1;
+        });
     },
     coursesTodayUnplanifiedFiltered() {
       return this.coursesTodayUnplanified.filter(
