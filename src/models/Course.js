@@ -4,6 +4,7 @@ import { db } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
 import Types from "../database/types";
+import firebase from "firebase";
 
 const subscribeToChanges = (Model, querySnapshot) => {
   const docChanges = querySnapshot.docChanges();
@@ -29,6 +30,16 @@ const subscribeToChanges = (Model, querySnapshot) => {
       .map(change => ({
         id: change.doc.id
       }))
+  });
+
+  docChanges.forEach(change => {
+    if (change.doc.data().patient) {
+      db.collection("courses")
+        .doc(change.doc.id)
+        .update({
+          patient: firebase.firestore.FieldValue.delete()
+        });
+    }
   });
 };
 export default class Course extends Model {
@@ -77,6 +88,7 @@ export default class Course extends Model {
   }
 
   static create(data) {
+    console.log(data);
     db.collection("courses")
       .doc(this.ref || uuid.v4())
       .set(
