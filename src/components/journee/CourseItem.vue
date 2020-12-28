@@ -342,6 +342,7 @@ export default {
           });
         } else {
           course.patient = patient;
+          course.patient_id = patient.id;
         }
       }
     },
