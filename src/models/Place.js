@@ -12,9 +12,7 @@ export default class Place extends Model {
       order: this.number(0),
       patient_id: this.string(""),
       patient: this.hasMany(Patient, "place_id"),
-      adresse: this.string(""),
-      lat: this.number(0),
-      lng: this.number(0)
+      adresse: this.string("")
     };
   }
 

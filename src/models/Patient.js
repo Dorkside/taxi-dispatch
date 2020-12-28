@@ -33,8 +33,7 @@ export default class Patient extends Model {
       place: this.belongsTo(Place, "place_id"),
       place_id: this.string(""),
       adresse: this.string(""),
-      lat: this.number(0),
-      lng: this.number(0)
+      telephone: this.string("")
     };
   }
 

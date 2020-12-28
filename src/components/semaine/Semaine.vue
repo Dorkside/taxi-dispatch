@@ -36,6 +36,13 @@
           </v-card-title>
 
           <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
+            <v-icon>mdi-phone</v-icon>
+            {{ item.telephone || "???" }}
+          </v-chip>
+          
+          <br/>
+
+          <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
             <v-icon>mdi-hospital-building</v-icon>
             {{ item.place ? item.place.name : "???" }}
           </v-chip>
@@ -240,6 +247,18 @@
                 :value="dialogPatientData.name"
                 class="ma-2"
                 @change="changeName($event, dialogPatientData)"
+              ></v-text-field>
+            </div>
+
+
+            <div class="pa-0 d-flex justify-center align-center">
+              <v-text-field
+                v-model="dialogPatientData.telephone"
+                label="Téléphone"
+                hide-details
+                :value="dialogPatientData.telephone"
+                class="ma-2"
+                @change="changeTelephone($event, dialogPatientData)"
               ></v-text-field>
             </div>
 
@@ -540,6 +559,9 @@ export default {
     },
     changeSurname($event, patient) {
       patient.update({ surname: $event });
+    },
+    changeTelephone($event, patient) {
+      patient.update({ telephone: $event });
     },
     changeAdresse($event, patient) {
       patient.update({ adresse: $event });
