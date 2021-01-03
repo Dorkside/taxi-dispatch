@@ -58,7 +58,8 @@ export default {
         let chauffeur = $event;
         if (typeof chauffeur !== "string") {
           course.update({
-            chauffeur_id: chauffeur.id
+            chauffeur_id: chauffeur.id,
+            isRead: false
           });
         }
       }

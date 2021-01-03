@@ -218,7 +218,11 @@
 
       <v-card-actions class="d-flex justify-space-between align-center">
         <v-spacer></v-spacer>
-        <v-icon class="mr-2" :color="course.isRead ? 'green' : 'grey'">
+        <v-icon
+          v-if="admin"
+          class="mr-2"
+          :color="course.isRead ? 'green' : 'grey'"
+        >
           {{ course.isRead ? "mdi-eye-check" : "mdi-eye-off" }}
         </v-icon>
         <v-combobox
@@ -330,7 +334,8 @@ export default {
     changeTime() {
       if (!this.preventUpdate) {
         this.course.update({
-          time: this.newTime
+          time: this.newTime,
+          isRead: false
         });
       } else {
         this.course.time = this.newTime;
@@ -342,12 +347,14 @@ export default {
         let patient = $event;
         if (typeof patient === "string") {
           patient = await Patient.insert({
-            name: patient
+            name: patient,
+            isRead: false
           });
         }
         if (!this.preventUpdate) {
           course.update({
-            patient_id: patient.id
+            patient_id: patient.id,
+            isRead: false
           });
         } else {
           course.patient = patient;
@@ -359,14 +366,16 @@ export default {
       let chauffeur = $event;
       if (typeof chauffeur !== "string") {
         course.update({
-          chauffeur_id: $event ? chauffeur.id : null
+          chauffeur_id: $event ? chauffeur.id : null,
+          isRead: false
         });
       }
     },
     changeType($event, course) {
       if (!this.preventUpdate) {
         course.update({
-          type: $event
+          type: $event,
+          isRead: false
         });
       } else {
         course.type = $event;

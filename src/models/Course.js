@@ -123,8 +123,7 @@ export default class Course extends Model {
               JSON.stringify({
                 ...this.$toJson(),
                 patient_id: this.$toJson().patient && this.$toJson().patient.id,
-                patient: undefined,
-                isRead: data.chauffeur_id ? false : this.$toJson().isRead
+                patient: undefined
               })
             ),
             ...data
