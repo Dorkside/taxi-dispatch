@@ -29,5 +29,10 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          yarn
-          yarn deploy:prod
+          yarn build
+
+      - name: Deploy to Firebase
+        uses: doonstore/firebase-deploy@v1
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
