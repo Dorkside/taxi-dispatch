@@ -13,7 +13,7 @@ import App from "./App";
 import wb from "./registerServiceWorker";
 
 Bugsnag.start({
-  apiKey: "782bedc042b86332b7f8be7d4f055b0f",
+  apiKey: "4c7105533be063e7df0c804306b725fe",
   plugins: [new BugsnagPluginVue()]
 });
 
