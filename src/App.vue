@@ -104,6 +104,8 @@ import Patient from "./models/Patient";
 import Phone from "./models/Phone";
 import Place from "./models/Place";
 
+import Bugsnag from "@bugsnag/js";
+
 const subscribeToChanges = (Model, querySnapshot) => {
   const docChanges = querySnapshot.docChanges();
   Model.insertOrUpdate({
