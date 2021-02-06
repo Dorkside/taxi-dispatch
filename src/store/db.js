@@ -34,7 +34,7 @@ export let functions;
 
 firebase
   .firestore()
-  .enablePersistence()
+  .enablePersistence({ synchronizeTabs: true })
   .then(() => {
     db = firebase.firestore();
     functions = firebase.functions();
