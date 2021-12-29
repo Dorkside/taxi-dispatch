@@ -85,7 +85,9 @@ import Chauffeur from "@/models/Chauffeur";
 import Patient from "@/models/Patient";
 import DepartItem from "./DepartItem";
 import { mapState } from "vuex";
-import * as firebase from "firebase";
+
+import firebase from "firebase/compat/app";
+
 export default {
   name: "Departs",
   components: {

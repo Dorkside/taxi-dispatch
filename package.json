@@ -1,7 +1,7 @@
 {
   "private": true,
   "engines": {
-    "node": "12"
+    "node": "14"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -12,21 +12,21 @@
     "deploy:staging": "firebase use taxi-oka-dev && yarn build && firebase deploy"
   },
   "dependencies": {
-    "@bugsnag/js": "^7.6.0",
-    "@bugsnag/plugin-vue": "^7.6.0",
-    "@vuex-orm/core": "^0.32.1",
-    "@vuex-orm/plugin-axios": "^0.5.1",
+    "@vuex-orm/core": "^0.36.4",
+    "@vuex-orm/plugin-axios": "^0.9.4",
     "dayjs": "^1.8.19",
-    "firebase": "^6.6.2",
-    "firebaseui": "^4.2.0",
+    "firebase": "^9.6.1",
+    "firebaseui": "6.0.0",
     "firestore-parser": "^0.8.9",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.4.3",
+    "vue": "^2.6.10",
     "vue-100vh": "^0.1.1",
     "vue-router": "^3.1.2",
     "vue-virtual-scroller": "^1.0.4",
     "vuedraggable": "^2.23.0",
-    "vuetify": "^2.0.5"
+    "vuetify": "^2.0.5",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@mdi/font": "^3.9.97",
@@ -48,11 +48,9 @@
     "postcss-nested": "^4.1.2",
     "prettier": "^1.18.2",
     "sass-loader": "^7.2.0",
-    "vue": "^2.6.10",
     "vue-cli-plugin-pwa": "^1.0.0-alpha.1",
     "vue-cli-plugin-vuetify": "^0.6.3",
     "vue-template-compiler": "^2.6.10",
-    "vuex": "^3.1.1",
     "workbox-webpack-plugin": "^4.3.1"
   }
 }

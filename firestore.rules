@@ -12,7 +12,9 @@ service cloud.firestore {
       allow write: if isAdmin();
       allow read: if request.auth != null && isAdmin();
     }
-
+		match /places/{document=**} {
+      allow read: if request.auth != null && (isAdmin() || isChauffeur());
+    }
     match /patients/{document=**} {
       allow read: if request.auth != null && (isAdmin() || isChauffeur());
     }

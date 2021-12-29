@@ -1,8 +1,8 @@
-import { Model } from "@vuex-orm/core";
-import { db } from "../store/db";
+import FirebaseModel from "./FirebaseModel";
+
 import Chauffeur from "./Chauffeur";
 
-export default class Phone extends Model {
+export default class Phone extends FirebaseModel {
   static entity = "phones";
 
   static fields() {
@@ -15,24 +15,14 @@ export default class Phone extends Model {
   }
 
   static create(data = null) {
-    db.collection("phones")
-      .doc(data.value)
-      .set({
-        chauffeur_id: data.chauffeur_id,
-        value: data.value
-      });
-  }
-
-  update(data) {
-    db.collection("phones")
-      .doc(this.id)
-      .update(data);
+    this.setDoc(data.value, {
+      chauffeur_id: data.chauffeur_id,
+      value: data.value
+    });
   }
 
   delete() {
-    db.collection("phones")
-      .doc(this.id)
-      .delete();
+    super.delete();
     Phone.delete(this.id);
   }
 }

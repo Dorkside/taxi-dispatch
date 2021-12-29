@@ -95,9 +95,9 @@ import store from "@/store";
 
 import { data } from "./models/contacts.json";
 
-import firebase from "firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 
-import { db } from "./store/db";
 import Chauffeur from "./models/Chauffeur";
 import Course from "./models/Course";
 import Patient from "./models/Patient";
@@ -158,7 +158,8 @@ export default {
     }
   },
   mounted() {
-    firebase.auth().onAuthStateChanged(user => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, user => {
       if (!user) {
         this.$store.commit("setAdmin", false);
       } else {
@@ -173,45 +174,47 @@ export default {
         ) {
           this.$store.commit("setAdmin", true);
 
-          db.collection("phones").onSnapshot(function(querySnapshot) {
+          onSnapshot(collection(this.$db(), "phones"), function(querySnapshot) {
             subscribeToChanges(Phone, querySnapshot);
           });
 
-          db.collection("chauffeurs").onSnapshot(function(querySnapshot) {
+          onSnapshot(collection(this.$db(), "chauffeurs"), function(
+            querySnapshot
+          ) {
             subscribeToChanges(Chauffeur, querySnapshot);
           });
         } else {
-          db.collection("phones")
-            .doc(user.phoneNumber)
-            .get()
-            .then(doc => {
-              const { chauffeur_id } = doc.data();
+          getDoc(doc(this.$db(), "phones", user.phoneNumber)).then(phoneDoc => {
+            const { chauffeur_id } = phoneDoc.data();
 
-              db.collection("chauffeurs")
-                .doc(chauffeur_id)
-                .onSnapshot(function(doc) {
-                  Chauffeur.insert({
-                    data: {
-                      ...doc.data(),
-                      id: doc.id
-                    }
-                  });
-                });
-
-              db.collection("courses")
-                .where("deleted", "==", "")
-                .where("chauffeur_id", "==", chauffeur_id)
-                .onSnapshot(function(querySnapshot) {
-                  subscribeToChanges(Course, querySnapshot);
-                });
+            onSnapshot(doc(this.$db(), "chauffeurs", chauffeur_id), function(
+              chauffeurDoc
+            ) {
+              Chauffeur.insert({
+                data: {
+                  ...chauffeurDoc.data(),
+                  id: chauffeurDoc.id
+                }
+              });
             });
+
+            onSnapshot(
+              Course.queryFirebase([
+                ["deleted", "==", ""],
+                ["chauffeur_id", "==", chauffeur_id]
+              ]),
+              function(querySnapshot) {
+                subscribeToChanges(Course, querySnapshot);
+              }
+            );
+          });
         }
 
-        db.collection("patients").onSnapshot(function(querySnapshot) {
+        onSnapshot(collection(this.$db(), "patients"), function(querySnapshot) {
           subscribeToChanges(Patient, querySnapshot);
         });
 
-        db.collection("places").onSnapshot(function(querySnapshot) {
+        onSnapshot(collection(this.$db(), "places"), function(querySnapshot) {
           subscribeToChanges(Place, querySnapshot);
         });
       }
@@ -224,7 +227,7 @@ export default {
       this.$store.commit("setDate", new Date(event));
     },
     logOut() {
-      firebase.auth().signOut();
+      getAuth().signOut();
     },
     initContacts() {
       const types = ["dyal", "cs", "psy", "ipc", "kine"];

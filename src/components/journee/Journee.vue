@@ -215,7 +215,7 @@
 </template>
 
 <script>
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import Course from "@/models/Course";
 import Patient from "@/models/Patient";
 import CourseItem from "./CourseItem";

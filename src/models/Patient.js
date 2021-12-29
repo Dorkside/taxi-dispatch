@@ -1,10 +1,10 @@
-import { Model } from "@vuex-orm/core";
-import { db } from "../store/db";
+import FirebaseModel from "./FirebaseModel";
+
 import Course from "./Course";
 import Place from "./Place";
 import Types from "../database/types";
 
-export default class Patient extends Model {
+export default class Patient extends FirebaseModel {
   static entity = "patients";
 
   static fields() {
@@ -38,12 +38,12 @@ export default class Patient extends Model {
   }
 
   static new() {
-    db.collection("patients").doc();
+    this.add();
   }
 
   static async create(patientData) {
     return new Patient(
-      await db.collection("patients").add({
+      await this.add({
         ...patientData,
         name: patientData
           ? patientData.surname || patientData.name
@@ -57,9 +57,7 @@ export default class Patient extends Model {
   }
 
   update(data) {
-    db.collection("patients")
-      .doc(this.id)
-      .update(data);
+    super.update(data);
   }
 
   delete() {
@@ -71,9 +69,7 @@ export default class Patient extends Model {
       .forEach(course => {
         course.delete(true);
       });
-    db.collection("patients")
-      .doc(this.id)
-      .update({ deleted: new Date().toISOString() });
+    super.update({ deleted: new Date().toISOString() });
   }
 
   get color() {

@@ -1,10 +1,10 @@
-import { Model } from "@vuex-orm/core";
-import * as firebase from "firebase";
-import { db } from "../store/db";
+import { deleteField } from "firebase/firestore";
+
 import Course from "./Course";
+import FirebaseModel from "./FirebaseModel";
 import Phone from "./Phone";
 
-export default class Chauffeur extends Model {
+export default class Chauffeur extends FirebaseModel {
   static entity = "chauffeurs";
 
   static fields() {
@@ -21,28 +21,20 @@ export default class Chauffeur extends Model {
   }
 
   static create(data = null) {
-    db.collection("chauffeurs")
-      .add({
-        name: data.name || "Nouveau chauffeur",
-        deleted: "",
-        order: 0
-      })
-      .then(result => {
-        Phone.create({
-          value: data.phone,
-          chauffeur_id: result.id
-        });
+    this.add({
+      name: data.name || "Nouveau chauffeur",
+      deleted: "",
+      order: 0
+    }).then(result => {
+      Phone.create({
+        value: data.phone,
+        chauffeur_id: result.id
       });
+    });
   }
 
   addPhone(phone) {
     Phone.create({ value: phone, chauffeur_id: this.id });
-  }
-
-  update(data) {
-    db.collection("chauffeurs")
-      .doc(this.id)
-      .update(data);
   }
 
   delete() {
@@ -52,7 +44,7 @@ export default class Chauffeur extends Model {
       .where("doneDate", "")
       .get()
       .forEach(course => {
-        course.update({ chauffeur_id: firebase.firestore.FieldValue.delete() });
+        course.update({ chauffeur_id: deleteField() });
       });
 
     Phone.query()
@@ -60,9 +52,9 @@ export default class Chauffeur extends Model {
       .get()
       .forEach(phone => phone.delete());
 
-    db.collection("chauffeurs")
-      .doc(this.id)
-      .update({ deleted: new Date().toISOString() });
+    super.delete();
+
+    Chauffeur.delete(this.id);
   }
 
   get initiales() {

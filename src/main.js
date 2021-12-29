@@ -1,21 +1,48 @@
 import vuetify from "@/plugins/vuetify";
 import routes from "@/routes";
 import * as dayjs from "dayjs";
-import "dayjs/locale/fr"; // load on demand
-import * as firebase from "firebase";
+import "dayjs/locale/fr";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import Vue from "vue";
-import Bugsnag from "@bugsnag/js";
-import BugsnagPluginVue from "@bugsnag/plugin-vue";
 import VueRouter from "vue-router";
 import VueVirtualScroller from "vue-virtual-scroller";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import App from "./App";
 import wb from "./registerServiceWorker";
+import { initializeApp } from "firebase/app";
+import { enableIndexedDbPersistence } from "firebase/firestore";
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 
-Bugsnag.start({
-  apiKey: "4c7105533be063e7df0c804306b725fe",
-  plugins: [new BugsnagPluginVue()]
+export const firebaseConfigDev = {
+  apiKey: "AIzaSyC0Ltkkj6bNqtfVy2GdezOv_PO6E9jGGuM",
+  authDomain: "taxi-oka-dev.firebaseapp.com",
+  databaseURL: "https://taxi-oka-dev.firebaseio.com",
+  projectId: "taxi-oka-dev",
+  storageBucket: "taxi-oka-dev.appspot.com",
+  messagingSenderId: "1028758599656",
+  appId: "1:1028758599656:web:1fb7857de2bb6dee16565d"
+};
+
+export const firebaseConfig = {
+  apiKey: "AIzaSyCRNvQRCDe12pOHJCNHsocWXcZAyrHD7-E",
+  authDomain: "taxi-oka.firebaseapp.com",
+  databaseURL: "https://taxi-oka.firebaseio.com",
+  projectId: "taxi-oka",
+  storageBucket: "taxi-oka.appspot.com",
+  messagingSenderId: "380468446614",
+  appId: "1:380468446614:web:9eb1e4a626ea5600"
+};
+
+const firebaseApp = initializeApp(
+  process.env.NODE_ENV === "development" ? firebaseConfigDev : firebaseConfig
+);
+
+const db = initializeFirestore(firebaseApp, {
+  cacheSizeBytes: CACHE_SIZE_UNLIMITED
 });
+
+enableIndexedDbPersistence(db);
 
 dayjs.locale("fr");
 
@@ -34,17 +61,21 @@ const router = new VueRouter({
   routes
 });
 
+Vue.prototype.$db = () => getFirestore();
+
+const auth = getAuth();
+
 router.beforeEach((to, from, next) => {
   if (to.path !== "/auth") {
-    firebase.auth().onAuthStateChanged(user => {
+    onAuthStateChanged(auth, user => {
       if (!user) {
         next({ path: "/auth" });
       } else {
         next();
       }
     });
-  } else if (to.path !== "/auth") {
-    firebase.auth().onAuthStateChanged(user => {
+  } else if (to.path === "/auth") {
+    onAuthStateChanged(auth, user => {
       if (!user) {
         next();
       } else {
@@ -60,7 +91,5 @@ const app = new Vue({
   created() {},
   vuetify
 });
-
-Bugsnag.getPlugin("vue").installVueErrorHandler(Vue);
 
 app.$mount("#app");

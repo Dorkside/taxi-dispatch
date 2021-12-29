@@ -1,10 +1,9 @@
-import { Model } from "@vuex-orm/core";
-import uuid from "uuid";
-import { db } from "../store/db";
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
 import Types from "../database/types";
-import firebase from "firebase";
+
+import { deleteField, onSnapshot } from "firebase/firestore";
+import FirebaseModel from "./FirebaseModel";
 
 const subscribeToChanges = (Model, querySnapshot) => {
   const docChanges = querySnapshot.docChanges();
@@ -35,16 +34,14 @@ const subscribeToChanges = (Model, querySnapshot) => {
   docChanges.forEach(change => {
     if (change.doc.data().patient) {
       const patient_id = change.doc.data().patient.id;
-      db.collection("courses")
-        .doc(change.doc.id)
-        .update({
-          patient_id,
-          patient: firebase.firestore.FieldValue.delete()
-        });
+      Model.updateDoc(change.doc.id, {
+        patient_id,
+        patient: deleteField()
+      });
     }
   });
 };
-export default class Course extends Model {
+export default class Course extends FirebaseModel {
   static entity = "courses";
   static refs = {};
 
@@ -70,8 +67,8 @@ export default class Course extends Model {
 
   static fetch(date) {
     if (!Course.refs[date]) {
-      Course.refs[date] = db.collection("courses").where("date", "==", date);
-      Course.refs[date].onSnapshot(function(querySnapshot) {
+      Course.refs[date] = this.queryFirebase([["date", "==", date]]);
+      onSnapshot(Course.refs[date], function(querySnapshot) {
         subscribeToChanges(Course, querySnapshot);
       });
     }
@@ -79,73 +76,57 @@ export default class Course extends Model {
 
   static fetchMonth(date) {
     if (!Course.refs[date]) {
-      Course.refs[date] = db
-        .collection("courses")
-        .where("date", ">=", `${date}-00`)
-        .where("date", "<=", `${date}-32`);
-      Course.refs[date].onSnapshot(function(querySnapshot) {
+      Course.refs[date] = this.queryFirebase([
+        ["date", ">=", `${date}-00`],
+        ["date", "<=", `${date}-32`]
+      ]);
+      onSnapshot(Course.refs[date], function(querySnapshot) {
         subscribeToChanges(Course, querySnapshot);
       });
     }
   }
 
   static create(data) {
-    console.log(data);
-    db.collection("courses")
-      .doc(this.ref || uuid.v4())
-      .set(
-        data || {
-          date: new Date().toISOString().substring(0, 10),
-          deleted: "",
-          doneDate: ""
-        }
-      );
+    this.add(
+      data || {
+        date: new Date().toISOString().substring(0, 10),
+        deleted: "",
+        doneDate: ""
+      }
+    );
   }
 
   update(data) {
-    let id = this.id || this.ref || uuid.v4();
     Course.insertOrUpdate({
       data: {
         ...this.$toJson(),
         ...data,
-        id
+        id: this.getId()
       }
     });
-    db.collection("courses")
-      .doc(id)
-      .update(data)
-      .then(() => {})
-      .catch(() => {
-        db.collection("courses")
-          .doc(id)
-          .set({
-            ...JSON.parse(
-              JSON.stringify({
-                ...this.$toJson(),
-                patient_id: this.$toJson().patient && this.$toJson().patient.id,
-                patient: undefined
-              })
-            ),
-            ...data
-          });
+    super.update(data).catch(() => {
+      this.set({
+        ...JSON.parse(
+          JSON.stringify({
+            ...this.$toJson(),
+            patient_id: this.$toJson().patient && this.$toJson().patient.id,
+            patient: undefined
+          })
+        ),
+        ...data
       });
+    });
   }
 
   delete(skipCreate = false) {
-    console.log(skipCreate);
     if (this.id) {
-      db.collection("courses")
-        .doc(this.id)
-        .update({ deleted: new Date().toISOString() });
+      this.update({ deleted: new Date().toISOString() });
     } else {
-      console.log("INSERT");
       if (!skipCreate) {
-        db.collection("courses")
-          .doc(this.ref || uuid.v4())
-          .set({
-            ...JSON.parse(JSON.stringify(this.$toJson())),
-            deleted: new Date().toISOString()
-          });
+        this.set({
+          ...JSON.parse(JSON.stringify(this.$toJson())),
+          deleted: new Date().toISOString()
+        });
       } else {
         Course.delete(this);
       }
@@ -153,27 +134,19 @@ export default class Course extends Model {
   }
 
   undelete() {
-    db.collection("courses")
-      .doc(this.id)
-      .update({ deleted: "" });
+    super.update({ deleted: "" });
   }
 
   read() {
-    db.collection("courses")
-      .doc(this.id)
-      .update({ isRead: true });
+    super.update({ isRead: true });
   }
 
   done() {
-    db.collection("courses")
-      .doc(this.id)
-      .update({ doneDate: new Date().toISOString() });
+    super.update({ doneDate: new Date().toISOString() });
   }
 
   undone() {
-    db.collection("courses")
-      .doc(this.id)
-      .update({ doneDate: "" });
+    super.update({ doneDate: "" });
   }
 
   get fullRef() {
