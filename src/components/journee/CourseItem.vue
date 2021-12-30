@@ -1,5 +1,5 @@
 <template>
-  <v-lazy min-height="100">
+  <v-lazy min-height="100" class="col-12 pa-0">
     <v-card
       class="my-2 mx-auto"
       :style="
@@ -7,7 +7,7 @@
       "
     >
       <v-chip
-        v-if="course.patient && !preventUpdate"
+        v-if="course.patient && !preventUpdate && admin"
         class="elevation-2"
         :color="course.patient.societe ? 'yellow' : 'red'"
         style="position:absolute; right: -16px; top: -16px;"
@@ -16,8 +16,13 @@
         {{ (course.patient && course.patient.societe) || "Aucune société" }}
       </v-chip>
       <v-card-text fill-height class="pa-1 pl-4">
-        <div class="d-flex justify-space-between align-center nowrap py-0">
-          <div class="mr-2 d-flex flex-shrink-0 flex-grow-0" text-center>
+        <div
+          class="d-flex justify-space-between align-center nowrap py-0 px-1 col-12"
+        >
+          <div
+            class="mr-2 d-flex flex-shrink-0 flex-grow-0 col-12 pa-0"
+            text-center
+          >
             <v-dialog v-model="dialog" width="unset" persistent>
               <template v-slot:activator="{ on }">
                 <v-btn
@@ -51,7 +56,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column col-12 pa-0">
               <div class="d-flex flex-row mb-2">
                 <v-select
                   v-if="!course.generated"
@@ -99,7 +104,7 @@
                 {{ course.patient.telephone || "???" }}
               </v-chip>
               <div
-                class="d-flex"
+                class="d-flex col-12 pa-0"
                 :class="{
                   'flex-column': course.direction === 'Aller',
                   'flex-column-reverse': course.direction === 'Retour'
@@ -107,22 +112,37 @@
               >
                 <v-chip
                   v-if="course.patient"
-                  class="flex-grow-1 mb-1"
-                  :style="{ minWidth: '100px' }"
+                  class="wrap-span"
+                  :style="{
+                    minWidth: '100px',
+                    maxWidth: '100%',
+                    height: 'auto'
+                  }"
                   @click="openMap(course.patient.adresse)"
                 >
                   <v-icon>mdi-home-map-marker</v-icon>
-                  {{ course.patient.adresse || "???" }}
+                  <span class="flex-1">
+                    {{ course.patient.adresse || "???" }}
+                  </span>
+                  <v-icon class="waze-icon">mdi-waze</v-icon>
                 </v-chip>
+                <div class="pointilles"></div>
                 <v-chip
                   v-if="course.patient && course.patient.place"
-                  class="flex-grow-1 mb-1"
-                  :style="{ minWidth: '100px' }"
+                  class="wrap-span d-flex"
+                  :style="{
+                    minWidth: '100px',
+                    maxWidth: '100%',
+                    height: 'auto'
+                  }"
                   @click="openMap(course.patient.place.adresse)"
                 >
                   <v-icon>mdi-hospital-marker</v-icon>
-                  {{ course.patient.place.name }},
-                  {{ course.patient.place.adresse || "???" }}
+                  <span class="flex-1">
+                    {{ course.patient.place.name }},
+                    {{ course.patient.place.adresse || "???" }}
+                  </span>
+                  <v-icon class="waze-icon">mdi-waze</v-icon>
                 </v-chip>
               </div>
             </div>
@@ -317,7 +337,7 @@ export default {
   },
   methods: {
     openMap(adresse) {
-      window.open(`https://waze.com/ul?q=${adresse}`);
+      window.open(`waze://waze.com/ul?q=${adresse}`);
     },
     cancel() {
       this.dialog = false;
@@ -416,5 +436,20 @@ export default {
 .time-btn {
   margin-left: -94px;
   margin-right: 16px;
+}
+::v-deep .wrap-span > span.v-chip__content {
+  white-space: initial;
+}
+.pointilles {
+  min-height: 16px;
+  border-left: dotted 4px black;
+  margin-left: 22px;
+}
+.waze-icon {
+  position: absolute;
+  opacity: 0.5;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>

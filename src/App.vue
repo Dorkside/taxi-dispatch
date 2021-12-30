@@ -16,7 +16,9 @@
           <v-dialog v-model="dialog" center width="400">
             <template v-slot:activator="{ on }">
               <v-btn text dark center class="date-text" v-on="on">
-                {{ prettyDate }}
+                <v-icon>mdi-calendar</v-icon>
+                <span class="d-none d-md-block">{{ prettyDate }}</span>
+                <span class="d-block d-md-none">{{ prettyDateShort }}</span>
               </v-btn>
             </template>
             <v-date-picker
@@ -34,9 +36,9 @@
           </v-btn>
         </div>
         <v-spacer></v-spacer>
-        <v-btn text small dark right class="d-none d-md-block" @click="logOut">
+        <v-btn text small dark right @click="logOut">
           <v-icon left>mdi-close</v-icon>
-          Déconnexion
+          <span class="d-none d-md-block">Déconnexion</span>
         </v-btn>
       </v-app-bar>
       <v-content
@@ -45,7 +47,10 @@
           height: 'calc(100% - 64px)'
         }"
       >
-        <div class="elevation-8 pa-0 z-index-10 align-center d-none d-md-block">
+        <div
+          v-if="admin"
+          class="elevation-8 pa-0 z-index-10 align-center d-none d-md-block"
+        >
           <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
             <v-tab to="/journee">
               <v-icon left>mdi-view-sequential</v-icon>
@@ -146,6 +151,14 @@ export default {
         weekday: "long",
         year: "numeric",
         month: "long",
+        day: "numeric"
+      };
+      return new Date(this.currentDate).toLocaleDateString("fr-FR", options);
+    },
+    prettyDateShort() {
+      const options = {
+        year: "numeric",
+        month: "numeric",
         day: "numeric"
       };
       return new Date(this.currentDate).toLocaleDateString("fr-FR", options);
@@ -278,7 +291,8 @@ export default {
 
 <style lang="scss">
 .date-text {
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
 }
 .toolbar-title {
   width: 100%;

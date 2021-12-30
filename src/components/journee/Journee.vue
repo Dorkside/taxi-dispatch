@@ -88,21 +88,9 @@
         </v-card>
       </v-dialog>
     </v-subheader>
-
-    <v-subheader
-      v-if="!admin"
-      class="d-flex flex-grow-0 flex-shrink-0 elevation-2"
-      style="z-index: 10;"
-    >
-      <v-spacer></v-spacer>
-      <v-btn color="primary" right @click="logOut">
-        <v-icon left>mdi-close</v-icon>
-        Déconnexion
-      </v-btn>
-    </v-subheader>
     <div
       ref="coursesList"
-      class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch"
+      class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch col-12 pa-0"
       style="position: relative; overflow:hidden;"
     >
       <v-tabs
@@ -122,7 +110,7 @@
         style="overflow-y: auto; z-index: 0;"
       >
         <v-tab-item key="journee">
-          <v-list class="transparent pa-2" dense>
+          <v-list class="transparent pa-2 col-12" dense>
             <v-subheader v-if="coursesTodayUnplanifiedFiltered.length > 0">
               Courses à planifier
             </v-subheader>
@@ -134,9 +122,10 @@
                 v-for="(course, index) in coursesTodayUnplanifiedFiltered"
                 :key="`${course.ref}-${course.id}`"
                 :index="index"
+                class="col-12 ma-0"
               >
                 <v-list-item-content
-                  class="show-overflow justify-center align-center"
+                  class="show-overflow justify-center align-center col-12"
                 >
                   <course-item
                     :course="course"
@@ -157,7 +146,7 @@
               :index="index"
             >
               <v-list-item-content
-                class="show-overflow justify-center align-center"
+                class="show-overflow justify-center align-center col-12"
               >
                 <course-item
                   :key="`${course.ref}-${course.id}`"
@@ -179,7 +168,7 @@
               :index="index"
             >
               <v-list-item-content
-                class="show-overflow justify-center align-center"
+                class="show-overflow justify-center align-center col-12"
               >
                 <course-item
                   :key="`${course.ref}-${course.id}`"
