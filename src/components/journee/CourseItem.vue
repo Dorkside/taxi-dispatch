@@ -85,14 +85,34 @@
                 >
                 </v-combobox>
               </div>
-              <span
-                v-if="course.generated && course.patient"
-                class="flex-grow-1 mb-1"
-                :style="{ minWidth: '100px' }"
-              >
-                {{ course.patient.fullname }}
-                <small v-if="course.patient.deleted">(Patient supprimé)</small>
-              </span>
+              <div class="d-flex flex-row mb-2">
+                <h3
+                  v-if="course.generated && course.patient"
+                  class="flex-grow-1 mb-0"
+                  :style="{ minWidth: '100px' }"
+                >
+                  {{ course.patient.fullname }}
+                  <small v-if="course.patient.deleted"
+                    >(Patient supprimé)</small
+                  >
+                </h3>
+
+                <a
+                  v-if="course.patient.telephone"
+                  class="no-link"
+                  :href="`tel:${course.patient.telephone}`"
+                >
+                  <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
+                    <v-icon>mdi-phone</v-icon>
+                    {{ course.patient.telephone || "???" }}
+                  </v-chip>
+                </a>
+              </div>
+
+              <div v-if="course.patient.note" class="d-flex flex-column">
+                <small><i>Notes</i></small>
+                <span>{{ course.patient.note }}</span>
+              </div>
 
               <v-chip
                 v-if="course.patient && course.patient.telephone"
@@ -418,6 +438,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.no-link {
+  text-decoration: none;
+}
 .full-width {
   width: 100%;
 }

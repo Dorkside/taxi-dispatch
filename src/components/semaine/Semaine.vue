@@ -35,24 +35,27 @@
             {{ item.surname }} {{ item.name }}
           </v-card-title>
 
-          <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
-            <v-icon>mdi-phone</v-icon>
-            {{ item.telephone || "???" }}
-          </v-chip>
-          
-          <br/>
+          <div class="d-flex">
+            <div class="d-flex flex-column justify-start align-stretch mr-4">
+              <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
+                <v-icon>mdi-phone</v-icon>
+                {{ item.telephone || "???" }}
+              </v-chip>
+              <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
+                <v-icon>mdi-hospital-building</v-icon>
+                {{ item.place ? item.place.name : "???" }}
+              </v-chip>
+              <v-chip class="ml-4" :style="{ minWidth: '100px' }">
+                <v-icon>mdi-home-map-marker</v-icon>
+                {{ item.adresse || "???" }}
+              </v-chip>
+            </div>
 
-          <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
-            <v-icon>mdi-hospital-building</v-icon>
-            {{ item.place ? item.place.name : "???" }}
-          </v-chip>
-
-          <br/>
-
-          <v-chip class="ml-4" :style="{ minWidth: '100px' }">
-            <v-icon>mdi-home-map-marker</v-icon>
-            {{ item.adresse || "???" }}
-          </v-chip>
+            <div v-if="item.note" class="d-flex flex-column">
+              <small><i>Notes</i></small>
+              <span>{{ item.note }}</span>
+            </div>
+          </div>
 
           <v-chip
             class="elevation-2"
@@ -228,7 +231,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-        <v-card>
+        <v-card class="mb-2">
           <v-card-text>
             <div class="pa-0 d-flex justify-center align-center">
               <v-text-field
@@ -250,7 +253,6 @@
               ></v-text-field>
             </div>
 
-
             <div class="pa-0 d-flex justify-center align-center">
               <v-text-field
                 v-model="dialogPatientData.telephone"
@@ -262,98 +264,116 @@
               ></v-text-field>
             </div>
 
-            <div class="pa-0 d-flex justify-center align-center">
-              <v-textarea
-                v-model="dialogPatientData.adresse"
-                label="Adresse"
-                rows="3"
-                hide-details
-                :value="dialogPatientData.adresse"
-                class="ma-2"
-                @change="changeAdresse($event, dialogPatientData)"
-              ></v-textarea>
-            </div>
-
-            <div class="pa-0 d-flex justify-center align-center">
-              <v-select
-                v-model="dialogPatientData.type"
-                label="Type"
-                :items="types"
-                :value="dialogPatientData.type"
-                hide-details
-                class="ma-2 type"
-                @change="changeType($event, dialogPatientData)"
-              >
-                <template v-slot:selection>
-                  <div
-                    style="display: flex; flex-flow: row nowrap; align-items: center;"
-                  >
-                    <v-avatar
-                      size="24"
-                      :style="{
-                        backgroundColor: dialogPatientData.color,
-                        marginRight: '4px'
-                      }"
-                      class="white--text"
-                    >
-                      {{ dialogPatientData.shortType }}
-                    </v-avatar>
-                    <div>
-                      {{ dialogPatientData.type }}
-                    </div>
-                  </div>
-                </template>
-                <template v-slot:item="{ item: type }">
-                  <div
-                    style="display: flex; flex-flow: row nowrap; align-items: center;"
-                  >
-                    <v-avatar
-                      :style="{
-                        backgroundColor: color(type),
-                        marginRight: '4px'
-                      }"
-                      size="24"
-                      class="white--text"
-                    >
-                      {{ shortType(type) }}
-                    </v-avatar>
-                    <div>
-                      {{ type }}
-                    </div>
-                  </div>
-                </template>
-              </v-select>
-            </div>
-
-            <div class="pa-0 d-flex justify-center align-center">
-              <v-select
-                v-model="dialogPatientData.place"
-                :items="places"
-                label="Etablissement"
-                hide-details
-                height="24"
-                item-text="name"
-                item-value="id"
-                :value="dialogPatientData.place"
-                class="ma-2"
-                @change="changePlace($event, dialogPatientData)"
-              ></v-select>
-            </div>
-
-            <div class="pa-0 d-flex justify-center align-center">
-              <v-select
-                v-model="dialogPatientData.societe"
-                :items="societes"
-                label="Société"
-                hide-details
-                height="24"
-                :value="dialogPatientData.societe"
-                class="ma-2"
-                @change="changeSociete($event, dialogPatientData)"
-              ></v-select>
-            </div>
+            <v-textarea
+              v-model="dialogPatientData.adresse"
+              label="Adresse"
+              rows="3"
+              hide-details
+              :value="dialogPatientData.adresse"
+              class="ma-2"
+              @change="changeAdresse($event, dialogPatientData)"
+            ></v-textarea>
           </v-card-text>
         </v-card>
+
+        <div class="d-flex">
+          <v-card class="mr-2">
+            <v-card-text>
+              <div class="pa-0 d-flex justify-center align-center">
+                <v-select
+                  v-model="dialogPatientData.type"
+                  label="Type"
+                  :items="types"
+                  :value="dialogPatientData.type"
+                  hide-details
+                  class="ma-2 type"
+                  @change="changeType($event, dialogPatientData)"
+                >
+                  <template v-slot:selection>
+                    <div
+                      style="display: flex; flex-flow: row nowrap; align-items: center;"
+                    >
+                      <v-avatar
+                        size="24"
+                        :style="{
+                          backgroundColor: dialogPatientData.color,
+                          marginRight: '4px'
+                        }"
+                        class="white--text"
+                      >
+                        {{ dialogPatientData.shortType }}
+                      </v-avatar>
+                      <div>
+                        {{ dialogPatientData.type }}
+                      </div>
+                    </div>
+                  </template>
+                  <template v-slot:item="{ item: type }">
+                    <div
+                      style="display: flex; flex-flow: row nowrap; align-items: center;"
+                    >
+                      <v-avatar
+                        :style="{
+                          backgroundColor: color(type),
+                          marginRight: '4px'
+                        }"
+                        size="24"
+                        class="white--text"
+                      >
+                        {{ shortType(type) }}
+                      </v-avatar>
+                      <div>
+                        {{ type }}
+                      </div>
+                    </div>
+                  </template>
+                </v-select>
+              </div>
+
+              <div class="pa-0 d-flex justify-center align-center">
+                <v-select
+                  v-model="dialogPatientData.place"
+                  :items="places"
+                  label="Etablissement"
+                  hide-details
+                  height="24"
+                  item-text="name"
+                  item-value="id"
+                  :value="dialogPatientData.place"
+                  class="ma-2"
+                  @change="changePlace($event, dialogPatientData)"
+                ></v-select>
+              </div>
+
+              <div class="pa-0 d-flex justify-center align-center">
+                <v-select
+                  v-model="dialogPatientData.societe"
+                  :items="societes"
+                  label="Société"
+                  hide-details
+                  height="24"
+                  :value="dialogPatientData.societe"
+                  class="ma-2"
+                  @change="changeSociete($event, dialogPatientData)"
+                ></v-select>
+              </div>
+            </v-card-text>
+          </v-card>
+
+          <v-card>
+            <v-card-text>
+              <v-textarea
+                v-model="dialogPatientData.note"
+                label="Notes"
+                rows="5"
+                hide-details
+                :value="dialogPatientData.note"
+                class="ma-2"
+                @change="changeNote($event, dialogPatientData)"
+              ></v-textarea>
+            </v-card-text>
+          </v-card>
+        </div>
 
         <div class="pa-2 d-flex justify-end">
           <v-spacer></v-spacer>
@@ -562,6 +582,9 @@ export default {
     },
     changeTelephone($event, patient) {
       patient.update({ telephone: $event });
+    },
+    changeNote($event, patient) {
+      patient.update({ note: $event });
     },
     changeAdresse($event, patient) {
       patient.update({ adresse: $event });

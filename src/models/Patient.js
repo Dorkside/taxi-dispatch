@@ -33,6 +33,7 @@ export default class Patient extends FirebaseModel {
       place: this.belongsTo(Place, "place_id"),
       place_id: this.string(""),
       adresse: this.string(""),
+      note: this.string(""),
       telephone: this.string("")
     };
   }
@@ -51,6 +52,7 @@ export default class Patient extends FirebaseModel {
             : "Nouveau patient"
           : "Nouveau patient",
         adresse: patientData ? patientData.adresse || "" : "",
+        note: patientData ? patientData.note || "" : "",
         deleted: patientData ? patientData.deleted || "" : ""
       })
     );

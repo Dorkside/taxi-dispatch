@@ -42,7 +42,15 @@ const db = initializeFirestore(firebaseApp, {
   cacheSizeBytes: CACHE_SIZE_UNLIMITED
 });
 
-enableIndexedDbPersistence(db);
+enableIndexedDbPersistence(db).catch(err => {
+  if (err.code == "failed-precondition") {
+    alert(
+      "L'application est déjà ouverte dans un autre onglet. Veuillez utiliser un seul onglet à la fois pour éviter des incohérences."
+    );
+  } else if (err.code == "unimplemented") {
+    console.log("Persistence unavailable");
+  }
+});
 
 dayjs.locale("fr");
 

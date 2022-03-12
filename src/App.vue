@@ -172,10 +172,12 @@ export default {
   },
   mounted() {
     const auth = getAuth();
+
     onAuthStateChanged(auth, user => {
       if (!user) {
         this.$store.commit("setAdmin", false);
       } else {
+        const { driver } = this.$route.query;
         if (
           [
             "+33762686070",
@@ -183,7 +185,8 @@ export default {
             "+33668666606",
             "+33658474169",
             "+33769186127"
-          ].includes(user.phoneNumber)
+          ].includes(user.phoneNumber) &&
+          !driver
         ) {
           this.$store.commit("setAdmin", true);
 
