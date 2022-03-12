@@ -129,11 +129,13 @@
                     maxWidth: '100%',
                     height: 'auto'
                   }"
+                  @click="openMap(course.patient.adresse)"
                 >
                   <v-icon>mdi-home-map-marker</v-icon>
                   <span class="flex-1">
                     {{ course.patient.adresse || "???" }}
                   </span>
+                  <v-icon class="waze-icon">mdi-waze</v-icon>
                 </v-chip>
                 <div class="pointilles"></div>
                 <v-chip
