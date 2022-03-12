@@ -114,17 +114,8 @@
                 <span>{{ course.patient.note }}</span>
               </div>
 
-              <v-chip
-                v-if="course.patient && course.patient.telephone"
-                class="flex-grow-1 mb-4"
-                :style="{ minWidth: '100px' }"
-                :href="'tel:' + course.patient.telephone"
-              >
-                <v-icon>mdi-phone</v-icon>
-                {{ course.patient.telephone || "???" }}
-              </v-chip>
               <div
-                class="d-flex col-12 pa-0"
+                class="d-flex col-12 pa-0 flex-grow-0 flex-shrink-1"
                 :class="{
                   'flex-column': course.direction === 'Aller',
                   'flex-column-reverse': course.direction === 'Retour'
