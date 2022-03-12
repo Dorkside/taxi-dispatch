@@ -135,7 +135,6 @@
                   <span class="flex-1">
                     {{ course.patient.adresse || "???" }}
                   </span>
-                  <v-icon class="waze-icon">mdi-waze</v-icon>
                 </v-chip>
                 <div class="pointilles"></div>
                 <v-chip
@@ -153,7 +152,6 @@
                     {{ course.patient.place.name }},
                     {{ course.patient.place.adresse || "???" }}
                   </span>
-                  <v-icon class="waze-icon">mdi-waze</v-icon>
                 </v-chip>
               </div>
             </div>
@@ -348,7 +346,7 @@ export default {
   },
   methods: {
     openMap(adresse) {
-      window.open(`waze://waze.com/ul?q=${adresse}`);
+      window.open(`https://maps.google.com/maps?daddr=${adresse}&amp;ll=`);
     },
     cancel() {
       this.dialog = false;
