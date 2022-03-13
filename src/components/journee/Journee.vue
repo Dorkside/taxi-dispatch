@@ -192,15 +192,18 @@
                           :style="{
                             color: coursesByHourTodayPlanifiedFiltered[
                               hour
-                            ].filter(course => course.patient.type === type)
-                              .length
+                            ].filter(
+                              course =>
+                                (course.type || course.patient.type) === type
+                            ).length
                               ? Types[type].color
                               : '#e0e0e0'
                           }"
                         >
                           {{
                             coursesByHourTodayPlanifiedFiltered[hour].filter(
-                              course => course.patient.type === type
+                              course =>
+                                (course.type || course.patient.type) === type
                             ).length
                           }}
                         </b>
