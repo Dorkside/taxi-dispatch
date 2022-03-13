@@ -1,19 +1,22 @@
 <template>
   <v-app class="overflow-hidden">
     <vue100vh :css="{ height: '100rvh' }">
-      <v-app-bar color="blue accent-3 justify-space-between">
-        <v-toolbar-title class="stencil d-none d-md-block">
+      <v-app-bar v-if="loggedIn" color="amber justify-space-between">
+        <div class="bg-gradient"></div>
+        <v-toolbar-title
+          class="stencil deep-orange--text text--darken-3 d-none d-md-block"
+        >
           XI DRIVER
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <div center class="d-flex align-center justify-center white--text">
-          <v-btn text icon small class="white--text" @click="shiftDate(-1)">
+          <v-btn text icon small @click="shiftDate(-1)">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
 
           <v-dialog v-model="dialog" center width="400">
             <template v-slot:activator="{ on }">
-              <v-btn text dark center class="date-text" v-on="on">
+              <v-btn text center class="date-text" v-on="on">
                 <v-icon>mdi-calendar</v-icon>
                 <span class="d-none d-md-block">{{ prettyDate }}</span>
                 <span class="d-block d-md-none">{{ prettyDateShort }}</span>
@@ -23,18 +26,20 @@
               full-width
               locale="fr"
               :value="date"
+              color="amber"
+              header-color="amber darken-2"
               @change="
                 setDate($event);
                 dialog = false;
               "
             ></v-date-picker>
           </v-dialog>
-          <v-btn text icon small class="white--text" @click="shiftDate(1)">
+          <v-btn text icon small @click="shiftDate(1)">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </div>
         <v-spacer></v-spacer>
-        <v-btn text small dark right @click="logOut">
+        <v-btn text small right @click="logOut">
           <v-icon left>mdi-close</v-icon>
           <span class="d-none d-md-block">Déconnexion</span>
         </v-btn>
@@ -42,17 +47,21 @@
       <v-container
         class="pa-0 overflow-hidden d-flex flex-row justify-stretch ma-0"
         :style="{
-          height: admin ? 'calc(100% - 64px)' : 'calc(100% - 56px)',
+          height: loggedIn
+            ? admin
+              ? 'calc(100% - 64px)'
+              : 'calc(100% - 56px)'
+            : '100%',
           maxWidth: '100%'
         }"
       >
         <div
           v-if="admin"
-          class="elevation-8 pa-0 z-index-10 flex-grow-0 align-end flex-shrink-1 blue d-flex flex-column"
+          class="elevation-8 pa-0 z-index-10 flex-grow-0 align-end flex-shrink-1 amber d-flex flex-column"
         >
           <v-tabs
             class="flex-grow-0 flex-shrink-0"
-            background-color="blue accent-3"
+            background-color="amber darken-4"
             vertical
             dark
           >
@@ -96,7 +105,6 @@
           <v-spacer />
           <v-btn
             icon
-            color="white"
             large
             class="ma-2"
             :style="{ transform: menuDeployed ? 'rotateZ(180deg)' : '' }"
@@ -110,6 +118,7 @@
           :style="{
             height: 'calc(100%)',
             maxHeight: 'calc(100%)',
+            width: '100%',
             maxWidth: '100%'
           }"
         >
@@ -169,7 +178,8 @@ export default {
   data() {
     return {
       dialog: false,
-      menuDeployed: false
+      menuDeployed: false,
+      loggedIn: false
     };
   },
   computed: {
@@ -204,7 +214,9 @@ export default {
     onAuthStateChanged(auth, user => {
       if (!user) {
         this.$store.commit("setAdmin", false);
+        this.loggedIn = false;
       } else {
+        this.loggedIn = true;
         const { driver } = this.$route.query;
         if (
           [
@@ -322,6 +334,20 @@ export default {
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Stardos+Stencil:wght@400;700&display=swap");
+.bg-gradient {
+  background: linear-gradient(
+    to left bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.03) 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
 
 .date-text {
   width: 100%;
