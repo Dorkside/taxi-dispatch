@@ -91,14 +91,13 @@
                       >(Patient supprimé)</small
                     >
                   </h3>
-                  <v-icon
-                    v-if="course.patient.assistance"
-                    class="ml-4"
-                    color="green darken-2"
-                    >{{ mdiHumanWheelchair }}</v-icon
-                  >
                 </template>
-
+                <v-icon
+                  v-if="course.patient && course.patient.assistance"
+                  class="ml-4"
+                  color="green darken-2"
+                  >{{ mdiHumanWheelchair }}</v-icon
+                >
                 <v-spacer />
               </div>
               <template v-if="!hideDetails">
