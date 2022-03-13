@@ -140,24 +140,95 @@
               v-if="coursesTodayUnplanifiedFiltered.length > 0 && admin"
             ></v-divider>
 
-            <v-list-item
-              v-for="(course, index) in coursesTodayPlanifiedFiltered"
-              :key="`${course.ref}-${course.id}`"
-              :index="index"
+            <div
+              v-for="hour in hoursTodayPlanifiedFiltered"
+              :key="`${hour}-key`"
             >
-              <v-list-item-content
-                class="show-overflow justify-center align-center col-12"
+              <div
+                style="position: sticky; left: 0; top: 8px; right: 0; border-top: dotted 2px #e0e0e0;"
               >
-                <course-item
-                  :key="`${course.ref}-${course.id}`"
-                  :style="{
-                    opacity: course.deleted ? '0.3' : '1'
-                  }"
-                  :course="course"
-                  :index="index"
-                ></course-item>
-              </v-list-item-content>
-            </v-list-item>
+                <div
+                  style="position: absolute; top: 0; left: 0; background: white;"
+                >
+                  <span style="color: #e0e0e0;">
+                    <b> {{ hour }}:00 </b>
+                  </span>
+                  <template v-if="admin">
+                    <br />
+                    <span style="color: #e0e0e0;">
+                      <b>
+                        {{
+                          coursesByHourTodayPlanified[hour].filter(
+                            course => course.doneDate
+                          ).length
+                        }}
+                      </b>
+                      /
+                      {{ coursesByHourTodayPlanified[hour].length }} courses
+                    </span>
+                    <br />
+                    <span style="color: #e0e0e0;">
+                      {{
+                        coursesByHourTodayPlanifiedFiltered[hour].filter(
+                          course => !course.chauffeur
+                        ).length
+                      }}
+                      courses non-attribuées
+                    </span>
+                  </template>
+                </div>
+
+                <template v-if="admin">
+                  <div
+                    style="position: absolute; top: 0; right: 0; background: white;  text-align: right;"
+                  >
+                    <template v-for="type in typeKeys">
+                      <span :key="type" style="color: #e0e0e0;">
+                        {{ type }}
+                        <b
+                          :style="{
+                            color: coursesByHourTodayPlanifiedFiltered[
+                              hour
+                            ].filter(course => course.patient.type === type)
+                              .length
+                              ? Types[type].color
+                              : '#e0e0e0'
+                          }"
+                        >
+                          {{
+                            coursesByHourTodayPlanifiedFiltered[hour].filter(
+                              course => course.patient.type === type
+                            ).length
+                          }}
+                        </b>
+                      </span>
+                      <br :key="`${type}-br`" />
+                    </template>
+                  </div>
+                </template>
+              </div>
+
+              <template
+                v-for="(course, index) in coursesByHourTodayPlanifiedFiltered[
+                  hour
+                ]"
+              >
+                <v-list-item :key="`${course.ref}-${course.id}`" :index="index">
+                  <v-list-item-content
+                    class="show-overflow justify-center align-center col-12"
+                  >
+                    <course-item
+                      :key="`${course.ref}-${course.id}`"
+                      :style="{
+                        opacity: course.deleted ? '0.3' : '1'
+                      }"
+                      :course="course"
+                      :index="index"
+                    ></course-item>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+            </div>
           </v-list>
         </v-tab-item>
         <v-tab-item v-if="admin" key="validees">
@@ -210,6 +281,8 @@ import Patient from "@/models/Patient";
 import CourseItem from "./CourseItem";
 import { mapState } from "vuex";
 import uuid from "uuid";
+import Types from "../../database/types";
+
 export default {
   name: "Journee",
   components: {
@@ -217,6 +290,7 @@ export default {
   },
   data() {
     return {
+      Types,
       tab: "",
       days: [
         "Dimanche",
@@ -251,6 +325,15 @@ export default {
   },
   computed: {
     ...mapState(["currentDate", "admin"]),
+    typeKeys() {
+      return Object.keys(Types);
+    },
+    now() {
+      const d = new Date();
+      const hour = `${d.getHours()}`;
+      const minutes = `${d.getMinutes()}`;
+      return `${hour.padStart(2, "0")}:${minutes.padStart(2, "0")}`;
+    },
     recurringCourses() {
       if (this.admin) {
         return this.patients
@@ -396,6 +479,31 @@ export default {
         course => !course.doneDate && !course.deleted
       );
     },
+    coursesByHourTodayPlanifiedFiltered() {
+      return this.coursesTodayPlanifiedFiltered.reduce((hours, course) => {
+        if (!hours[course.time.split(":")[0]]) {
+          hours[course.time.split(":")[0]] = [];
+        }
+        hours[course.time.split(":")[0]].push(course);
+        return hours;
+      }, {});
+    },
+    coursesByHourTodayPlanified() {
+      return this.coursesTodayPlanified.reduce((hours, course) => {
+        if (!hours[course.time.split(":")[0]]) {
+          hours[course.time.split(":")[0]] = [];
+        }
+        hours[course.time.split(":")[0]].push(course);
+        return hours;
+      }, {});
+    },
+    hoursTodayPlanifiedFiltered() {
+      return Array.from(
+        new Set(
+          this.coursesTodayPlanified.map(course => course.time.split(":")[0])
+        )
+      );
+    },
     currentDay() {
       return this.days[new Date(this.currentDate).getDay()].toLowerCase();
     }
@@ -471,7 +579,7 @@ export default {
 
 <style scoped lang="scss">
 .day-container {
-  height: 100%;
+  height: calc(100%);
 }
 .unplanned {
   width: 400px;

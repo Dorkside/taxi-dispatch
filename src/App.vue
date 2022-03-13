@@ -44,7 +44,7 @@
       <v-main
         class="pa-0 overflow-hidden"
         :style="{
-          height: 'calc(100% - 64px)'
+          height: admin ? 'calc(100% - 64px)' : 'calc(100% - 56px)'
         }"
       >
         <div
@@ -82,8 +82,8 @@
           fluid
           class="pa-0 overflow-hidden"
           :style="{
-            height: 'calc(100% - 48px)',
-            maxHeight: 'calc(100% - 48px)'
+            height: admin ? 'calc(100% - 48px)' : 'calc(100%)',
+            maxHeight: admin ? 'calc(100% - 48px)' : 'calc(100%)'
           }"
         >
           <router-view></router-view>

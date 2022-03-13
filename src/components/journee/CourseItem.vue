@@ -280,6 +280,7 @@
 
       <v-card-actions
         v-if="course.time && !course.deleted"
+        :class="{ 'pb-10': !admin }"
         class="d-flex justify-space-between align-center"
       >
         <v-spacer></v-spacer>
