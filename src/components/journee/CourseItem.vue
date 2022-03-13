@@ -124,6 +124,7 @@
 
                 <div
                   class="d-flex col-12 pa-0 flex-grow-0 flex-shrink-1"
+                  style="margin-left: -42px;"
                   :class="{
                     'flex-column': course.direction === 'Aller',
                     'flex-column-reverse': course.direction === 'Retour'
