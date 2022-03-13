@@ -56,6 +56,7 @@
             style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
           >
             <b>{{ chauffeur.name }}</b>
+            <small>&nbsp;({{ chauffeur.courses.length }} courses)</small>
           </v-chip>
         </v-subheader>
 

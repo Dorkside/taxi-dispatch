@@ -107,7 +107,7 @@
         ref="tab-container"
         v-model="tab"
         class="flex-grow-1"
-        style="overflow-y: auto; z-index: 0;"
+        style="overflow-y: auto; z-index: 0; position:relative;"
       >
         <v-tab-item key="journee">
           <v-list class="transparent pa-2 col-12" dense>
@@ -280,6 +280,65 @@
           </v-list>
         </v-tab-item>
       </v-tabs-items>
+      <div
+        v-if="admin"
+        style="position: absolute; top: 48px; left: 0; bottom: 0;z-index: 100;"
+      >
+        <div
+          class="courses-progress"
+          :style="{
+            borderColor: 'rgba(0, 0, 0, 100%)',
+            background:
+              'linear-gradient(to right,rgba(0, 0, 0, 50%) 0%,rgba(0, 0, 0, 0%) 100%)',
+            height: `${(coursesTodayDeleted.length / totalCourses) * 100}%`
+          }"
+        ></div>
+        <div
+          class="courses-progress"
+          :style="{
+            borderColor: 'rgba(0, 255, 0, 100%)',
+            background:
+              'linear-gradient(to right,rgba(0, 255, 0, 50%) 0%,rgba(0, 255, 0, 0%) 100%)',
+            height: `${(coursesTodayValidated.length / totalCourses) * 100}%`
+          }"
+        ></div>
+        <div
+          class="courses-progress"
+          :style="{
+            borderColor: 'rgba(255, 255, 0, 100%)',
+            background:
+              'linear-gradient(to right,rgba(255, 255, 0, 50%) 0%,rgba(255, 255, 0, 0%) 100%)',
+            height: `${(coursesTodayUnplanifiedFiltered.length / totalCourses) *
+              100}%`
+          }"
+        ></div>
+        <div
+          class="courses-progress"
+          :style="{
+            borderColor: 'rgba(0, 0, 255, 100%)',
+            background:
+              'linear-gradient(to right,rgba(0, 0, 255, 50%) 0%,rgba(0, 0, 255, 0%) 100%)',
+            height: `${(coursesTodayPlanifiedFiltered.filter(
+              course => course.chauffeur
+            ).length /
+              totalCourses) *
+              100}%`
+          }"
+        ></div>
+        <div
+          class="courses-progress"
+          :style="{
+            borderColor: 'rgba(100, 100, 100, 100%)',
+            background:
+              'linear-gradient(to right,rgba(100, 100, 100, 50%) 0%,rgba(100, 100, 100, 0%) 100%)',
+            height: `${(coursesTodayPlanifiedFiltered.filter(
+              course => !course.chauffeur
+            ).length /
+              totalCourses) *
+              100}%`
+          }"
+        ></div>
+      </div>
     </div>
   </div>
 </template>
@@ -335,6 +394,14 @@ export default {
   },
   computed: {
     ...mapState(["currentDate", "admin"]),
+    totalCourses() {
+      return (
+        this.coursesTodayDeleted.length +
+        this.coursesTodayValidated.length +
+        this.coursesTodayUnplanifiedFiltered.length +
+        this.coursesTodayPlanifiedFiltered.length
+      );
+    },
     typeKeys() {
       return Object.keys(Types);
     },
@@ -586,6 +653,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.courses-progress {
+  width: 6px;
+  border-left: solid 1px;
+  position: relative;
+}
+
 .day-container {
   height: calc(100%);
 }
