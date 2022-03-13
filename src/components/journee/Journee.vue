@@ -118,22 +118,24 @@
             <template
               v-if="admin && coursesTodayUnplanifiedFiltered.length > 0"
             >
-              <v-list-item
-                v-for="(course, index) in coursesTodayUnplanifiedFiltered"
-                :key="`${course.ref}-${course.id}`"
-                :index="index"
-                class="col-12 ma-0"
-              >
-                <v-list-item-content
-                  class="show-overflow justify-center align-center col-12"
+              <transition-group name="list" tag="div">
+                <v-list-item
+                  v-for="(course, index) in coursesTodayUnplanifiedFiltered"
+                  :key="`${course.ref}-${course.id}`"
+                  :index="index"
+                  class="col-12 ma-0"
                 >
-                  <course-item
-                    :course="course"
-                    :index="index"
-                    :hide-chauffeur="true"
-                  ></course-item>
-                </v-list-item-content>
-              </v-list-item>
+                  <v-list-item-content
+                    class="show-overflow justify-center align-center col-12"
+                  >
+                    <course-item
+                      :course="course"
+                      :index="index"
+                      :hide-chauffeur="true"
+                    ></course-item>
+                  </v-list-item-content>
+                </v-list-item>
+              </transition-group>
             </template>
 
             <v-divider
@@ -145,6 +147,7 @@
               :key="`${hour}-key`"
             >
               <div
+                v-if="coursesByHourTodayPlanifiedFiltered[hour].length"
                 style="position: sticky; left: 0; top: 8px; right: 0; border-top: dotted 2px #e0e0e0;"
               >
                 <div
@@ -208,65 +211,74 @@
                 </template>
               </div>
 
-              <template
-                v-for="(course, index) in coursesByHourTodayPlanifiedFiltered[
-                  hour
-                ]"
-              >
-                <v-list-item :key="`${course.ref}-${course.id}`" :index="index">
-                  <v-list-item-content
-                    class="show-overflow justify-center align-center col-12"
+              <transition-group name="list" tag="div">
+                <template
+                  v-for="(course, index) in coursesByHourTodayPlanifiedFiltered[
+                    hour
+                  ]"
+                >
+                  <v-list-item
+                    :key="`${course.ref}-${course.id}`"
+                    :index="index"
                   >
-                    <course-item
-                      :key="`${course.ref}-${course.id}`"
-                      :style="{
-                        opacity: course.deleted ? '0.3' : '1'
-                      }"
-                      :course="course"
-                      :index="index"
-                    ></course-item>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
+                    <v-list-item-content
+                      class="show-overflow justify-center align-center col-12"
+                    >
+                      <course-item
+                        :key="`${course.ref}-${course.id}`"
+                        :style="{
+                          opacity: course.deleted ? '0.3' : '1'
+                        }"
+                        :course="course"
+                        :index="index"
+                      ></course-item>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
+              </transition-group>
             </div>
           </v-list>
         </v-tab-item>
         <v-tab-item v-if="admin" key="validees">
           <v-list class="transparent pa-2" dense>
-            <v-list-item
-              v-for="(course, index) in coursesTodayValidated"
-              :key="`${course.ref}-${course.id}`"
-              :index="index"
-            >
-              <v-list-item-content
-                class="show-overflow justify-center align-center col-12"
+            <transition-group name="list2" tag="div">
+              <v-list-item
+                v-for="(course, index) in coursesTodayValidated"
+                :key="`${course.ref}-${course.id}`"
+                :index="index"
               >
-                <course-item
-                  :key="`${course.ref}-${course.id}`"
-                  :course="course"
-                  :index="index"
-                ></course-item>
-              </v-list-item-content>
-            </v-list-item>
+                <v-list-item-content
+                  class="show-overflow justify-center align-center col-12"
+                >
+                  <course-item
+                    :key="`${course.ref}-${course.id}`"
+                    :course="course"
+                    :index="index"
+                  ></course-item>
+                </v-list-item-content>
+              </v-list-item>
+            </transition-group>
           </v-list>
         </v-tab-item>
         <v-tab-item v-if="admin" key="annulees">
           <v-list class="transparent pa-2" dense>
-            <v-list-item
-              v-for="(course, index) in coursesTodayDeleted"
-              :key="`${course.ref}-${course.id}`"
-              :index="index"
-            >
-              <v-list-item-content
-                class="show-overflow justify-center align-center"
+            <transition-group name="list2" tag="div">
+              <v-list-item
+                v-for="(course, index) in coursesTodayDeleted"
+                :key="`${course.ref}-${course.id}`"
+                :index="index"
               >
-                <course-item
-                  :key="`${course.ref}-${course.id}`"
-                  :course="course"
-                  :index="index"
-                ></course-item>
-              </v-list-item-content>
-            </v-list-item>
+                <v-list-item-content
+                  class="show-overflow justify-center align-center"
+                >
+                  <course-item
+                    :key="`${course.ref}-${course.id}`"
+                    :course="course"
+                    :index="index"
+                  ></course-item>
+                </v-list-item-content>
+              </v-list-item>
+            </transition-group>
           </v-list>
         </v-tab-item>
       </v-tabs-items>
@@ -480,20 +492,18 @@ export default {
       );
     },
     coursesByHourTodayPlanifiedFiltered() {
-      return this.coursesTodayPlanifiedFiltered.reduce((hours, course) => {
-        if (!hours[course.time.split(":")[0]]) {
-          hours[course.time.split(":")[0]] = [];
-        }
-        hours[course.time.split(":")[0]].push(course);
+      return this.hoursTodayPlanifiedFiltered.reduce((hours, hour) => {
+        hours[hour] = this.coursesTodayPlanifiedFiltered.filter(course => {
+          return course.time.split(":")[0] === hour;
+        });
         return hours;
       }, {});
     },
     coursesByHourTodayPlanified() {
-      return this.coursesTodayPlanified.reduce((hours, course) => {
-        if (!hours[course.time.split(":")[0]]) {
-          hours[course.time.split(":")[0]] = [];
-        }
-        hours[course.time.split(":")[0]].push(course);
+      return this.hoursTodayPlanifiedFiltered.reduce((hours, hour) => {
+        hours[hour] = this.coursesTodayPlanified.filter(course => {
+          return course.time.split(":")[0] === hour;
+        });
         return hours;
       }, {});
     },
@@ -592,5 +602,23 @@ export default {
 }
 .timeline-sticky {
   top: 4px !important;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.6s;
+}
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateX(50%);
+}
+
+.list2-enter-active,
+.list2-leave-active {
+  transition: all 0.6s;
+}
+.list2-enter, .list2-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateX(-50%);
 }
 </style>
