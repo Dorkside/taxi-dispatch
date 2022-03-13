@@ -1,7 +1,7 @@
 <template>
   <v-lazy :min-height="lazySize" class="col-12 pa-0">
     <v-card
-      class="my-2 mx-auto"
+      class="mx-auto"
       :style="
         `border-left: solid 82px ${course.color} !important; max-width: 600px;`
       "
