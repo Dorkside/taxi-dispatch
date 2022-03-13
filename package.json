@@ -12,6 +12,7 @@
     "deploy:staging": "firebase use taxi-oka-dev && yarn build && firebase deploy"
   },
   "dependencies": {
+    "@mdi/js": "^6.5.95",
     "@vuex-orm/core": "^0.36.4",
     "@vuex-orm/plugin-axios": "^0.9.4",
     "dayjs": "^1.8.19",

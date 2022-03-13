@@ -41,7 +41,7 @@
           <span class="d-none d-md-block">Déconnexion</span>
         </v-btn>
       </v-app-bar>
-      <v-content
+      <v-main
         class="pa-0 overflow-hidden"
         :style="{
           height: 'calc(100% - 64px)'
@@ -88,7 +88,7 @@
         >
           <router-view></router-view>
         </v-container>
-      </v-content>
+      </v-main>
     </vue100vh>
   </v-app>
 </template>

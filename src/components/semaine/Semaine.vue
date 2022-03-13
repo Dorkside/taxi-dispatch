@@ -33,6 +33,13 @@
         >
           <v-card-title class="flex-grow-1">
             {{ item.surname }} {{ item.name }}
+
+            <v-icon
+              v-if="item.assistance"
+              class="ml-4"
+              color="green darken-2"
+              >{{ mdiHumanWheelchair }}</v-icon
+            >
           </v-card-title>
 
           <div class="d-flex">
@@ -362,6 +369,20 @@
 
           <v-card>
             <v-card-text>
+              <v-switch
+                v-model="dialogPatientData.assistance"
+                @change="changeAssistance($event, dialogPatientData)"
+                ><template v-slot:label>
+                  <v-icon
+                    class="mr-1"
+                    :color="
+                      dialogPatientData.assistance ? 'green darken-2' : ''
+                    "
+                    >{{ mdiHumanWheelchair }}</v-icon
+                  >
+                  Requiert de l'assistance
+                </template></v-switch
+              >
               <v-textarea
                 v-model="dialogPatientData.note"
                 label="Notes"
@@ -460,6 +481,7 @@
 </template>
 
 <script>
+import { mdiHumanWheelchair } from "@mdi/js";
 import * as dayjs from "dayjs";
 import Patient from "@/models/Patient";
 import Place from "@/models/Place";
@@ -492,7 +514,8 @@ export default {
       deleteData: undefined,
       dialogDelete: false,
       societes: ["OKA", "Cicciu", "TAP"],
-      currentMonth: dayjs().format("YYYY-MM") + "-01"
+      currentMonth: dayjs().format("YYYY-MM") + "-01",
+      mdiHumanWheelchair
     };
   },
   computed: {
@@ -585,6 +608,10 @@ export default {
     },
     changeNote($event, patient) {
       patient.update({ note: $event });
+    },
+    changeAssistance($event, patient) {
+      console.log($event);
+      patient.update({ assistance: $event });
     },
     changeAdresse($event, patient) {
       patient.update({ adresse: $event });
