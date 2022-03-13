@@ -57,42 +57,51 @@
               </v-card>
             </v-dialog>
             <div class="d-flex flex-column col-12 pa-0">
-              <div class="d-flex flex-row mb-2">
-                <v-select
-                  v-if="!course.generated"
-                  :items="types"
-                  :value="course.type"
-                  class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
-                  label="Type"
-                  dense
-                  outlined
-                  hide-details
-                  @change="changeType($event, course)"
-                ></v-select>
-                <v-combobox
-                  v-if="!course.generated"
-                  dense
-                  :value="course.patient"
-                  height="24"
-                  :items="patients"
-                  item-text="fullname"
-                  label="Patient"
-                  class="combo-width mx-2 flex-shrink-0 flex-grow-0"
-                  autocomplete="no-fill"
-                  hide-details
-                  outlined
-                  @change="changePatient($event, course)"
+              <div class="d-flex flex-row align-center justify-start my-2">
+                <template v-if="!course.generated">
+                  <v-select
+                    :items="types"
+                    :value="course.type"
+                    class="mx-2 type combo-width flex-grow-0 flex-shrink-1"
+                    label="Type"
+                    dense
+                    outlined
+                    hide-details
+                    @change="changeType($event, course)"
+                  ></v-select>
+                  <v-combobox
+                    dense
+                    :value="course.patient"
+                    height="24"
+                    :items="patients"
+                    item-text="fullname"
+                    label="Patient"
+                    class="combo-width mx-2 flex-shrink-0 flex-grow-0"
+                    autocomplete="no-fill"
+                    hide-details
+                    outlined
+                    @change="changePatient($event, course)"
+                  >
+                  </v-combobox>
+                </template>
+                <h3
+                  v-else-if="course.patient"
+                  class="flex-grow-0 mb-0"
+                  :style="{ minWidth: '100px' }"
                 >
-                </v-combobox>
+                  {{ course.patient.fullname }}
+                  <small v-if="course.patient.deleted"
+                    >(Patient supprimé)</small
+                  >
+                </h3>
+                <v-icon
+                  v-if="course.patient.assistance"
+                  class="ml-4"
+                  color="green darken-2"
+                  >{{ mdiHumanWheelchair }}</v-icon
+                >
+                <v-spacer />
               </div>
-              <h3
-                v-if="course.generated && course.patient"
-                class="flex-grow-1 mb-0"
-                :style="{ minWidth: '100px' }"
-              >
-                {{ course.patient.fullname }}
-                <small v-if="course.patient.deleted">(Patient supprimé)</small>
-              </h3>
               <template v-if="!hideDetails">
                 <div class="d-flex flex-row mb-2">
                   <div
@@ -313,6 +322,7 @@
 </template>
 
 <script>
+import { mdiHumanWheelchair } from "@mdi/js";
 import { mapState } from "vuex";
 import Patient from "@/models/Patient";
 import Chauffeur from "@/models/Chauffeur";
@@ -333,7 +343,8 @@ export default {
       dialogDelete: false,
       newTime: this.course ? this.course.time : "",
       types: Object.keys(Types),
-      societes: ["OKA", "Cicciu", "TAP"]
+      societes: ["OKA", "Cicciu", "TAP"],
+      mdiHumanWheelchair
     };
   },
   computed: {

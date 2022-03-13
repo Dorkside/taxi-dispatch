@@ -57,7 +57,7 @@
       >
         <div
           v-if="admin"
-          class="elevation-8 pa-0 z-index-10 flex-grow-0 align-end flex-shrink-1 amber d-flex flex-column"
+          class="elevation-8 pa-0 z-index-10 flex-grow-0 align-end flex-shrink-1 amber darken-3 d-flex flex-column"
         >
           <v-tabs
             class="flex-grow-0 flex-shrink-0"
