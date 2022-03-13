@@ -7,8 +7,15 @@
       width="300px"
       class="d-flex flex-column flex-shrink-0 elevation-8 scroll pa-0"
     >
-      <v-subheader class="title-scroll flex-grow-0 flex-shrink-0">
-        <v-chip class="overline">Courses non attribuées</v-chip>
+      <v-subheader
+        class="title-scroll flex-grow-0 flex-shrink-0"
+        style="top: 0;"
+      >
+        <v-chip
+          class="overline elevation-2"
+          style="position: absolute; top: 0; left: 0; border-radius: 0 0 12px 0;"
+          >Courses non attribuées</v-chip
+        >
       </v-subheader>
       <div class="flex-grow-1 flex-shrink-1">
         <draggable
@@ -43,8 +50,10 @@
         flat
         class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
       >
-        <v-subheader class="title-scroll gradient">
-          <v-chip class="mt-2">
+        <v-subheader class="title-scroll" style="top: -16px;">
+          <v-chip
+            style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
+          >
             {{ chauffeur.name }}
           </v-chip>
         </v-subheader>
@@ -237,7 +246,10 @@ export default {
 .scroll {
   overflow-y: scroll;
 }
+
 .title-scroll {
+  position: sticky !important;
+  z-index: 11 !important;
   position: fixed;
   &.gradient {
     background: linear-gradient(

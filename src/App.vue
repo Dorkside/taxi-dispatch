@@ -300,11 +300,6 @@ export default {
 .toolbar-title {
   width: 100%;
 }
-.title-scroll {
-  position: sticky !important;
-  top: 0;
-  z-index: 11 !important;
-}
 .z-index-10 {
   position: relative;
   z-index: 10;

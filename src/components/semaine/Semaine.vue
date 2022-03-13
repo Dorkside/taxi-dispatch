@@ -65,24 +65,27 @@
           </div>
 
           <v-chip
-            class="elevation-2"
-            style="position: absolute; right: -16px; top: -12px;"
+            pill
+            class="elevation-0"
+            style="position: absolute; right: 0px; top: 0px; border-radius: 0 4px 0 12px;"
           >
             <v-avatar
-              size="24"
               left
+              style="border-radius: 0;"
               :style="{ backgroundColor: item.color, marginRight: '4px' }"
               class="white--text"
             >
               {{ item.shortType }}
             </v-avatar>
-            {{ item.type }}
+            <span>
+              {{ item.type }}
+            </span>
           </v-chip>
 
           <v-chip
             v-if="item"
-            class="elevation-2"
-            style="position:absolute; left: -16px; bottom: -12px;"
+            class="elevation-0"
+            style="position:absolute; left: 0px; bottom: 0px; border-radius: 0 12px 0 4px;"
           >
             {{ item.societe || "Aucune société" }}
           </v-chip>
@@ -123,27 +126,31 @@
             <v-spacer></v-spacer>
           </v-card-text>
 
-          <v-btn
-            text
-            style="position:absolute; bottom: 24px; left: 8px;"
-            @click="
-              dialogHistory = true;
-              dialogPatientData = item;
-            "
-          >
-            <v-icon>mdi-clock-outline</v-icon> Historique
-          </v-btn>
+          <v-card-actions>
+            <v-row align="center" justify="end">
+              <v-btn
+                text
+                class="ma-1"
+                @click="
+                  dialogHistory = true;
+                  dialogPatientData = item;
+                "
+              >
+                <v-icon>mdi-clock-outline</v-icon> Historique
+              </v-btn>
 
-          <v-btn
-            text
-            style="position:absolute; bottom: 16px; right: 16px;"
-            @click="
-              dialogPatient = true;
-              dialogPatientData = item;
-            "
-          >
-            <v-icon>mdi-pencil</v-icon> Modifier
-          </v-btn>
+              <v-btn
+                text
+                class="ma-1"
+                @click="
+                  dialogPatient = true;
+                  dialogPatientData = item;
+                "
+              >
+                <v-icon>mdi-pencil</v-icon> Modifier
+              </v-btn>
+            </v-row>
+          </v-card-actions>
         </v-card>
       </v-lazy>
     </section>

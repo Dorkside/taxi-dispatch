@@ -8,9 +8,9 @@
     >
       <v-chip
         v-if="course.patient && !preventUpdate && admin"
-        class="elevation-2"
+        class="elevation-0"
         :color="course.patient.societe ? 'yellow' : 'red'"
-        style="position:absolute; right: -16px; top: -16px;"
+        style="position:absolute; right: 0px; top: 0px; border-radius: 0 4px 0 12px;"
         small
       >
         {{ (course.patient && course.patient.societe) || "Aucune société" }}
@@ -85,18 +85,22 @@
                 >
                 </v-combobox>
               </div>
+              <h3
+                v-if="course.generated && course.patient"
+                class="flex-grow-1 mb-0"
+                :style="{ minWidth: '100px' }"
+              >
+                {{ course.patient.fullname }}
+                <small v-if="course.patient.deleted">(Patient supprimé)</small>
+              </h3>
               <div class="d-flex flex-row mb-2">
-                <h3
-                  v-if="course.generated && course.patient"
-                  class="flex-grow-1 mb-0"
-                  :style="{ minWidth: '100px' }"
+                <div
+                  v-if="course.patient && course.patient.note"
+                  class="d-flex flex-column flex-grow-1"
                 >
-                  {{ course.patient.fullname }}
-                  <small v-if="course.patient.deleted"
-                    >(Patient supprimé)</small
-                  >
-                </h3>
-
+                  <small><i>Notes</i></small>
+                  <span>{{ course.patient.note }}</span>
+                </div>
                 <a
                   v-if="course.patient && course.patient.telephone"
                   class="no-link"
@@ -107,14 +111,6 @@
                     {{ course.patient.telephone || "???" }}
                   </v-chip>
                 </a>
-              </div>
-
-              <div
-                v-if="course.patient && course.patient.note"
-                class="d-flex flex-column"
-              >
-                <small><i>Notes</i></small>
-                <span>{{ course.patient.note }}</span>
               </div>
 
               <div
@@ -213,12 +209,12 @@
 
       <v-chip
         pill
-        class="elevation-2"
-        style="position: absolute; left: -100px; bottom: -16px;"
+        class="elevation-0"
+        style="position: absolute; left: -82px; bottom: 0px; border-radius: 0 12px 0 4px; border-top: solid 1px #e0e0e0; border-right: solid 1px #e0e0e0;"
       >
         <v-avatar
           left
-          style="color:white;"
+          style="color:white; border-radius: 0;"
           :style="{ backgroundColor: course.color }"
         >
           {{ course.shortType }}
