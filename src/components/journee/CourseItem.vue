@@ -98,7 +98,7 @@
                 </h3>
 
                 <a
-                  v-if="course.patient.telephone"
+                  v-if="course.patient && course.patient.telephone"
                   class="no-link"
                   :href="`tel:${course.patient.telephone}`"
                 >
@@ -109,7 +109,10 @@
                 </a>
               </div>
 
-              <div v-if="course.patient.note" class="d-flex flex-column">
+              <div
+                v-if="course.patient && course.patient.note"
+                class="d-flex flex-column"
+              >
                 <small><i>Notes</i></small>
                 <span>{{ course.patient.note }}</span>
               </div>

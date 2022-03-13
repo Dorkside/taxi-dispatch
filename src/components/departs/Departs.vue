@@ -108,9 +108,6 @@ export default {
       ]
     };
   },
-  created() {
-    // this.initTodayCourses();
-  },
   computed: {
     ...mapState(["currentDate", "admin"]),
     recurringCourses() {

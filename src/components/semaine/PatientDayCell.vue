@@ -57,8 +57,8 @@
 export default {
   name: "PatientDayCell",
   props: {
-    patient: { type: Object },
-    day: { type: String }
+    patient: { type: Object, default: undefined },
+    day: { type: String, default: undefined }
   },
   data() {
     return {
@@ -66,6 +66,13 @@ export default {
       newTime: this.patient[this.day.toLowerCase()],
       r: false
     };
+  },
+  watch: {
+    newTime() {
+      this.patient[
+        this.day.toLowerCase() + (this.r ? "Retour" : "")
+      ] = this.newTime;
+    }
   },
   methods: {
     async remove() {
@@ -83,13 +90,6 @@ export default {
         [this.day.toLowerCase() + (this.r ? "Retour" : "")]: this.newTime
       });
       this.dialog = false;
-    }
-  },
-  watch: {
-    newTime() {
-      this.patient[
-        this.day.toLowerCase() + (this.r ? "Retour" : "")
-      ] = this.newTime;
     }
   }
 };
