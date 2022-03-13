@@ -131,7 +131,7 @@
                 {{ item.initiales }}
               </v-avatar>
               <v-icon dark class="handle-chauffeur">
-                {{ "mdi-arrow-all" }}
+                mdi-drag
               </v-icon>
             </div>
             <div class="d-flex justify-center align-center">

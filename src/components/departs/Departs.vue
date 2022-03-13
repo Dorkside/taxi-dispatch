@@ -17,25 +17,25 @@
           >Courses non attribuées</v-chip
         >
       </v-subheader>
-      <div class="flex-grow-1 flex-shrink-1">
-        <draggable
-          :value="coursesTodayUnplanified"
-          handle=".handle"
-          :sort="true"
-          group="courses"
-          fill-height
-          class="mx-2 "
-          @change="moveCourse($event, null)"
+      <draggable
+        class="d-flex flex-column justify-stretch flex-grow-1 flex-shrink-1 pa-2 pr-4 pt-10"
+        style="overflow-x: hidden; position: absolute; top: 0; left: 0; bottom: 0; width: 300px;"
+        :value="coursesTodayUnplanified"
+        handle=".handle"
+        :sort="true"
+        group="courses"
+        fill-height
+        @change="moveCourse($event, null)"
+      >
+        <v-list-item
+          v-for="(course, index) in coursesTodayUnplanified"
+          :key="`${course.ref}-${course.id}`"
+          style="max-width: 100%;"
+          class="mb-1 pa-0 flex-grow-1 flex-shrink-1"
         >
-          <v-list-item
-            v-for="(course, index) in coursesTodayUnplanified"
-            :key="`${course.ref}-${course.id}`"
-            class="mb-1"
-          >
-            <depart-item :course="course" :index="index"></depart-item>
-          </v-list-item>
-        </draggable>
-      </div>
+          <depart-item :course="course" :index="index"></depart-item>
+        </v-list-item>
+      </draggable>
     </v-list>
     <draggable
       v-model="chauffeurs"
@@ -48,28 +48,35 @@
         v-for="chauffeur of chauffeurs"
         :key="chauffeur.id"
         flat
+        style="overflow: hidden;"
         class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
       >
         <v-subheader class="title-scroll" style="top: -16px;">
           <v-chip
             style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
           >
-            {{ chauffeur.name }}
+            <b>{{ chauffeur.name }}</b>
           </v-chip>
         </v-subheader>
-        <v-icon class="handle-chauffeur">
-          {{ "mdi-arrow-all" }}
-        </v-icon>
+
         <v-list
-          class="pa-0 d-flex flex-column align-stretch overflow-y-auto"
-          :style="{ height: 'calc(100% - 48px)', background: 'transparent' }"
+          class="d-flex flex-column align-stretch overflow-y-auto"
+          style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden;"
+          :style="{ background: 'transparent' }"
         >
           <draggable
             :value="chauffeur.courses"
             :sort="true"
             handle=".handle"
             group="courses"
-            :style="{ height: '100%' }"
+            :style="{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0
+            }"
+            class="pt-10 pa-2"
             @change="moveCourse($event, chauffeur)"
           >
             <depart-item
@@ -81,6 +88,15 @@
             ></depart-item>
           </draggable>
         </v-list>
+
+        <v-chip
+          style="position:absolute; top: 0; right: 0; border-radius: 0 4px 0 12px;"
+          class="handle-chauffeur"
+        >
+          <v-icon small>
+            mdi-drag
+          </v-icon>
+        </v-chip>
       </v-card>
     </draggable>
   </div>
@@ -260,9 +276,6 @@ export default {
   }
 }
 .handle-chauffeur {
-  position: absolute;
-  top: 8px;
-  right: 8px;
   z-index: 100;
 }
 </style>

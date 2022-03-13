@@ -1,9 +1,9 @@
 <template>
-  <v-lazy min-height="44">
+  <v-lazy min-height="44" style="width: 100%; max-width: 100%;">
     <v-card
       class="full-width"
       :style="
-        `border-left: solid 82px ${course.color} !important; overflow:visible;`
+        `border-left: solid 70px ${course.color} !important; overflow:visible;`
       "
     >
       <v-card-text class="pa-2 full-width" style="overflow:visible;">
@@ -13,7 +13,7 @@
           >
             {{ course.prettyTime }}
           </span>
-          <v-icon class="ml-1 flex-shrink-0 flex-grow-0">
+          <v-icon class="ml-2 mr-1 flex-shrink-0 flex-grow-0">
             {{
               course.direction === "Aller"
                 ? "mdi-arrow-right"
@@ -31,7 +31,7 @@
             </span>
           </div>
           <v-icon class="flex-shrink-0 flex-grow-0 handle">
-            {{ "mdi-arrow-all" }}
+            mdi-drag
           </v-icon>
         </div>
       </v-card-text>

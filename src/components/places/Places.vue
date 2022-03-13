@@ -123,7 +123,7 @@
           >
             <div class="d-flex">
               <v-icon dark class="handle-place">
-                {{ "mdi-arrow-all" }}
+                mdi-drag
               </v-icon>
             </div>
             <div class="d-flex flex-grow-1 flex-column">
