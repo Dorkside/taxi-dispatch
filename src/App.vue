@@ -1,11 +1,9 @@
 <template>
   <v-app class="overflow-hidden">
     <vue100vh :css="{ height: '100rvh' }">
-      <v-app-bar color="blue accent-4 justify-space-between">
-        <v-toolbar-title class="white--text d-none d-md-block">
-          <v-chip class="yellow darken-2">SARL OKA</v-chip> |
-          <v-chip class="yellow darken-2">Taxi Cicciu</v-chip> |
-          <v-chip class="yellow darken-2">SAS TAP</v-chip>
+      <v-app-bar color="blue accent-3 justify-space-between">
+        <v-toolbar-title class="stencil d-none d-md-block">
+          XI DRIVER
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <div center class="d-flex align-center justify-center white--text">
@@ -41,54 +39,83 @@
           <span class="d-none d-md-block">Déconnexion</span>
         </v-btn>
       </v-app-bar>
-      <v-main
-        class="pa-0 overflow-hidden"
+      <v-container
+        class="pa-0 overflow-hidden d-flex flex-row justify-stretch ma-0"
         :style="{
-          height: admin ? 'calc(100% - 64px)' : 'calc(100% - 56px)'
+          height: admin ? 'calc(100% - 64px)' : 'calc(100% - 56px)',
+          maxWidth: '100%'
         }"
       >
         <div
           v-if="admin"
-          class="elevation-8 pa-0 z-index-10 align-center d-none d-md-block"
+          class="elevation-8 pa-0 z-index-10 flex-grow-0 align-end flex-shrink-1 blue d-flex flex-column"
         >
-          <v-tabs background-color="blue accent-3" dark class="flex-grow-1">
+          <v-tabs
+            class="flex-grow-0 flex-shrink-0"
+            background-color="blue accent-3"
+            vertical
+            dark
+          >
             <v-tab to="/journee">
-              <v-icon left>mdi-view-sequential</v-icon>
-              Journée
+              <v-icon>mdi-view-sequential</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Journée
+              </span>
             </v-tab>
             <v-tab v-if="admin" to="/departs">
-              <v-icon left>mdi-view-parallel</v-icon>
-              Départs
+              <v-icon>mdi-view-parallel</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Départs
+              </span>
             </v-tab>
             <v-tab v-if="admin" to="/series">
-              <v-icon left>mdi-medical-bag</v-icon>
-              Patients
+              <v-icon>mdi-medical-bag</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Patients
+              </span>
             </v-tab>
             <v-tab v-if="admin" to="/chauffeurs">
-              <v-icon left>mdi-car</v-icon>
-              Chauffeurs
+              <v-icon>mdi-car</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Chauffeurs
+              </span>
             </v-tab>
             <v-tab v-if="admin" to="/places">
-              <v-icon left>mdi-hospital-building</v-icon>
-              Etablissements
+              <v-icon>mdi-hospital-building</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Etablissements
+              </span>
             </v-tab>
             <v-tab v-if="admin" to="/facturation">
-              <v-icon left>mdi-receipt</v-icon>
-              Facturation
+              <v-icon>mdi-receipt</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Facturation
+              </span>
             </v-tab>
           </v-tabs>
+          <v-spacer />
+          <v-btn
+            icon
+            color="white"
+            large
+            class="ma-2"
+            :style="{ transform: menuDeployed ? 'rotateZ(180deg)' : '' }"
+            @click="() => (menuDeployed = !menuDeployed)"
+          >
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
         </div>
         <v-container
-          fluid
-          class="pa-0 overflow-hidden"
+          class="pa-0 overflow-hidden flex-grow-1 flex-shrink-1"
           :style="{
-            height: admin ? 'calc(100% - 48px)' : 'calc(100%)',
-            maxHeight: admin ? 'calc(100% - 48px)' : 'calc(100%)'
+            height: 'calc(100%)',
+            maxHeight: 'calc(100%)',
+            maxWidth: '100%'
           }"
         >
           <router-view></router-view>
         </v-container>
-      </v-main>
+      </v-container>
     </vue100vh>
   </v-app>
 </template>
@@ -141,7 +168,8 @@ export default {
   store,
   data() {
     return {
-      dialog: false
+      dialog: false,
+      menuDeployed: false
     };
   },
   computed: {
@@ -293,9 +321,15 @@ export default {
 </script>
 
 <style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Stardos+Stencil:wght@400;700&display=swap");
+
 .date-text {
   width: 100%;
   max-width: 300px;
+}
+.stencil {
+  font-family: Stardos Stencil, Consolas, monospace;
+  font-weight: 900;
 }
 .toolbar-title {
   width: 100%;
@@ -319,5 +353,9 @@ export default {
 .z-index-6 {
   position: relative;
   z-index: 6;
+}
+.v-tab {
+  justify-content: start;
+  min-width: 32px;
 }
 </style>
