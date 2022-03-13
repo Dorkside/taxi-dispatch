@@ -113,7 +113,7 @@
           <v-lazy
             v-for="patient in filteredPatients"
             :key="patient.id"
-            min-height="44"
+            min-height="48"
           >
             <v-list-item class="pa-0 patient d-flex align-center">
               <span class="mx-2 flex-grow-1">

@@ -25,7 +25,7 @@
       <v-lazy
         v-for="item in filteredPatients"
         :key="item.id"
-        min-height="228"
+        min-height="252"
         class="ma-4 bgTest"
       >
         <v-card

@@ -121,7 +121,7 @@
               <transition-group name="list" tag="div">
                 <v-list-item
                   v-for="(course, index) in coursesTodayUnplanifiedFiltered"
-                  :key="`${course.ref}-${course.id}`"
+                  :key="`${course.ref}`"
                   :index="index"
                   class="col-12 ma-0"
                 >
@@ -217,15 +217,11 @@
                     hour
                   ]"
                 >
-                  <v-list-item
-                    :key="`${course.ref}-${course.id}`"
-                    :index="index"
-                  >
+                  <v-list-item :key="`${course.ref}`" :index="index">
                     <v-list-item-content
                       class="show-overflow justify-center align-center col-12"
                     >
                       <course-item
-                        :key="`${course.ref}-${course.id}`"
                         :style="{
                           opacity: course.deleted ? '0.3' : '1'
                         }"
@@ -244,16 +240,17 @@
             <transition-group name="list2" tag="div">
               <v-list-item
                 v-for="(course, index) in coursesTodayValidated"
-                :key="`${course.ref}-${course.id}`"
+                :key="`${course.ref}`"
                 :index="index"
               >
                 <v-list-item-content
                   class="show-overflow justify-center align-center col-12"
                 >
                   <course-item
-                    :key="`${course.ref}-${course.id}`"
                     :course="course"
                     :index="index"
+                    :hide-details="true"
+                    :lazy-size="132"
                   ></course-item>
                 </v-list-item-content>
               </v-list-item>
@@ -265,16 +262,17 @@
             <transition-group name="list2" tag="div">
               <v-list-item
                 v-for="(course, index) in coursesTodayDeleted"
-                :key="`${course.ref}-${course.id}`"
+                :key="`${course.ref}`"
                 :index="index"
               >
                 <v-list-item-content
                   class="show-overflow justify-center align-center"
                 >
                   <course-item
-                    :key="`${course.ref}-${course.id}`"
                     :course="course"
                     :index="index"
+                    :hide-details="true"
+                    :lazy-size="84"
                   ></course-item>
                 </v-list-item-content>
               </v-list-item>
@@ -611,6 +609,9 @@ export default {
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateX(50%);
+}
+.list-move {
+  transition: transform 1s;
 }
 
 .list2-enter-active,

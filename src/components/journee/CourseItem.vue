@@ -1,5 +1,5 @@
 <template>
-  <v-lazy min-height="100" class="col-12 pa-0">
+  <v-lazy :min-height="lazySize" class="col-12 pa-0">
     <v-card
       class="my-2 mx-auto"
       :style="
@@ -93,66 +93,69 @@
                 {{ course.patient.fullname }}
                 <small v-if="course.patient.deleted">(Patient supprimé)</small>
               </h3>
-              <div class="d-flex flex-row mb-2">
-                <div
-                  v-if="course.patient && course.patient.note"
-                  class="d-flex flex-column flex-grow-1"
-                >
-                  <small><i>Notes</i></small>
-                  <span>{{ course.patient.note }}</span>
+              <template v-if="!hideDetails">
+                <div class="d-flex flex-row mb-2">
+                  <div
+                    v-if="course.patient && course.patient.note"
+                    class="d-flex flex-column flex-grow-1"
+                  >
+                    <small><i>Notes</i></small>
+                    <span>{{ course.patient.note }}</span>
+                  </div>
+                  <v-spacer />
+                  <a
+                    v-if="course.patient && course.patient.telephone"
+                    class="no-link flex-grow-0"
+                    :href="`tel:${course.patient.telephone}`"
+                  >
+                    <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
+                      <v-icon>mdi-phone</v-icon>
+                      {{ course.patient.telephone || "???" }}
+                    </v-chip>
+                  </a>
                 </div>
-                <a
-                  v-if="course.patient && course.patient.telephone"
-                  class="no-link"
-                  :href="`tel:${course.patient.telephone}`"
-                >
-                  <v-chip class="ml-4 mb-1" :style="{ minWidth: '100px' }">
-                    <v-icon>mdi-phone</v-icon>
-                    {{ course.patient.telephone || "???" }}
-                  </v-chip>
-                </a>
-              </div>
 
-              <div
-                class="d-flex col-12 pa-0 flex-grow-0 flex-shrink-1"
-                :class="{
-                  'flex-column': course.direction === 'Aller',
-                  'flex-column-reverse': course.direction === 'Retour'
-                }"
-              >
-                <v-chip
-                  v-if="course.patient"
-                  class="wrap-span"
-                  :style="{
-                    minWidth: '100px',
-                    maxWidth: '100%',
-                    height: 'auto'
+                <div
+                  class="d-flex col-12 pa-0 flex-grow-0 flex-shrink-1"
+                  :class="{
+                    'flex-column': course.direction === 'Aller',
+                    'flex-column-reverse': course.direction === 'Retour'
                   }"
-                  @click="openMap(course.patient.adresse)"
                 >
-                  <v-icon>mdi-home-map-marker</v-icon>
-                  <span class="flex-1">
-                    {{ course.patient.adresse || "???" }}
-                  </span>
-                </v-chip>
-                <div class="pointilles"></div>
-                <v-chip
-                  v-if="course.patient && course.patient.place"
-                  class="wrap-span d-flex"
-                  :style="{
-                    minWidth: '100px',
-                    maxWidth: '100%',
-                    height: 'auto'
-                  }"
-                  @click="openMap(course.patient.place.adresse)"
-                >
-                  <v-icon>mdi-hospital-marker</v-icon>
-                  <span class="flex-1">
-                    {{ course.patient.place.name }},
-                    {{ course.patient.place.adresse || "???" }}
-                  </span>
-                </v-chip>
-              </div>
+                  <v-chip
+                    v-if="course.patient"
+                    class="wrap-span"
+                    :style="{
+                      minWidth: '100px',
+                      maxWidth: '100%',
+                      height: 'auto'
+                    }"
+                    @click="openMap(course.patient.adresse)"
+                  >
+                    <v-icon>mdi-home-map-marker</v-icon>
+                    <span class="flex-1">
+                      {{ course.patient.adresse || "???" }}
+                    </span>
+                  </v-chip>
+                  <div class="pointilles"></div>
+                  <v-chip
+                    v-if="course.patient && course.patient.place"
+                    class="wrap-span d-flex"
+                    :style="{
+                      minWidth: '100px',
+                      maxWidth: '100%',
+                      height: 'auto'
+                    }"
+                    @click="openMap(course.patient.place.adresse)"
+                  >
+                    <v-icon>mdi-hospital-marker</v-icon>
+                    <span class="flex-1">
+                      {{ course.patient.place.name }},
+                      {{ course.patient.place.adresse || "???" }}
+                    </span>
+                  </v-chip>
+                </div>
+              </template>
             </div>
           </div>
           <template v-if="admin">
@@ -320,7 +323,9 @@ export default {
   props: {
     course: { type: Object, default: undefined },
     hideChauffeur: { type: Boolean, default: false },
-    preventUpdate: { type: Boolean, default: false }
+    preventUpdate: { type: Boolean, default: false },
+    hideDetails: { type: Boolean, default: false },
+    lazySize: { type: Number, default: 182 }
   },
   data() {
     return {
