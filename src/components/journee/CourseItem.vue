@@ -58,7 +58,7 @@
             </v-dialog>
             <div class="d-flex flex-column col-12 pa-0">
               <div class="d-flex flex-row align-center justify-start my-2">
-                <template v-if="!course.generated">
+                <template v-if="!course.generated && admin">
                   <v-select
                     :items="types"
                     :value="course.type"
@@ -84,22 +84,21 @@
                   >
                   </v-combobox>
                 </template>
-                <h3
-                  v-else-if="course.patient"
-                  class="flex-grow-0 mb-0"
-                  :style="{ minWidth: '100px' }"
-                >
-                  {{ course.patient.fullname }}
-                  <small v-if="course.patient.deleted"
-                    >(Patient supprimé)</small
+                <template v-else-if="course.patient">
+                  <h3 class="flex-grow-0 mb-0" :style="{ minWidth: '100px' }">
+                    {{ course.patient.fullname }}
+                    <small v-if="course.patient.deleted"
+                      >(Patient supprimé)</small
+                    >
+                  </h3>
+                  <v-icon
+                    v-if="course.patient.assistance"
+                    class="ml-4"
+                    color="green darken-2"
+                    >{{ mdiHumanWheelchair }}</v-icon
                   >
-                </h3>
-                <v-icon
-                  v-if="course.patient.assistance"
-                  class="ml-4"
-                  color="green darken-2"
-                  >{{ mdiHumanWheelchair }}</v-icon
-                >
+                </template>
+
                 <v-spacer />
               </div>
               <template v-if="!hideDetails">
