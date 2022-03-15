@@ -103,76 +103,61 @@
     </v-dialog>
 
     <div class="scroller pa-2 d-flex flex-shrink-1">
-      <draggable
-        v-model="places"
-        handle=".handle-place"
-        :sort="true"
-        group="places"
-        style="max-height: calc(100% - 48px);"
-        class="d-flex flex-wrap pa-4 scroll"
+      <v-data-table
+        item-key="id"
+        :headers="placesHeader"
+        :disable-pagination="true"
+        :items="places"
+        :hide-default-footer="true"
+        style="flex: 1;"
+        class="places-table"
       >
-        <v-card
-          v-for="item of places"
-          :key="item.id"
-          style="width: 300px;"
-          class="pa-0 ma-2 place align-start justify-start"
-        >
-          <div
-            class="d-flex flex-row pa-2 align-stretch"
-            :style="{ backgroundColor: '#333333' }"
-          >
-            <div class="d-flex">
-              <v-icon dark class="handle-place">
-                mdi-drag
-              </v-icon>
+        <template v-slot:body="props">
+          <v-lazy v-for="item in props.items" :key="item.id" tag="tr">
+            <div style="display: contents;">
+              <td>
+                <v-text-field
+                  single-line
+                  :value="item.name"
+                  class="mr-2 flex-grow-1"
+                  autocomplete="nofill"
+                  placeholder="Nom"
+                  @change="changeName($event, item)"
+                ></v-text-field>
+              </td>
+              <td>
+                <v-text-field
+                  single-line
+                  label="Adresse"
+                  :value="item.adresse"
+                  class="mr-2 flex-grow-1"
+                  placeholder="Adresse"
+                  autocomplete="nofill"
+                  @change="changeAdresse($event, item)"
+                ></v-text-field>
+              </td>
+              <td width="120">
+                <v-btn
+                  text
+                  color="red"
+                  class="float-right"
+                  @click="deleteModal(item)"
+                >
+                  <v-icon>mdi-delete-forever</v-icon> Supprimer
+                </v-btn>
+              </td>
             </div>
-            <div class="d-flex flex-grow-1 flex-column">
-              <v-text-field
-                dark
-                single-line
-                :value="item.name"
-                class="mr-2 flex-grow-1"
-                autocomplete="nofill"
-                placeholder="Nom"
-                @change="changeName($event, item)"
-              ></v-text-field>
-              <v-textarea
-                dark
-                label="Adresse"
-                :value="item.adresse"
-                class="mr-2 flex-grow-1"
-                placeholder="Adresse"
-                autocomplete="nofill"
-                rows="3"
-                @change="changeAdresse($event, item)"
-              ></v-textarea>
-            </div>
-          </div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              color="red"
-              class="float-right"
-              @click="deleteModal(item)"
-            >
-              <v-icon>mdi-delete-forever</v-icon> Supprimer
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </draggable>
+          </v-lazy>
+        </template>
+      </v-data-table>
     </div>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
 import Place from "@/models/Place";
 export default {
   name: "Places",
-  components: {
-    draggable
-  },
   data() {
     return {
       dialog: false,
@@ -183,14 +168,26 @@ export default {
       },
       deleteData: undefined,
       dialogDelete: false,
-      valid: false
+      valid: false,
+      placesHeader: [
+        {
+          sortable: false,
+          text: "Nom"
+        },
+        {
+          sortable: false,
+          text: "Adresse"
+        },
+        {
+          sortable: false
+        }
+      ]
     };
   },
   computed: {
     places: {
       get() {
         return Place.query()
-          .orderBy("order", "asc")
           .orderBy("name", "asc")
           .get();
       },
@@ -259,5 +256,16 @@ export default {
 }
 .scroller {
   overflow-y: auto;
+}
+.places-table {
+  tr:nth-child(2n) {
+    background: #f3f3f3;
+  }
+  tr:hover {
+    background: #e0e0e0;
+  }
+  td {
+    padding: 2px 8px;
+  }
 }
 </style>

@@ -22,7 +22,111 @@
     </div>
 
     <section class="scroller d-flex flex-column justify-start align-center">
-      <v-lazy
+      <v-data-table
+        item-key="id"
+        :headers="patientHeaders"
+        :disable-pagination="true"
+        :items="filteredPatients"
+        :hide-default-footer="true"
+        style="flex: 1;"
+        class="patients-table"
+      >
+        <template v-slot:body="props">
+          <v-lazy
+            v-for="item in props.items"
+            :key="item.id"
+            min-height="76"
+            tag="tr"
+          >
+            <div style="display: contents;">
+              <td>
+                <v-avatar
+                  left
+                  size="24"
+                  :style="{ backgroundColor: item.color, marginRight: '4px' }"
+                  class="white--text"
+                >
+                  <span class="text--grey lighten-4">{{ item.shortType }}</span>
+                </v-avatar>
+              </td>
+              <td>{{ item.surname }}</td>
+              <td>{{ item.name }}</td>
+              <td>
+                <v-icon
+                  v-if="item.assistance"
+                  class="ml-4"
+                  color="green darken-2"
+                >
+                  {{ mdiHumanWheelchair }}
+                </v-icon>
+              </td>
+              <td>
+                <v-chip v-if="item.telephone">
+                  <v-icon>mdi-phone</v-icon>{{ item.telephone }}
+                </v-chip>
+              </td>
+              <td>{{ item.note }}</td>
+              <td>{{ item.societe }}</td>
+              <td>
+                <v-chip>
+                  <v-icon>mdi-hospital-building</v-icon
+                  >{{ item.place ? item.place.name : "???" }}
+                </v-chip>
+                <br />
+                <v-chip>
+                  <v-icon>mdi-home-map-marker</v-icon
+                  >{{ item.adresse || "???" }}
+                </v-chip>
+              </td>
+              <td>
+                <v-icon>
+                  mdi-arrow-right
+                </v-icon>
+                <br />
+                <v-icon>
+                  mdi-arrow-left
+                </v-icon>
+              </td>
+              <td
+                v-for="day in Object.entries(item.schedules)"
+                :key="day[0]"
+                small
+                :style="{
+                  opacity:
+                    day[1].a === '--:--' && day[1].r === '--:--' ? '0.5' : '1'
+                }"
+              >
+                <span>{{ day[1].a }}</span>
+                <br />
+                <span>{{ day[1].r }}</span>
+              </td>
+              <td>
+                <v-btn
+                  text
+                  @click="
+                    dialogHistory = true;
+                    dialogPatientData = item;
+                  "
+                >
+                  <v-icon>mdi-clock-outline</v-icon> Historique
+                </v-btn>
+
+                <v-btn
+                  text
+                  @click="
+                    dialogPatient = true;
+                    dialogPatientData = item;
+                  "
+                >
+                  <v-icon>mdi-pencil</v-icon> Modifier
+                </v-btn>
+              </td>
+            </div>
+          </v-lazy>
+        </template>
+      </v-data-table>
+
+      <!-- <v-lazy
         v-for="item in filteredPatients"
         :key="item.id"
         min-height="252"
@@ -152,7 +256,7 @@
             </v-row>
           </v-card-actions>
         </v-card>
-      </v-lazy>
+      </v-lazy> -->
     </section>
 
     <v-dialog v-model="dialogHistory" width="800" class="pa-0">
@@ -522,7 +626,79 @@ export default {
       dialogDelete: false,
       societes: ["OKA", "Cicciu", "TAP"],
       currentMonth: dayjs().format("YYYY-MM") + "-01",
-      mdiHumanWheelchair
+      mdiHumanWheelchair,
+      patientHeaders: [
+        {
+          sortable: true,
+          value: "shortType"
+        },
+        {
+          text: "Nom",
+          sortable: true,
+          value: "surname"
+        },
+        {
+          text: "Prénom",
+          sortable: true,
+          value: "name"
+        },
+        {
+          sortable: false
+        },
+        {
+          text: "Téléphone",
+          sortable: true,
+          value: "telephone"
+        },
+        {
+          text: "Notes",
+          sortable: false
+        },
+        {
+          text: "Société",
+          sortable: false,
+          value: "societe"
+        },
+        {
+          text: "Adresse",
+          sortable: true,
+          value: "place.name"
+        },
+        {
+          sortable: false
+        },
+        {
+          text: "Lu",
+          sortable: false
+        },
+        {
+          text: "Ma",
+          sortable: false
+        },
+        {
+          text: "Me",
+          sortable: false
+        },
+        {
+          text: "Je",
+          sortable: false
+        },
+        {
+          text: "Ve",
+          sortable: false
+        },
+        {
+          text: "Sa",
+          sortable: false
+        },
+        {
+          text: "Di",
+          sortable: false
+        },
+        {
+          sortable: false
+        }
+      ]
     };
   },
   computed: {
@@ -656,5 +832,16 @@ export default {
 .scroller {
   width: 100%;
   overflow-y: scroll;
+}
+.patients-table {
+  tr:nth-child(2n) {
+    background: #f3f3f3;
+  }
+  tr:hover {
+    background: #e0e0e0;
+  }
+  td {
+    padding: 2px 8px;
+  }
 }
 </style>

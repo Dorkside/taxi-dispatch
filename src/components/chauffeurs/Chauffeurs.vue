@@ -104,120 +104,92 @@
     </v-dialog>
 
     <div class="scroller pa-2 d-flex flex-shrink-1">
-      <draggable
-        v-model="chauffeurs"
-        handle=".handle-chauffeur"
-        :sort="true"
-        group="chauffeurs"
-        style="max-height: calc(100% - 48px);"
-        class="d-flex flex-wrap pa-4 scroll"
+      <v-data-table
+        item-key="id"
+        :headers="chauffeurHeaders"
+        :disable-pagination="true"
+        :items="chauffeurs"
+        :hide-default-footer="true"
+        style="flex: 1;"
+        class="chauffeurs-table"
       >
-        <v-card
-          v-for="item of chauffeurs"
-          :key="item.id"
-          style="width: 300px;"
-          class="pa-0 ma-2 chauffeur align-start justify-start"
-        >
-          <div
-            class="d-flex flex-row pa-2"
-            :style="{ backgroundColor: '#333333' }"
-          >
-            <div class="d-flex">
-              <v-avatar
-                :style="{ backgroundColor: 'grey' }"
-                size="36"
-                class="ma-2 white--text"
-              >
-                {{ item.initiales }}
-              </v-avatar>
-              <v-icon dark class="handle-chauffeur">
-                mdi-drag
-              </v-icon>
-            </div>
-            <div class="d-flex justify-center align-center">
-              <v-text-field
-                dark
-                label="Regular"
-                single-line
-                :value="item.name"
-                class="mr-2 flex-grow-1"
-                placeholder="Nom"
-                dense
-                @change="changeName($event, item)"
-              ></v-text-field>
-            </div>
-          </div>
-          <div class="pa-2">
-            <v-form
-              v-for="(phone, index) of item.phones"
-              :key="index"
-              v-model="validPhones[phone.id]"
-              class="d-flex"
-            >
-              <v-chip class="ma-1" close @click:close="deletePhone(phone)">
+        <template v-slot:body="props">
+          <v-lazy v-for="item in props.items" :key="item.id" tag="tr">
+            <div style="display: contents;">
+              <td width="56">
+                <v-avatar
+                  :style="{ backgroundColor: 'grey' }"
+                  size="24"
+                  class="white--text"
+                >
+                  {{ item.initiales }}
+                </v-avatar>
+              </td>
+              <td>
                 <v-text-field
-                  prepend-inner-icon="mdi-phone"
                   label="Regular"
                   single-line
-                  :value="phone.value"
-                  placeholder="Téléphone"
+                  :value="item.name"
+                  class="mr-2 mt-2 flex-grow-1"
+                  placeholder="Nom"
                   dense
-                  hide-details
-                  :rules="phoneRules"
-                  @change="changeValue($event, phone)"
+                  @change="changeName($event, item)"
                 ></v-text-field>
-              </v-chip>
-            </v-form>
-            <v-form
-              v-if="newPhones[item.id]"
-              v-model="newPhones[item.id].valid"
-              class="d-flex align-center"
-            >
-              <v-text-field
-                v-model="newPhones[item.id].value"
-                prepend-inner-icon="mdi-phone"
-                label="Regular"
-                hide-details
-                single-line
-                placeholder="Ajouter téléphone"
-                dense
-                :rules="newPhoneRules"
-              ></v-text-field>
-              <v-btn
-                text
-                icon
-                @click="addPhone(newPhones[item.id].value, item)"
-              >
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-            </v-form>
-          </div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              color="red"
-              class="float-right"
-              @click="deleteModal(item)"
-            >
-              <v-icon>mdi-delete-forever</v-icon> Supprimer
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </draggable>
+              </td>
+              <td class="d-flex flex-row">
+                <v-form
+                  v-for="(phone, index) of item.phones"
+                  :key="index"
+                  v-model="validPhones[phone.id]"
+                  class="d-flex flex-row"
+                >
+                  <v-chip class="ma-1" close @click:close="deletePhone(phone)">
+                    <v-text-field
+                      prepend-inner-icon="mdi-phone"
+                      label="Regular"
+                      single-line
+                      :value="phone.value"
+                      placeholder="Téléphone"
+                      dense
+                      hide-details
+                      :rules="phoneRules"
+                      @change="changeValue($event, phone)"
+                    ></v-text-field>
+                  </v-chip>
+                </v-form>
+              </td>
+              <td width="32">
+                <v-btn
+                  text
+                  icon
+                  @click="addPhone(newPhones[item.id].value, item)"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </td>
+              <td width="120">
+                <v-btn
+                  text
+                  color="red"
+                  class="float-right"
+                  @click="deleteModal(item)"
+                >
+                  <v-icon>mdi-delete-forever</v-icon> Supprimer
+                </v-btn>
+              </td>
+            </div>
+          </v-lazy>
+        </template>
+      </v-data-table>
     </div>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
 import Chauffeur from "@/models/Chauffeur";
 import Phone from "@/models/Phone";
 export default {
   name: "Chauffeurs",
-  components: {
-    draggable
-  },
   data() {
     return {
       dialog: false,
@@ -230,7 +202,26 @@ export default {
       dialogDelete: false,
       valid: false,
       validPhones: {},
-      newPhones: []
+      newPhones: [],
+      chauffeurHeaders: [
+        {
+          sortable: false
+        },
+        {
+          text: "Nom",
+          sortable: false
+        },
+        {
+          text: "Téléphone",
+          sortable: false
+        },
+        {
+          sortable: false
+        },
+        {
+          sortable: false
+        }
+      ]
     };
   },
   computed: {
@@ -239,7 +230,6 @@ export default {
         return Chauffeur.query()
           .where("deleted", "")
           .with("phones")
-          .orderBy("order", "asc")
           .orderBy("name", "asc")
           .get();
       },
@@ -352,5 +342,16 @@ export default {
 }
 .scroller {
   overflow-y: auto;
+}
+.chauffeurs-table {
+  tr:nth-child(2n) {
+    background: #f3f3f3;
+  }
+  tr:hover {
+    background: #e0e0e0;
+  }
+  td {
+    padding: 0 8px;
+  }
 }
 </style>
