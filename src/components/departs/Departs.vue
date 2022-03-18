@@ -2,6 +2,7 @@
   <div
     class="d-flex align-stretch pa-0 overflow-hidden"
     :style="{ position: 'relative', height: '100%' }"
+    @click="clicked = undefined"
   >
     <v-list
       width="300px"
@@ -14,7 +15,7 @@
         <v-chip
           class="overline elevation-2"
           style="position: absolute; top: 0; left: 0; border-radius: 0 0 12px 0;"
-          >Courses non attribuées</v-chip
+          >Courses non attribuées {{ clicked }}</v-chip
         >
       </v-subheader>
       <draggable
@@ -29,7 +30,7 @@
       >
         <v-list-item
           v-for="(course, index) in coursesTodayUnplanified"
-          :key="`${course.ref}-${course.id}`"
+          :key="`${course.id || course.ref}`"
           style="max-width: 100%;"
           class="mb-1 pa-0 flex-grow-1 flex-shrink-1"
         >
@@ -37,73 +38,198 @@
         </v-list-item>
       </draggable>
     </v-list>
-    <draggable
-      v-model="chauffeurs"
-      handle=".handle-chauffeur"
-      :sort="true"
-      group="chauffeurs"
-      class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll"
+    <div
+      class="d-flex flex-column flex-grow-1 flex-shrink-1 overflow-hidden"
+      style="position: relative; min-height: 100%;"
     >
-      <v-card
-        v-for="chauffeur of chauffeurs"
-        :key="chauffeur.id"
-        flat
-        style="overflow: hidden;"
-        class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
+      <v-tabs v-model="tab" style="border-bottom: solid 2px #e0e0e0;">
+        <v-tab key="cards"><v-icon>mdi-grid</v-icon></v-tab>
+        <v-tab key="lines">
+          <v-icon>{{ mdiViewAgendaOutline }}</v-icon>
+        </v-tab>
+      </v-tabs>
+      <v-tabs-items
+        v-model="tab"
+        style="position: relative; overflow-y: auto; overflow-x: auto;"
+        class="flex-grow-1"
       >
-        <v-subheader class="title-scroll" style="top: -16px;">
-          <v-chip
-            style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
-          >
-            <b>{{ chauffeur.name }}</b>
-            <small>&nbsp;({{ chauffeur.courses.length }} courses)</small>
-          </v-chip>
-        </v-subheader>
-
-        <v-list
-          class="d-flex flex-column align-stretch overflow-y-auto"
-          style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden;"
-          :style="{ background: 'transparent' }"
-        >
+        <v-tab-item key="cards">
           <draggable
-            :value="chauffeur.courses"
+            v-model="chauffeurs"
+            handle=".handle-chauffeur"
             :sort="true"
-            handle=".handle"
-            group="courses"
-            :style="{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0
-            }"
-            class="pt-10 pa-2"
-            @change="moveCourse($event, chauffeur)"
+            group="chauffeurs"
+            class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll"
           >
-            <depart-item
-              v-for="(course, index) in chauffeur.courses"
-              :key="`${course.ref}-${course.id}`"
-              :course="course"
-              class="my-1 px-2"
-              :index="index"
-            ></depart-item>
-          </draggable>
-        </v-list>
+            <v-card
+              v-for="chauffeur of chauffeurs"
+              :key="chauffeur.id"
+              flat
+              style="overflow: hidden;"
+              class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
+            >
+              <v-subheader class="title-scroll" style="top: -16px;">
+                <v-chip
+                  style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
+                >
+                  <b>{{ chauffeur.name }}</b>
+                  <small>&nbsp;({{ chauffeur.courses.length }} courses)</small>
+                </v-chip>
+              </v-subheader>
 
-        <v-chip
-          style="position:absolute; top: 0; right: 0; border-radius: 0 4px 0 12px;"
-          class="handle-chauffeur"
-        >
-          <v-icon small>
-            mdi-drag
-          </v-icon>
-        </v-chip>
-      </v-card>
-    </draggable>
+              <v-list
+                class="d-flex flex-column align-stretch overflow-y-auto"
+                style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden;"
+                :style="{ background: 'transparent' }"
+              >
+                <draggable
+                  :value="chauffeur.courses"
+                  :sort="true"
+                  handle=".handle"
+                  group="courses"
+                  :style="{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0
+                  }"
+                  class="pt-10 pa-2"
+                  @change="moveCourse($event, chauffeur)"
+                >
+                  <depart-item
+                    v-for="(course, index) in chauffeur.courses"
+                    :key="`${course.id || course.ref}`"
+                    :course="course"
+                    class="my-1 px-2"
+                    :index="index"
+                  ></depart-item>
+                </draggable>
+              </v-list>
+
+              <v-chip
+                style="position:absolute; top: 0; right: 0; border-radius: 0 4px 0 12px;"
+                class="handle-chauffeur"
+              >
+                <v-icon small>
+                  mdi-drag
+                </v-icon>
+              </v-chip>
+            </v-card>
+          </draggable>
+        </v-tab-item>
+        <v-tab-item key="lines">
+          <div
+            class="d-flex flex-column"
+            :style="{ width: `${24 * 12 * 26}px`, position: 'relative' }"
+          >
+            <div
+              class="d-flex flex-row flex-nowrap flex-shrink-0"
+              style="position: sticky; top: 0; left: 0; height: 100vh; pointer-events: none;"
+            >
+              <div
+                v-for="hour in dayHours"
+                :key="hour"
+                class="d-flex flex-column"
+                style="height: 100%;"
+              >
+                <div class="pa-1">{{ hour }}</div>
+                <div
+                  class="d-flex flex-row flex-nowrap"
+                  style="position:relative; height: 100%;"
+                >
+                  <div
+                    v-for="minute in dayMinutes"
+                    :key="minute"
+                    class="flex-shrink-0 pa-1"
+                    :class="{
+                      timeline: Number(minute) % 15 === 0,
+                      hour: Number(minute) % 60 === 0
+                    }"
+                    :style="{
+                      position: 'relative',
+                      opacity: Number(minute) % 15 === 0 ? 1 : 0.5
+                    }"
+                  >
+                    {{ minute }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <draggable
+              v-model="chauffeurs"
+              handle=".handle-chauffeur"
+              :sort="true"
+              group="chauffeurs"
+              class="pa-0 scroll"
+              style="position: absolute; top: 64px; left: 0; right: 0; bottom: 0;"
+            >
+              <div
+                v-for="chauffeur of chauffeurs"
+                :key="chauffeur.id"
+                style="overflow: hidden; position: relative; min-width: 100%; min-height: 108px;"
+                class="ma-0 pa-0 flex-shrink-1 flex-grow-1 elevation-0 chauffeur-line"
+              >
+                <draggable
+                  :value="chauffeur.courses"
+                  group="courses"
+                  :style="{
+                    minHeight: `${16 + (1 + chauffeur.maxOverlap) * 92}px`
+                  }"
+                  style="position: relative;"
+                  @change="moveCourse($event, chauffeur)"
+                >
+                  <draggable
+                    :value="chauffeur.coursesWithOverlap"
+                    group="courses"
+                    @change="moveCourse($event, chauffeur)"
+                    @start="startDragging"
+                    @end="dragging = undefined"
+                  >
+                    <template v-for="(course, index) in chauffeur.courses">
+                      <depart-item
+                        :key="`${course.id || course.ref}`"
+                        :course="course"
+                        :index="index"
+                        :compact="true"
+                        :is-dragging="course.id === dragging"
+                        :is-clicked="course.id === clicked"
+                        :left-offset="leftOffset(course.time)"
+                        style="margin: 0 auto"
+                        @clicked="clicked = course.id"
+                      ></depart-item>
+                    </template>
+                  </draggable>
+                </draggable>
+              </div>
+            </draggable>
+
+            <div style="height: 64px"></div>
+            <div
+              style="position:sticky; pointer-events: none; left: 0; width: 150px; margin-top: -100vh"
+            >
+              <template v-for="chauffeur of chauffeurs">
+                <v-chip
+                  :key="`${chauffeur.id || course.ref}-chauffeur`"
+                  style="border-radius: 0 0 12px 0; margin-bottom: 76px;"
+                  :style="{
+                    marginBottom: `${76 + 92 * chauffeur.maxOverlap}px`
+                  }"
+                >
+                  <b>{{ chauffeur.name }}</b>
+                  <small>&nbsp;({{ chauffeur.courses.length }} courses)</small>
+                </v-chip>
+              </template>
+            </div>
+          </div>
+        </v-tab-item>
+      </v-tabs-items>
+    </div>
   </div>
 </template>
 
 <script>
+import { mdiViewAgendaOutline } from "@mdi/js";
 import draggable from "vuedraggable";
 
 import Course from "@/models/Course";
@@ -131,11 +257,25 @@ export default {
         "Vendredi",
         "Samedi",
         "Dimanche"
-      ]
+      ],
+      mdiViewAgendaOutline,
+      tab: "lines",
+      dragging: undefined,
+      clicked: "abc"
     };
   },
   computed: {
     ...mapState(["currentDate", "admin"]),
+    dayHours() {
+      return new Array(24)
+        .fill(0)
+        .map((n, index) => `${index}`.padStart(2, "0"));
+    },
+    dayMinutes() {
+      return new Array(60 / 5)
+        .fill(0)
+        .map((n, index) => `${index * 5}`.padStart(2, "0"));
+    },
     recurringCourses() {
       if (this.admin) {
         return this.patients
@@ -234,13 +374,24 @@ export default {
     }
   },
   methods: {
+    startDragging(e) {
+      console.log(e);
+      this.dragging = e.item._underlying_vm_.id;
+    },
     moveCourse(event, chauffeur) {
+      console.log(event, chauffeur);
       if (event.added) {
         event.added.element.update({
           chauffeur_id: chauffeur
             ? chauffeur.id
             : firebase.firestore.FieldValue.delete()
         });
+      }
+    },
+    leftOffset(time) {
+      if (time) {
+        const [hours, minutes] = time.split(":");
+        return Math.floor((Number(hours) * 12 + Number(minutes) / 5) * 26);
       }
     }
   }
@@ -260,6 +411,21 @@ export default {
   max-width: 300px;
   flex: 0 0 300px;
 }
+.timeline {
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    border-left: solid 1px black;
+    opacity: 0.2;
+  }
+  &.hour::after {
+    opacity: 1;
+  }
+}
+
 .scroll {
   overflow-y: scroll;
 }
@@ -278,5 +444,11 @@ export default {
 }
 .handle-chauffeur {
   z-index: 100;
+}
+.chauffeur-line {
+  background: none;
+}
+.chauffeur-line:nth-child(2n) {
+  background: rgba(0, 0, 0, 0.05);
 }
 </style>

@@ -61,7 +61,8 @@ export default class Course extends FirebaseModel {
       deleted: this.string(""),
       doneDate: this.string(""),
       societe: this.string(""),
-      isRead: this.boolean(false)
+      isRead: this.boolean(false),
+      overlap: this.number(0)
     };
   }
 

@@ -4,6 +4,7 @@ import Course from "./Course";
 import FirebaseModel from "./FirebaseModel";
 import Phone from "./Phone";
 
+import * as dayjs from "dayjs";
 export default class Chauffeur extends FirebaseModel {
   static entity = "chauffeurs";
 
@@ -62,5 +63,20 @@ export default class Chauffeur extends FirebaseModel {
       .split(" ")
       .map(chunk => (chunk.length > 0 ? chunk[0] : ""))
       .join("");
+  }
+
+  get coursesWithOverlap() {
+    return this.courses.map((course, index) => {
+      const cTime = dayjs(`2000-01-01 ${course.time}`);
+      course.overlap = this.courses.slice(0, index).filter(c => {
+        const diff = cTime.diff(dayjs(`2000-01-01 ${c.time}`), "minutes", true);
+        return diff < 15 && diff >= 0;
+      }).length;
+      return course;
+    });
+  }
+
+  get maxOverlap() {
+    return Math.max(...this.coursesWithOverlap.map(c => c.overlap));
   }
 }

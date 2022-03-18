@@ -1,19 +1,39 @@
 <template>
-  <v-lazy min-height="44" style="width: 100%; max-width: 100%;">
+  <v-lazy
+    min-height="44"
+    style="width: 100%; max-width: 100%;"
+    :style="
+      compact && {
+        maxWidth: isClicked ? '200px' : `${3 * 26 - 4}px`,
+        minHeight: '60px',
+        position: 'absolute',
+        top: isDragging ? '8px' : `${8 + 88 * course.overlap}px`,
+        left: `${leftOffset}px`,
+        zIndex: isClicked ? 10 : 0
+      }
+    "
+  >
     <v-card
       class="full-width"
-      :style="
-        `border-left: solid 70px ${course.color} !important; overflow:visible;`
-      "
+      style="overflow:visible; position: relative;"
+      :style="{
+        borderLeft:
+          !compact || isClicked ? `solid 70px ${course.color}` : 'none'
+      }"
+      @click.stop="$emit('clicked', course.id)"
     >
       <v-card-text class="pa-2 full-width" style="overflow:visible;">
         <div class="d-flex flex-row justify-center align-center pa-0">
           <span
+            v-if="!compact || isClicked"
             class="time-span mr-2 flex-shrink-0 flex-grow-0 subtitle-1 font-weight-bold white--text"
           >
             {{ course.prettyTime }}
           </span>
-          <v-icon class="ml-2 mr-1 flex-shrink-0 flex-grow-0">
+          <v-icon
+            v-if="!compact || isClicked"
+            class="ml-2 mr-1 flex-shrink-0 flex-grow-0"
+          >
             {{
               course.direction === "Aller"
                 ? "mdi-arrow-right"
@@ -24,13 +44,15 @@
           </v-icon>
           <div class="flex-grow-1 text-wrap">
             <span v-if="course.patient">
-              {{ course.patient.name }} {{ course.patient.surname }}
+              {{ course.patient.name }}
+              <br v-if="compact" />
+              {{ course.patient.surname }}
             </span>
             <span v-else>
               <i>NA</i>
             </span>
           </div>
-          <v-icon class="flex-shrink-0 flex-grow-0 handle">
+          <v-icon v-if="!compact" class="flex-shrink-0 flex-grow-0 handle">
             mdi-drag
           </v-icon>
         </div>
@@ -44,7 +66,12 @@ export default {
   name: "DepartItem",
   props: {
     course: { type: Object, default: undefined },
-    index: { type: Number, default: undefined }
+    index: { type: Number, default: undefined },
+    compact: { type: Boolean, default: false },
+    isDragging: { type: Boolean, default: false },
+    isClicked: { type: Boolean, default: false },
+    leftOffset: { type: Number, default: 0 },
+    topOffset: { type: Number, default: 0 }
   },
   data() {
     return {
