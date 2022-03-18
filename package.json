@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint",
     "deploy": "yarn build && firebase deploy",
     "deploy:prod": "firebase use taxi-oka && yarn build && firebase deploy",
+    "deploy:beta": "firebase use taxi-oka && yarn build && firebase hosting:channel:deploy beta",
     "deploy:staging": "firebase use taxi-oka-dev && yarn build && firebase deploy"
   },
   "dependencies": {
