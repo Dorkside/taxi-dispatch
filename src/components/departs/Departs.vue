@@ -15,7 +15,7 @@
         <v-chip
           class="overline elevation-2"
           style="position: absolute; top: 0; left: 0; border-radius: 0 0 12px 0;"
-          >Courses non attribuées {{ clicked }}</v-chip
+          >Courses non attribuées</v-chip
         >
       </v-subheader>
       <draggable
@@ -261,7 +261,7 @@ export default {
       mdiViewAgendaOutline,
       tab: "lines",
       dragging: undefined,
-      clicked: "abc"
+      clicked: undefined
     };
   },
   computed: {
