@@ -234,6 +234,15 @@ export default {
       return this.currentDate.toISOString().substring(0, 10);
     }
   },
+  watch: {
+    currentDate: {
+      handler() {
+        console.log(this.date);
+        Course.fetch(this.date);
+      },
+      immediate: true
+    }
+  },
   mounted() {
     const auth = getAuth();
 
@@ -349,9 +358,10 @@ export default {
       }, 5000);
     },
     shiftDate(shift) {
+      const d = new Date(this.currentDate);
       this.$store.commit(
         "setDate",
-        this.currentDate.setDate(this.currentDate.getDate() + shift)
+        new Date(d.setDate(this.currentDate.getDate() + shift))
       );
     }
   }
