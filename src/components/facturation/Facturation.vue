@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column pa-0" :style="{ height: '100%' }">
+  <div class="d-flex flex-grow-1 flex-column pa-0" :style="{ height: '100%' }">
     <div
       class="d-flex amber darken-2 action-bar py-0 px-4 elevation-2 align-center flex-grow-0 flex-shrink-0"
     >

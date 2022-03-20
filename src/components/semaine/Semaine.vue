@@ -1,6 +1,6 @@
 <template>
   <div
-    class="d-flex flex-column pa-0 ma-0 z-index-8 align-start"
+    class="d-flex flex-column  flex-grow-1  pa-0 ma-0 z-index-8 align-start"
     :style="{ height: '100%' }"
   >
     <div

@@ -47,11 +47,7 @@
       <v-container
         class="pa-0 overflow-hidden d-flex flex-row justify-stretch ma-0"
         :style="{
-          height: loggedIn
-            ? admin
-              ? 'calc(100% - 64px)'
-              : 'calc(100% - 56px)'
-            : '100%',
+          height: loggedIn ? 'calc(100% - 56px)' : '100%',
           maxWidth: '100%'
         }"
       >
@@ -60,11 +56,12 @@
           class="elevation-8 pa-0 z-index-10 flex-grow-0 align-end flex-shrink-1 amber darken-3 d-flex flex-column"
         >
           <v-tabs
-            class="flex-grow-0 flex-shrink-0"
+            class="flex-grow-1 flex-shrink-0 d-flex flex-column"
             background-color="amber darken-4"
             vertical
             dark
           >
+            <v-tab disabled><span v-if="menuDeployed">Courses</span></v-tab>
             <v-tab to="/journee">
               <v-icon>mdi-view-sequential</v-icon>
               <span v-if="menuDeployed" class="ml-2">
@@ -77,6 +74,8 @@
                 Départs
               </span>
             </v-tab>
+            <v-spacer />
+            <v-tab disabled><span v-if="menuDeployed">Annuaire</span></v-tab>
             <v-tab v-if="admin" to="/series">
               <v-icon>mdi-medical-bag</v-icon>
               <span v-if="menuDeployed" class="ml-2">
@@ -95,14 +94,39 @@
                 Etablissements
               </span>
             </v-tab>
+            <v-spacer />
+            <v-tab disabled>
+              <span v-if="menuDeployed">Comptabilité</span>
+            </v-tab>
             <v-tab v-if="admin" to="/facturation">
               <v-icon>mdi-receipt</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Facturation
               </span>
             </v-tab>
+            <v-spacer />
+            <v-tab disabled>
+              <span v-if="menuDeployed">Administration</span>
+            </v-tab>
+            <v-tab v-if="admin" to="/societes">
+              <v-icon>mdi-domain</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Sociétés
+              </span>
+            </v-tab>
+            <v-tab v-if="admin" to="/categories">
+              <v-icon>mdi-tag</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Catégories
+              </span>
+            </v-tab>
+            <v-tab v-if="admin" to="/admins">
+              <v-icon>{{ mdiAccountCog }}</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Admins
+              </span>
+            </v-tab>
           </v-tabs>
-          <v-spacer />
           <v-btn
             icon
             large
@@ -114,7 +138,7 @@
           </v-btn>
         </div>
         <v-container
-          class="pa-0 overflow-hidden flex-grow-1 flex-shrink-1"
+          class="pa-0 overflow-hidden d-flex flex-grow-1 flex-shrink-1"
           :style="{
             height: 'calc(100%)',
             maxHeight: 'calc(100%)',
@@ -133,6 +157,7 @@
 import vue100vh from "vue-100vh";
 import { mapState } from "vuex";
 import store from "@/store";
+import { mdiAccountCog } from "@mdi/js";
 
 import { data } from "./models/contacts.json";
 
@@ -179,7 +204,8 @@ export default {
     return {
       dialog: false,
       menuDeployed: false,
-      loggedIn: false
+      loggedIn: false,
+      mdiAccountCog
     };
   },
   computed: {
