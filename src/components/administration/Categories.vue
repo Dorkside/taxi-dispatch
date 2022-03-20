@@ -1,6 +1,8 @@
 <template>
-  <div class="d-flex flex-column pa-0" :style="{ height: 'calc(100%)' }">
-
+  <div
+    class="d-flex flex-grow-1 flex-column pa-0"
+    :style="{ height: 'calc(100%)' }"
+  >
     <v-dialog v-model="dialogDelete" persistent max-width="290">
       <v-card>
         <v-card-title v-if="deleteData" class="headline">
@@ -39,7 +41,7 @@
         item-key="id"
         :headers="placesHeader"
         :disable-pagination="true"
-        :items="places"
+        :items="categories"
         :hide-default-footer="true"
         style="flex: 1;"
         class="places-table"
@@ -61,7 +63,7 @@
                 <v-text-field
                   single-line
                   label="Adresse"
-                  :value="item.adresse"
+                  :value="item.color"
                   class="mr-2 flex-grow-1"
                   placeholder="Adresse"
                   autocomplete="nofill"
@@ -88,6 +90,9 @@
 
 <script>
 import Place from "@/models/Place";
+
+import Types from "../../database/types";
+
 export default {
   name: "Places",
   data() {
@@ -108,7 +113,7 @@ export default {
         },
         {
           sortable: false,
-          text: "Adresse"
+          text: "Couleur"
         },
         {
           sortable: false
@@ -117,18 +122,17 @@ export default {
     };
   },
   computed: {
-    places: {
+    categories: {
       get() {
-        return Place.query()
-          .orderBy("name", "asc")
-          .get();
-      },
-      set(places) {
-        places.forEach((place, index) => {
-          if (place.order !== index) {
-            place.update({ order: index });
-          }
+        return Object.entries(Types).map(([key, value]) => {
+          return {
+            name: key,
+            ...value
+          };
         });
+      },
+      set(categories) {
+        console.log(categories);
       }
     },
     search() {

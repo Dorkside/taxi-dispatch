@@ -122,46 +122,80 @@
                   </a>
                 </div>
 
-                <div
-                  class="d-flex col-12 pa-0 flex-grow-0 flex-shrink-1"
-                  style="margin-left: -42px;"
-                  :class="{
-                    'flex-column': course.direction === 'Aller',
-                    'flex-column-reverse': course.direction === 'Retour'
-                  }"
-                >
-                  <v-chip
-                    v-if="course.patient"
-                    class="wrap-span"
-                    :style="{
-                      minWidth: '100px',
-                      maxWidth: '100%',
-                      height: 'auto'
+                <div class="d-flex flex-row">
+                  <div
+                    class="d-flex col-12 pa-0 flex-grow-0 flex-shrink-1"
+                    style="margin-left: -42px;"
+                    :class="{
+                      'flex-column': course.direction === 'Aller',
+                      'flex-column-reverse': course.direction === 'Retour'
                     }"
-                    @click="openMap(course.patient.adresse)"
                   >
-                    <v-icon>mdi-home-map-marker</v-icon>
-                    <span class="flex-1">
-                      {{ course.patient.adresse || "???" }}
-                    </span>
-                  </v-chip>
-                  <div class="pointilles"></div>
-                  <v-chip
-                    v-if="course.patient && course.patient.place"
-                    class="wrap-span d-flex"
-                    :style="{
-                      minWidth: '100px',
-                      maxWidth: '100%',
-                      height: 'auto'
-                    }"
-                    @click="openMap(course.patient.place.adresse)"
-                  >
-                    <v-icon>mdi-hospital-marker</v-icon>
-                    <span class="flex-1">
-                      {{ course.patient.place.name }},
-                      {{ course.patient.place.adresse || "???" }}
-                    </span>
-                  </v-chip>
+                    <v-chip
+                      v-if="course.patient"
+                      class="wrap-span"
+                      :style="{
+                        minWidth: '100px',
+                        maxWidth: '100%',
+                        height: 'auto'
+                      }"
+                      @click="openMap(course.patient.adresse)"
+                    >
+                      <v-icon>mdi-home-map-marker</v-icon>
+                      <span class="flex-1">
+                        {{ course.patient.adresse || "???" }}
+                      </span>
+                    </v-chip>
+                    <div class="pointilles"></div>
+                    <v-chip
+                      v-if="course.patient && course.patient.place"
+                      class="wrap-span d-flex"
+                      :style="{
+                        minWidth: '100px',
+                        maxWidth: '100%',
+                        height: 'auto'
+                      }"
+                      @click="openMap(course.patient.place.adresse)"
+                    >
+                      <v-icon>mdi-hospital-marker</v-icon>
+                      <span class="flex-1">
+                        {{ course.patient.place.name }},
+                        {{ course.patient.place.adresse || "???" }}
+                      </span>
+                    </v-chip>
+                  </div>
+
+                  <div class="pl-4 d-flex flex-row align-center">
+                    <v-icon
+                      v-if="admin"
+                      class="mr-2"
+                      :color="course.isRead ? 'green' : 'grey'"
+                    >
+                      {{ course.isRead ? "mdi-eye-check" : "mdi-eye-off" }}
+                    </v-icon>
+                    <v-combobox
+                      v-if="
+                        course.time &&
+                          !hideChauffeur &&
+                          admin &&
+                          !course.doneDate &&
+                          !course.deleted
+                      "
+                      dense
+                      :value="course.chauffeur"
+                      height="24"
+                      :items="chauffeurs"
+                      item-text="name"
+                      label="Chauffeur"
+                      class="combo-width flex-shrink-0 flex-grow-0 mx-2"
+                      hide-details
+                      autocomplete="off"
+                      outlined
+                      clearable
+                      @click:clear="changeChauffeur(null, course)"
+                      @change="changeChauffeur($event, course)"
+                    ></v-combobox>
+                  </div>
                 </div>
               </template>
             </div>
@@ -255,66 +289,34 @@
         </span>
       </v-chip>
 
-      <v-card-actions class="d-flex justify-space-between align-center">
-        <v-spacer></v-spacer>
-        <v-icon
-          v-if="admin"
-          class="mr-2"
-          :color="course.isRead ? 'green' : 'grey'"
-        >
-          {{ course.isRead ? "mdi-eye-check" : "mdi-eye-off" }}
-        </v-icon>
-        <v-combobox
-          v-if="
-            course.time &&
-              !hideChauffeur &&
-              admin &&
-              !course.doneDate &&
-              !course.deleted
-          "
-          dense
-          :value="course.chauffeur"
-          height="24"
-          :items="chauffeurs"
-          item-text="name"
-          label="Chauffeur"
-          class="combo-width flex-shrink-0 flex-grow-0 mx-2"
-          hide-details
-          autocomplete="off"
-          outlined
-          clearable
-          @click:clear="changeChauffeur(null, course)"
-          @change="changeChauffeur($event, course)"
-        ></v-combobox>
-        <slot name="actions"></slot>
-      </v-card-actions>
-
       <v-card-actions
-        v-if="course.time && !course.deleted"
         :class="{ 'pb-10': !admin }"
+        style="min-height: 52px;"
         class="d-flex justify-space-between align-center"
       >
         <v-spacer></v-spacer>
-        <v-btn
-          v-if="admin && course.chauffeur"
-          text
-          :color="!course.doneDate ? 'green' : 'grey'"
-          :disabled="!course.chauffeur || !course.time"
-          @click="doCourse(course)"
-        >
-          {{ !course.doneDate ? "Valider" : "Annuler" }}
-        </v-btn>
-        <v-btn
-          v-if="!admin"
-          :disabled="course.isRead"
-          small
-          outlined
-          color="green"
-          @click="viewCourse(course)"
-        >
-          <v-icon class="mr-2">mdi-eye-check</v-icon>
-          {{ course.isRead ? "Vu" : "Marquer comme vu" }}
-        </v-btn>
+        <template v-if="course.time && !course.deleted">
+          <v-btn
+            v-if="admin && course.chauffeur"
+            text
+            :color="!course.doneDate ? 'green' : 'grey'"
+            :disabled="!course.chauffeur || !course.time"
+            @click="doCourse(course)"
+          >
+            {{ !course.doneDate ? "Valider" : "Annuler" }}
+          </v-btn>
+          <v-btn
+            v-if="!admin"
+            :disabled="course.isRead"
+            small
+            outlined
+            color="green"
+            @click="viewCourse(course)"
+          >
+            <v-icon class="mr-2">mdi-eye-check</v-icon>
+            {{ course.isRead ? "Vu" : "Marquer comme vu" }}
+          </v-btn>
+        </template>
       </v-card-actions>
     </v-card>
   </v-lazy>
@@ -334,7 +336,7 @@ export default {
     hideChauffeur: { type: Boolean, default: false },
     preventUpdate: { type: Boolean, default: false },
     hideDetails: { type: Boolean, default: false },
-    lazySize: { type: Number, default: 182 }
+    lazySize: { type: Number, default: 170 }
   },
   data() {
     return {
