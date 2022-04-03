@@ -112,7 +112,7 @@ import Patient from "@/models/Patient";
 import DepartItem from "./DepartItem";
 import { mapState } from "vuex";
 
-import firebase from "firebase/compat/app";
+import { deleteField } from "firebase/firestore";
 
 export default {
   name: "Departs",
@@ -237,9 +237,7 @@ export default {
     moveCourse(event, chauffeur) {
       if (event.added) {
         event.added.element.update({
-          chauffeur_id: chauffeur
-            ? chauffeur.id
-            : firebase.firestore.FieldValue.delete()
+          chauffeur_id: chauffeur ? chauffeur.id : deleteField()
         });
       }
     }
