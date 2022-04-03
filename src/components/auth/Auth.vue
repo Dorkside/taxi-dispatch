@@ -44,6 +44,7 @@ const firebaseConfig = {
 export default {
   name: "Auth",
   mounted() {
+    console.log("ENV", process.env.NODE_ENV);
     firebase.initializeApp(
       process.env.NODE_ENV === "development"
         ? firebaseConfigDev

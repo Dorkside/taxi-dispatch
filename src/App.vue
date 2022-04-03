@@ -169,6 +169,7 @@ import Course from "./models/Course";
 import Patient from "./models/Patient";
 import Phone from "./models/Phone";
 import Place from "./models/Place";
+import User from "./models/User";
 
 const subscribeToChanges = (Model, querySnapshot) => {
   const docChanges = querySnapshot.docChanges();
@@ -253,16 +254,11 @@ export default {
       } else {
         this.loggedIn = true;
         const { driver } = this.$route.query;
-        if (
-          [
-            "+33762686070",
-            "+33761610703",
-            "+33668666606",
-            "+33658474169",
-            "+33769186127"
-          ].includes(user.phoneNumber) &&
-          !driver
-        ) {
+        const isAdmin = (
+          user.reloadUserInfo.customAttributes &&
+          JSON.parse(user.reloadUserInfo.customAttributes)
+        ).admin;
+        if (isAdmin && !driver) {
           this.$store.commit("setAdmin", true);
 
           onSnapshot(collection(this.$db(), "phones"), function(querySnapshot) {
@@ -274,6 +270,8 @@ export default {
           ) {
             subscribeToChanges(Chauffeur, querySnapshot);
           });
+
+          User.fetchAll();
         } else {
           getDoc(doc(this.$db(), "phones", user.phoneNumber)).then(phoneDoc => {
             const { chauffeur_id } = phoneDoc.data();
