@@ -28,7 +28,13 @@
 
       <v-dialog v-model="dialog" width="600">
         <template v-slot:activator="{ on }">
-          <v-btn small text style="position: absolute; right: 16px;" v-on="on">
+          <v-btn
+            v-if="admin"
+            small
+            text
+            style="position: absolute; right: 16px;"
+            v-on="on"
+          >
             <v-icon>mdi-plus-circle</v-icon> Ajouter course
           </v-btn>
         </template>
