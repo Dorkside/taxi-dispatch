@@ -1,0 +1,39 @@
+{
+  "fields": [
+    {
+      "name": "patient_id",
+      "type": "string"
+    },
+    {
+      "name": "chauffeur_id",
+      "type": "string"
+    },
+    {
+      "name": "date",
+      "type": "string",
+      "column_name": "datestring"
+    },
+    {
+      "name": "doneDate",
+      "type": "string"
+    },
+    {
+      "name": "deleted",
+      "type": "string"
+    },
+    {
+      "name": "societe",
+      "type": "string"
+    },
+    {
+      "name": "time",
+      "type": "string",
+      "column_name": "timestring"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "column_name": "typestring"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+npx @firebaseextensions/fs-bq-schema-views \
+  --non-interactive \
+  --project=taxi-oka \
+  --dataset=taxi_oka_firestore_export \
+  --table-name-prefix=courses \
+  --schema-files=./bigquery/schema.json
