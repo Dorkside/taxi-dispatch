@@ -7,7 +7,8 @@ import Admins from "@/components/administration/Admins.vue";
 import Categories from "@/components/administration/Categories.vue";
 import Journee from "@/components/journee/Journee.vue";
 import Semaine from "@/components/semaine/Semaine.vue";
-import Auth from "./components/auth/Auth.vue";
+import StatsPage from "@/components/Stats.vue";
+import Auth from "@/components/auth/Auth.vue";
 
 const routes = [
   { path: "/", redirect: "/journee" },
@@ -41,6 +42,10 @@ const routes = [
   {
     path: "/admins",
     component: Admins
+  },
+  {
+    path: "/stats",
+    component: StatsPage
   }
 ];
 export default routes;

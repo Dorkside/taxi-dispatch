@@ -68,27 +68,29 @@
                 Journée
               </span>
             </v-tab>
-            <v-tab v-if="admin" to="/departs">
+            <v-tab to="/departs">
               <v-icon>mdi-view-parallel</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Départs
               </span>
             </v-tab>
             <v-spacer />
-            <v-tab disabled><span v-if="menuDeployed">Annuaire</span></v-tab>
-            <v-tab v-if="admin" to="/series">
+            <v-tab disabled>
+              <span v-if="menuDeployed && admin">Annuaire</span>
+            </v-tab>
+            <v-tab to="/series">
               <v-icon>mdi-medical-bag</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Patients
               </span>
             </v-tab>
-            <v-tab v-if="admin" to="/chauffeurs">
+            <v-tab to="/chauffeurs">
               <v-icon>mdi-car</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Chauffeurs
               </span>
             </v-tab>
-            <v-tab v-if="admin" to="/places">
+            <v-tab to="/places">
               <v-icon>mdi-hospital-building</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Etablissements
@@ -98,7 +100,13 @@
             <v-tab disabled>
               <span v-if="menuDeployed">Comptabilité</span>
             </v-tab>
-            <v-tab v-if="admin" to="/facturation">
+            <v-tab to="/stats">
+              <v-icon>mdi-finance</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Statistiques
+              </span>
+            </v-tab>
+            <v-tab to="/facturation">
               <v-icon>mdi-receipt</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Facturation
@@ -108,19 +116,19 @@
             <v-tab disabled>
               <span v-if="menuDeployed">Administration</span>
             </v-tab>
-            <v-tab v-if="admin" to="/societes">
+            <v-tab to="/societes">
               <v-icon>mdi-domain</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Sociétés
               </span>
             </v-tab>
-            <v-tab v-if="admin" to="/categories">
+            <v-tab to="/categories">
               <v-icon>mdi-tag</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Catégories
               </span>
             </v-tab>
-            <v-tab v-if="admin" to="/admins">
+            <v-tab to="/admins">
               <v-icon>{{ mdiAccountCog }}</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Admins
