@@ -6,7 +6,7 @@
     <v-dialog v-model="dialogDelete" persistent max-width="290">
       <v-card>
         <v-card-title v-if="deleteData" class="headline">
-          Etes-vous sûrs de vouloir supprimer l'établissement
+          Etes-vous sûrs de vouloir supprimer la catégorie
           {{ deleteData.name }} ?
         </v-card-title>
         <v-card-actions>
@@ -25,7 +25,7 @@
             color="green darken-1"
             text
             @click="
-              deletePlace(deleteData);
+              deleteCategory(deleteData);
               deleteData = undefined;
               dialogDelete = false;
             "
@@ -39,12 +39,12 @@
     <div class="scroller pa-2 d-flex flex-shrink-1">
       <v-data-table
         item-key="id"
-        :headers="placesHeader"
+        :headers="categoriesHeader"
         :disable-pagination="true"
         :items="categories"
         :hide-default-footer="true"
         style="flex: 1;"
-        class="places-table"
+        class="categories-table"
       >
         <template v-slot:body="props">
           <v-lazy v-for="item in props.items" :key="item.id" tag="tr">
@@ -65,7 +65,7 @@
                   label="Adresse"
                   :value="item.color"
                   class="mr-2 flex-grow-1"
-                  placeholder="Adresse"
+                  placeholder="Couleur"
                   autocomplete="nofill"
                   @change="changeAdresse($event, item)"
                 ></v-text-field>
@@ -89,24 +89,21 @@
 </template>
 
 <script>
-import Place from "@/models/Place";
-
-import Types from "../../database/types";
+import Category from "@/models/Category";
 
 export default {
-  name: "Places",
+  name: "Categories",
   data() {
     return {
       dialog: false,
-      searchTerms: "",
-      newPlace: {
+      newCategory: {
         name: null,
-        adresse: null
+        color: null
       },
       deleteData: undefined,
       dialogDelete: false,
       valid: false,
-      placesHeader: [
+      categoriesHeader: [
         {
           sortable: false,
           text: "Nom"
@@ -124,29 +121,17 @@ export default {
   computed: {
     categories: {
       get() {
-        return Object.entries(Types).map(([key, value]) => {
-          return {
-            name: key,
-            ...value
-          };
-        });
+        return Category.query()
+          .orderBy("name", "asc")
+          .get();
       },
       set(categories) {
-        console.log(categories);
-      }
-    },
-    search() {
-      return this.searchTerms.toLowerCase().split(" ");
-    },
-    filteredPlaces() {
-      if (this.searchTerms) {
-        return this.places.filter(place => {
-          return this.search.every(s => {
-            return place.name.toLowerCase().includes(s);
-          });
+        categories.forEach((category, index) => {
+          if (category.order !== index) {
+            category.update({ order: index });
+          }
         });
       }
-      return this.places;
     }
   },
   methods: {
@@ -154,24 +139,23 @@ export default {
       this.deleteData = item;
       this.dialogDelete = true;
     },
-    createPlace(data) {
-      Place.create({ ...data });
+    createCategory(data) {
+      Category.create({ ...data });
       this.resetData();
     },
     resetData() {
-      this.newPlace = {
+      this.newCategory = {
         name: null
       };
     },
-    changeName($event, place) {
-      place.update({ name: $event });
+    changeName($event, category) {
+      category.update({ name: $event });
     },
-    changeAdresse($event, place) {
-      console.log($event);
-      place.update({ adresse: $event });
+    changeColor($event, category) {
+      category.update({ color: $event });
     },
-    deletePlace(place) {
-      place.delete();
+    deleteCategory(category) {
+      category.delete();
     }
   }
 };
@@ -184,16 +168,10 @@ export default {
   min-height: 64px;
   top: 0;
 }
-.handle-place {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 100;
-}
 .scroller {
   overflow-y: auto;
 }
-.places-table {
+.categories-table {
   tr:nth-child(2n) {
     background: #f3f3f3;
   }

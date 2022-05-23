@@ -441,8 +441,5 @@ export default {
 }
 .patient {
   height: 44px;
-  .type {
-    width: 200px;
-  }
 }
 </style>

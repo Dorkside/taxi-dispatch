@@ -2,6 +2,7 @@ import FirebaseModel from "./FirebaseModel";
 
 import Course from "./Course";
 import Place from "./Place";
+import Category from "./Category";
 import Types from "../database/types";
 
 export default class Patient extends FirebaseModel {
@@ -14,6 +15,7 @@ export default class Patient extends FirebaseModel {
       surname: this.string(""),
       societe: this.string(""),
       type: this.string("Consultation"),
+      category: this.belongsTo(Category, "type"),
       courses: this.hasMany(Course, "patient_id"),
       lundi: this.string(""),
       lundiRetour: this.string(""),

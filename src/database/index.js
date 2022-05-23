@@ -5,6 +5,7 @@ import Patient from "../models/Patient";
 import Phone from "../models/Phone";
 import Place from "../models/Place";
 import User from "../models/User";
+import Category from "../models/Category";
 
 const database = new Database();
 
@@ -14,5 +15,6 @@ database.register(Patient);
 database.register(Phone);
 database.register(Place);
 database.register(User);
+database.register(Category);
 
 export default database;

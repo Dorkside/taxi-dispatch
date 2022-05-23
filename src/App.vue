@@ -122,12 +122,12 @@
                 Sociétés
               </span>
             </v-tab>
-            <v-tab to="/categories">
+            <!-- <v-tab to="/categories">
               <v-icon>mdi-tag</v-icon>
               <span v-if="menuDeployed" class="ml-2">
                 Catégories
               </span>
-            </v-tab>
+            </v-tab> -->
             <v-tab to="/admins">
               <v-icon>{{ mdiAccountCog }}</v-icon>
               <span v-if="menuDeployed" class="ml-2">
@@ -325,43 +325,6 @@ export default {
     },
     logOut() {
       getAuth().signOut();
-    },
-    initContacts() {
-      const types = ["dyal", "cs", "psy", "ipc", "kine"];
-      const contacts = data
-        .filter(contact => {
-          const c = contact.split(" ");
-          return (
-            c.some(part => types.some(type => part.toLowerCase() === type)) &&
-            !types.includes(c[0].toLowerCase())
-          );
-        })
-        .map(contact => {
-          let type = "Consultation";
-          const parts = contact.split(" ");
-          if (parts.some(part => part.toLowerCase() === "dyal")) {
-            type = "Dialyse";
-          }
-          if (parts.some(part => part.toLowerCase() === "psy")) {
-            type = "HDJ";
-          }
-          if (parts.some(part => part.toLowerCase() === "kine")) {
-            type = "Kiné / Rééducation";
-          }
-          return {
-            name: contact,
-            type
-          };
-        });
-
-      setTimeout(() => {
-        contacts.forEach(contact => {
-          if (!this.patients.some(patient => patient.name === contact.name)) {
-            console.log(`Creating ${contact}`);
-            Patient.create(contact);
-          }
-        });
-      }, 5000);
     },
     shiftDate(shift) {
       const d = new Date(this.currentDate);

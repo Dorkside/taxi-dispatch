@@ -1,5 +1,6 @@
 import Chauffeur from "./Chauffeur";
 import Patient from "./Patient";
+import Category from "./Category";
 import Types from "../database/types";
 
 import { deleteField, onSnapshot } from "firebase/firestore";
@@ -52,6 +53,7 @@ export default class Course extends FirebaseModel {
       chauffeur_id: this.string(),
       chauffeur: this.belongsTo(Chauffeur, "chauffeur_id"),
       type: this.string("Consultation"),
+      category: this.belongsTo(Category, "type"),
       patient_id: this.string(),
       patient: this.belongsTo(Patient, "patient_id"),
       date: this.string(new Date().toISOString().substring(0, 10)),

@@ -42,7 +42,7 @@
       class="d-flex flex-column flex-grow-1 flex-shrink-1 overflow-hidden"
       style="position: relative; min-height: 100%;"
     >
-      <v-tabs v-model="tab" style="border-bottom: solid 2px #e0e0e0;">
+      <!-- <v-tabs v-model="tab" style="border-bottom: solid 2px #e0e0e0;">
         <v-tab key="cards"><v-icon>mdi-grid</v-icon></v-tab>
         <v-tab key="lines">
           <v-icon>{{ mdiViewAgendaOutline }}</v-icon>
@@ -53,71 +53,71 @@
         style="position: relative; overflow-y: auto; overflow-x: auto;"
         class="flex-grow-1"
       >
-        <v-tab-item key="cards">
-          <draggable
-            v-model="chauffeurs"
-            handle=".handle-chauffeur"
-            :sort="true"
-            group="chauffeurs"
-            class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll"
-          >
-            <v-card
-              v-for="chauffeur of chauffeurs"
-              :key="chauffeur.id"
-              flat
-              style="overflow: hidden;"
-              class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
+        <v-tab-item key="cards"> -->
+      <draggable
+        v-model="chauffeurs"
+        handle=".handle-chauffeur"
+        :sort="true"
+        group="chauffeurs"
+        class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll"
+      >
+        <v-card
+          v-for="chauffeur of chauffeurs"
+          :key="chauffeur.id"
+          flat
+          style="overflow: hidden;"
+          class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
+        >
+          <v-subheader class="title-scroll" style="top: -16px;">
+            <v-chip
+              style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
             >
-              <v-subheader class="title-scroll" style="top: -16px;">
-                <v-chip
-                  style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
-                >
-                  <b>{{ chauffeur.name }}</b>
-                  <small>&nbsp;({{ chauffeur.courses.length }} courses)</small>
-                </v-chip>
-              </v-subheader>
+              <b>{{ chauffeur.name }}</b>
+              <small>&nbsp;({{ chauffeur.courses.length }} courses)</small>
+            </v-chip>
+          </v-subheader>
 
-              <v-list
-                class="d-flex flex-column align-stretch overflow-y-auto"
-                style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden;"
-                :style="{ background: 'transparent' }"
-              >
-                <draggable
-                  :value="chauffeur.courses"
-                  :sort="true"
-                  handle=".handle"
-                  group="courses"
-                  :style="{
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0
-                  }"
-                  class="pt-10 pa-2"
-                  @change="moveCourse($event, chauffeur)"
-                >
-                  <depart-item
-                    v-for="(course, index) in chauffeur.courses"
-                    :key="`${course.id || course.ref}`"
-                    :course="course"
-                    class="my-1 px-2"
-                    :index="index"
-                  ></depart-item>
-                </draggable>
-              </v-list>
+          <v-list
+            class="d-flex flex-column align-stretch overflow-y-auto"
+            style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden;"
+            :style="{ background: 'transparent' }"
+          >
+            <draggable
+              :value="chauffeur.courses"
+              :sort="true"
+              handle=".handle"
+              group="courses"
+              :style="{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0
+              }"
+              class="pt-10 pa-2"
+              @change="moveCourse($event, chauffeur)"
+            >
+              <depart-item
+                v-for="(course, index) in chauffeur.courses"
+                :key="`${course.id || course.ref}`"
+                :course="course"
+                class="my-1 px-2"
+                :index="index"
+              ></depart-item>
+            </draggable>
+          </v-list>
 
-              <v-chip
-                style="position:absolute; top: 0; right: 0; border-radius: 0 4px 0 12px;"
-                class="handle-chauffeur"
-              >
-                <v-icon small>
-                  mdi-drag
-                </v-icon>
-              </v-chip>
-            </v-card>
-          </draggable>
-        </v-tab-item>
+          <v-chip
+            style="position:absolute; top: 0; right: 0; border-radius: 0 4px 0 12px;"
+            class="handle-chauffeur"
+          >
+            <v-icon small>
+              mdi-drag
+            </v-icon>
+          </v-chip>
+        </v-card>
+      </draggable>
+      <!-- </v-tab-item>
         <v-tab-item key="lines">
           <div
             class="d-flex flex-column"
@@ -223,7 +223,7 @@
             </div>
           </div>
         </v-tab-item>
-      </v-tabs-items>
+      </v-tabs-items> -->
     </div>
   </div>
 </template>
