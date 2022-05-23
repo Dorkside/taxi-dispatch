@@ -113,6 +113,7 @@
         >
           <span>Courses de la journée</span>
           <v-progress-linear
+            v-if="admin"
             height="10"
             striped
             rounded
@@ -132,7 +133,7 @@
         </v-tab>
         <v-tab v-if="admin" key="validees">Validées</v-tab>
         <v-tab v-if="admin" key="annulees">Annulées</v-tab>
-        <v-tab>
+        <v-tab v-if="admin">
           <v-dialog v-model="dialog" width="600">
             <template v-slot:activator="{ on }">
               <v-btn small text v-on="on">

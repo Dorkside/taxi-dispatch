@@ -167,10 +167,15 @@ import { mapState } from "vuex";
 import store from "@/store";
 import { mdiAccountCog } from "@mdi/js";
 
-import { data } from "./models/contacts.json";
+// import { data } from "./models/contacts.json";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  doc,
+  getDocFromServer
+} from "firebase/firestore";
 
 import Chauffeur from "./models/Chauffeur";
 import Course from "./models/Course";
@@ -243,17 +248,17 @@ export default {
       return this.currentDate.toISOString().substring(0, 10);
     }
   },
-  watch: {
-    currentDate: {
-      handler() {
-        console.log(this.date);
-        Course.fetch(this.date);
-      },
-      immediate: true
-    }
-  },
+  // watch: {
+  //   currentDate: {
+  //     handler() {
+  //       Course.fetch(this.date, this.admin, this.chauffeur_id);
+  //     },
+  //     immediate: true
+  //   }
+  // },
   mounted() {
     const auth = getAuth();
+    this.$store.commit("setAdmin", false);
 
     onAuthStateChanged(auth, user => {
       if (!user) {
@@ -284,30 +289,37 @@ export default {
 
           User.fetchAll();
         } else {
-          getDoc(doc(this.$db(), "phones", user.phoneNumber)).then(phoneDoc => {
-            const { chauffeur_id } = phoneDoc.data();
-
-            onSnapshot(doc(this.$db(), "chauffeurs", chauffeur_id), function(
-              chauffeurDoc
-            ) {
-              Chauffeur.insert({
-                data: {
-                  ...chauffeurDoc.data(),
-                  id: chauffeurDoc.id
+          getDocFromServer(doc(this.$db(), "phones", user.phoneNumber)).then(
+            phoneDoc => {
+              if (phoneDoc) {
+                if (phoneDoc.data()) {
+                  const { chauffeur_id } = phoneDoc.data();
+                  if (chauffeur_id) {
+                    onSnapshot(
+                      doc(this.$db(), "chauffeurs", chauffeur_id),
+                      function(chauffeurDoc) {
+                        Chauffeur.insert({
+                          data: {
+                            ...chauffeurDoc.data(),
+                            id: chauffeurDoc.id
+                          }
+                        });
+                      }
+                    );
+                    onSnapshot(
+                      Course.queryFirebase([
+                        ["chauffeur_id", "==", chauffeur_id],
+                        ["deleted", "==", ""]
+                      ]),
+                      function(querySnapshot) {
+                        subscribeToChanges(Course, querySnapshot);
+                      }
+                    );
+                  }
                 }
-              });
-            });
-
-            onSnapshot(
-              Course.queryFirebase([
-                ["deleted", "==", ""],
-                ["chauffeur_id", "==", chauffeur_id]
-              ]),
-              function(querySnapshot) {
-                subscribeToChanges(Course, querySnapshot);
               }
-            );
-          });
+            }
+          );
         }
 
         onSnapshot(collection(this.$db(), "patients"), function(querySnapshot) {
