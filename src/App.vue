@@ -251,7 +251,7 @@ export default {
   // watch: {
   //   currentDate: {
   //     handler() {
-  //       Course.fetch(this.date, this.admin, this.chauffeur_id);
+  //       Course.fetch(this.date);
   //     },
   //     immediate: true
   //   }
@@ -288,6 +288,14 @@ export default {
           });
 
           User.fetchAll();
+
+          this.$watch(
+            () => this.currentDate,
+            () => {
+              Course.fetch(this.date);
+            },
+            { immediate: true }
+          );
         } else {
           getDocFromServer(doc(this.$db(), "phones", user.phoneNumber)).then(
             phoneDoc => {
@@ -306,15 +314,22 @@ export default {
                         });
                       }
                     );
-                    onSnapshot(
-                      Course.queryFirebase([
-                        ["chauffeur_id", "==", chauffeur_id],
-                        ["deleted", "==", ""]
-                      ]),
-                      function(querySnapshot) {
-                        subscribeToChanges(Course, querySnapshot);
-                      }
+                    this.$watch(
+                      () => this.currentDate,
+                      () => {
+                        Course.fetch(this.date, chauffeur_id);
+                      },
+                      { immediate: true }
                     );
+                    // onSnapshot(
+                    //   Course.queryFirebase([
+                    //     ["chauffeur_id", "==", chauffeur_id],
+                    //     ["deleted", "==", ""]
+                    //   ]),
+                    //   function(querySnapshot) {
+                    //     subscribeToChanges(Course, querySnapshot);
+                    //   }
+                    // );
                   }
                 }
               }

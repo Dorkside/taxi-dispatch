@@ -68,9 +68,13 @@ export default class Course extends FirebaseModel {
     };
   }
 
-  static fetch(date) {
+  static fetch(date, chauffeur_id) {
     if (!Course.refs[date]) {
-      Course.refs[date] = this.queryFirebase([["date", "==", date]]);
+      let filters = [["date", "==", date]];
+      if (chauffeur_id) {
+        filters.push(["chauffeur_id", "==", chauffeur_id]);
+      }
+      Course.refs[date] = this.queryFirebase(filters);
       onSnapshot(Course.refs[date], function(querySnapshot) {
         subscribeToChanges(Course, querySnapshot);
       });
