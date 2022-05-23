@@ -262,10 +262,13 @@ export default {
       } else {
         this.loggedIn = true;
         const { driver } = this.$route.query;
-        const isAdmin = (
+
+        const userData =
           user.reloadUserInfo.customAttributes &&
-          JSON.parse(user.reloadUserInfo.customAttributes)
-        ).admin;
+          JSON.parse(user.reloadUserInfo.customAttributes);
+
+        const isAdmin = userData && userData.admin;
+
         if (isAdmin && !driver) {
           this.$store.commit("setAdmin", true);
 
