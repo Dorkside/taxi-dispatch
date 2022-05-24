@@ -21,7 +21,10 @@
       </v-btn>
     </div>
 
-    <section class="scroller d-flex flex-column justify-start align-center">
+    <section
+      class="scroller d-flex flex-column justify-start align-center"
+      style="max-width: 95vw; "
+    >
       <v-data-table
         item-key="id"
         :headers="patientHeaders"
@@ -831,7 +834,7 @@ export default {
 }
 .scroller {
   width: 100%;
-  overflow-y: scroll;
+  overflow: scroll;
 }
 .patients-table {
   tr:nth-child(2n) {
