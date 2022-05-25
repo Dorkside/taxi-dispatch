@@ -2,100 +2,6 @@
   <div
     class="pa-0 ma-0 d-flex flex-grow-1 align-stretch flex-column day-container"
   >
-    <v-subheader
-      v-if="admin"
-      class="d-flex flex-grow-0 flex-shrink-0 elevation-2"
-      style="z-index: 10;"
-    >
-      <v-spacer></v-spacer>
-      <v-progress-linear
-        height="20"
-        striped
-        rounded
-        :value="
-          (coursesTodayPlanifiedDone.length * 100) /
-            coursesTodayPlanified.length
-        "
-        class="flex-grow-0 mx-2"
-        style="max-width: 400px;"
-      >
-        <template v-slot="{ value }">
-          <strong>
-            Courses de la journée : {{ coursesTodayPlanifiedDone.length }} /
-            {{ coursesTodayPlanified.length }}
-          </strong>
-        </template>
-      </v-progress-linear>
-      <v-spacer></v-spacer>
-
-      <v-dialog v-model="dialog" width="600">
-        <template v-slot:activator="{ on }">
-          <v-btn
-            v-if="admin"
-            small
-            text
-            style="position: absolute; right: 16px;"
-            v-on="on"
-          >
-            <v-icon>mdi-plus-circle</v-icon> Ajouter course
-          </v-btn>
-        </template>
-
-        <v-card>
-          <v-card-title>
-            Ajouter course
-            <v-spacer></v-spacer>
-            <v-btn icon @click="resetNewCourses()">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <v-card-text>
-            <course-item
-              class="mb-6"
-              :course="newCourseAller"
-              :hide-chauffeur="true"
-              :prevent-update="true"
-            >
-            </course-item>
-            <course-item
-              class="mb-6"
-              :course="newCourseRetour"
-              :hide-chauffeur="true"
-              :prevent-update="true"
-            >
-            </course-item>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              :disabled="!(newCourseAller.time && newCourseAller.patient)"
-              @click="addCourse(newCourseAller)"
-            >
-              Créer Aller
-            </v-btn>
-            <v-btn
-              text
-              :disabled="!(newCourseRetour.time && newCourseRetour.patient)"
-              @click="addCourse(newCourseRetour)"
-            >
-              Créer Retour
-            </v-btn>
-            <v-btn
-              text
-              :disabled="
-                !(newCourseAller.time && newCourseAller.patient) ||
-                  !(newCourseRetour.time && newCourseRetour.patient)
-              "
-              @click="addCourses([newCourseAller, newCourseRetour])"
-            >
-              Créer Aller/Retour
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-subheader>
     <div
       ref="coursesList"
       class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch col-12 pa-0"
@@ -133,7 +39,7 @@
         </v-tab>
         <v-tab v-if="admin" key="validees">Validées</v-tab>
         <v-tab v-if="admin" key="annulees">Annulées</v-tab>
-        <v-tab v-if="admin">
+        <div v-if="admin" class="add-button" disabled>
           <v-dialog v-model="dialog" width="600">
             <template v-slot:activator="{ on }">
               <v-btn small text v-on="on">
@@ -195,7 +101,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-tab>
+        </div>
       </v-tabs>
       <v-tabs-items
         ref="tab-container"
@@ -457,7 +363,7 @@ export default {
   data() {
     return {
       Types,
-      tab: "",
+      tab: "journee",
       days: [
         "Dimanche",
         "Lundi",
@@ -712,7 +618,7 @@ export default {
     addCourse(course) {
       const _c = JSON.parse(JSON.stringify(course.$toJson()));
       Course.create({ ..._c, date: this.date });
-      this.resetNewCourse();
+      this.resetNewCourses();
     },
     addCourses(courses) {
       courses.forEach(course => {
@@ -720,15 +626,6 @@ export default {
         Course.create({ ..._c, date: this.date });
       });
       this.resetNewCourses();
-    },
-    resetNewCourse() {
-      this.newCourse = new Course({
-        date: this.date,
-        deleted: "",
-        doneDate: "",
-        ref: `${this.date}.${uuid.v4()}`
-      });
-      this.dialog = false;
     },
     resetNewCourses() {
       this.newCourseAller = new Course({
@@ -791,5 +688,9 @@ export default {
 .list2-enter, .list2-leave-to /* .list-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateX(-50%);
+}
+
+.add-button {
+  align-self: center;
 }
 </style>
