@@ -64,14 +64,14 @@
         handle=".handle-chauffeur"
         :sort="true"
         group="chauffeurs"
-        class="d-flex flex-grow-1 align-stretch pa-0 scroll-horizontal"
+        class="d-flex flex-grow-1 align-stretch pa-1 flex-wrap scroll"
       >
         <v-card
           v-for="chauffeur of chauffeurs"
           :key="chauffeur.id"
           flat
           style="overflow: hidden;"
-          class="chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-0"
+          class="chauffeur pa-0 ma-1 flex-shrink-1 flex-grow-1 elevation-0"
         >
           <v-subheader
             class="title-scroll handle-chauffeur"
@@ -404,11 +404,13 @@ export default {
   max-width: 100%;
 }
 .chauffeur {
-  width: 180px;
-  min-width: 180px;
-  max-width: 180px;
-  flex: 0 0 180px;
-  border-right: solid 1px #ccc;
+  min-height: 40vh;
+  max-height: 40vh;
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  flex: 0 1 200px;
+  border: solid 1px #ccc;
 }
 .timeline {
   &::after {
@@ -443,9 +445,6 @@ export default {
 }
 
 .scroll {
-  overflow-y: scroll;
-}
-.scroll-horizontal {
   overflow-y: scroll;
 }
 
