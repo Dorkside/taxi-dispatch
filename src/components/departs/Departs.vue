@@ -4,25 +4,29 @@
     :style="{ position: 'relative', height: '100%' }"
     @click="clicked = undefined"
   >
+    <v-chip
+      class="overline elevation-2 unplanified"
+      :class="{ rotated: !coursesVisible }"
+      @click="coursesVisible = !coursesVisible"
+    >
+      Courses non attribuées ({{ coursesTodayUnplanified.length }})
+      <v-icon v-if="coursesVisible">mdi-close</v-icon>
+    </v-chip>
     <v-list
+      v-if="coursesVisible"
       width="300px"
       class="d-flex flex-column flex-shrink-0 elevation-8 scroll pa-0"
+      style="z-index:10;"
     >
       <v-subheader
         class="title-scroll flex-grow-0 flex-shrink-0"
         style="top: 0;"
       >
-        <v-chip
-          class="overline elevation-2"
-          style="position: absolute; top: 0; left: 0; border-radius: 0 0 12px 0;"
-          >Courses non attribuées</v-chip
-        >
       </v-subheader>
       <draggable
         class="d-flex flex-column justify-stretch flex-grow-1 flex-shrink-1 pa-2 pr-4 pt-10"
         style="overflow-x: hidden; position: absolute; top: 0; left: 0; bottom: 0; width: 300px;"
         :value="coursesTodayUnplanified"
-        handle=".handle"
         :sort="true"
         group="courses"
         fill-height
@@ -31,7 +35,7 @@
         <v-list-item
           v-for="(course, index) in coursesTodayUnplanified"
           :key="`${course.id || course.ref}`"
-          style="max-width: 100%;"
+          style="max-width: 100%; min-height: 36px;"
           class="mb-1 pa-0 flex-grow-1 flex-shrink-1"
         >
           <depart-item :course="course" :index="index"></depart-item>
@@ -40,6 +44,7 @@
     </v-list>
     <div
       class="d-flex flex-column flex-grow-1 flex-shrink-1 overflow-hidden"
+      :class="{ bordered: !coursesVisible }"
       style="position: relative; min-height: 100%;"
     >
       <!-- <v-tabs v-model="tab" style="border-bottom: solid 2px #e0e0e0;">
@@ -59,19 +64,25 @@
         handle=".handle-chauffeur"
         :sort="true"
         group="chauffeurs"
-        class="d-flex flex-grow-1 align-stretch flex-wrap pa-4 scroll"
+        class="d-flex flex-grow-1 align-stretch pa-0 scroll-horizontal"
       >
         <v-card
           v-for="chauffeur of chauffeurs"
           :key="chauffeur.id"
           flat
           style="overflow: hidden;"
-          class="ma-2 chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-2"
+          class="chauffeur pa-0 flex-shrink-1 flex-grow-1 elevation-0"
         >
-          <v-subheader class="title-scroll" style="top: -16px;">
+          <v-subheader
+            class="title-scroll handle-chauffeur"
+            style="top: -16px;"
+          >
             <v-chip
               style="position:absolute; top: 0; left: 0; border-radius: 4px 0 12px 0;"
             >
+              <v-icon small>
+                mdi-drag
+              </v-icon>
               <b>{{ chauffeur.name }}</b>
               <small>&nbsp;({{ chauffeur.courses.length }} courses)</small>
             </v-chip>
@@ -85,7 +96,6 @@
             <draggable
               :value="chauffeur.courses"
               :sort="true"
-              handle=".handle"
               group="courses"
               :style="{
                 position: 'absolute',
@@ -94,27 +104,18 @@
                 left: 0,
                 right: 0
               }"
-              class="pt-10 pa-2"
+              class="pt-10 px-1"
               @change="moveCourse($event, chauffeur)"
             >
               <depart-item
                 v-for="(course, index) in chauffeur.courses"
                 :key="`${course.id || course.ref}`"
                 :course="course"
-                class="my-1 px-2"
+                class="my-1"
                 :index="index"
               ></depart-item>
             </draggable>
           </v-list>
-
-          <v-chip
-            style="position:absolute; top: 0; right: 0; border-radius: 0 4px 0 12px;"
-            class="handle-chauffeur"
-          >
-            <v-icon small>
-              mdi-drag
-            </v-icon>
-          </v-chip>
         </v-card>
       </draggable>
       <!-- </v-tab-item>
@@ -261,7 +262,8 @@ export default {
       mdiViewAgendaOutline,
       tab: "lines",
       dragging: undefined,
-      clicked: undefined
+      clicked: undefined,
+      coursesVisible: true
     };
   },
   computed: {
@@ -402,12 +404,11 @@ export default {
   max-width: 100%;
 }
 .chauffeur {
-  min-height: 40vh;
-  max-height: 40vh;
-  width: 300px;
-  min-width: 200px;
-  max-width: 300px;
-  flex: 0 0 300px;
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  flex: 0 0 250px;
+  border-right: solid 1px #ccc;
 }
 .timeline {
   &::after {
@@ -424,7 +425,27 @@ export default {
   }
 }
 
+.bordered {
+  border-left: solid 33px #ccc;
+}
+
+.unplanified {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0 0 12px 0;
+  z-index: 11;
+  transform-origin: 0 0;
+  &.rotated {
+    transform: rotateZ(-90deg) translateX(-100%);
+    border-radius: 0 0 0 12px;
+  }
+}
+
 .scroll {
+  overflow-y: scroll;
+}
+.scroll-horizontal {
   overflow-y: scroll;
 }
 

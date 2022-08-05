@@ -1,6 +1,6 @@
 <template>
   <v-lazy
-    min-height="44"
+    min-height="36"
     style="width: 100%; max-width: 100%;"
     :style="
       compact && {
@@ -18,15 +18,15 @@
       style="overflow:visible; position: relative;"
       :style="{
         borderLeft:
-          !compact || isClicked ? `solid 70px ${course.color}` : 'none'
+          !compact || isClicked ? `solid 54px ${course.color}` : 'none'
       }"
       @click.stop="$emit('clicked', course.id)"
     >
-      <v-card-text class="pa-2 full-width" style="overflow:visible;">
+      <v-card-text class="pa-1 full-width" style="overflow:visible;">
         <div class="d-flex flex-row justify-center align-center pa-0">
           <span
             v-if="!compact || isClicked"
-            class="time-span mr-2 flex-shrink-0 flex-grow-0 subtitle-1 font-weight-bold white--text"
+            class="time-span mr-1 flex-shrink-0 flex-grow-0 subtitle-1 font-weight-bold white--text"
           >
             {{ course.prettyTime }}
           </span>
@@ -52,9 +52,9 @@
               <i>NA</i>
             </span>
           </div>
-          <v-icon v-if="!compact" class="flex-shrink-0 flex-grow-0 handle">
+          <!-- <v-icon v-if="!compact" class="flex-shrink-0 flex-grow-0 handle">
             mdi-drag
-          </v-icon>
+          </v-icon> -->
         </div>
       </v-card-text>
     </v-card>
@@ -122,7 +122,7 @@ export default {
   }
 }
 .time-span {
-  margin-left: -64px;
+  margin-left: -52px;
   margin-right: 32px;
 }
 </style>
