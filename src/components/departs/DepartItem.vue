@@ -32,7 +32,9 @@
           </span>
           <v-icon
             v-if="!compact || isClicked"
-            class="ml-2 mr-1 flex-shrink-0 flex-grow-0"
+            class="flex-shrink-0 flex-grow-0"
+            x-small
+            style="position: absolute; left: 0; bottom: 0;"
           >
             {{
               course.direction === "Aller"
@@ -42,7 +44,7 @@
                 : ""
             }}
           </v-icon>
-          <div class="flex-grow-1 text-wrap">
+          <div class="flex-grow-1 text-wrap ml-2">
             <span v-if="course.patient">
               {{ course.patient.name }}
               <br v-if="compact" />

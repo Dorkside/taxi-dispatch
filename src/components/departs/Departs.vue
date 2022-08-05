@@ -404,10 +404,10 @@ export default {
   max-width: 100%;
 }
 .chauffeur {
-  width: 250px;
-  min-width: 250px;
-  max-width: 250px;
-  flex: 0 0 250px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  flex: 0 0 180px;
   border-right: solid 1px #ccc;
 }
 .timeline {
