@@ -18,11 +18,9 @@
       style="overflow:visible; position: relative;"
       :style="{
         borderLeft:
-          !compact || isClicked ? `solid 54px ${course.color}` : 'none',
-
-        opacity: course.doneDate ? '0.3' : '1'
+          !compact || isClicked ? `solid 54px ${course.color}` : 'none'
       }"
-      @click.stop="$emit('clicked', course.id)"
+      @click.stop="clickCourse(course)"
     >
       <v-card-text class="pa-1 full-width" style="overflow:visible;">
         <div class="d-flex flex-row justify-center align-center pa-0">
@@ -56,9 +54,9 @@
               <i>NA</i>
             </span>
           </div>
-          <!-- <v-icon v-if="!compact" class="flex-shrink-0 flex-grow-0 handle">
+          <v-icon v-if="!compact" class="flex-shrink-0 flex-grow-0 handle">
             mdi-drag
-          </v-icon> -->
+          </v-icon>
         </div>
       </v-card-text>
     </v-card>
@@ -94,6 +92,9 @@ export default {
           });
         }
       }
+    },
+    clickCourse(course) {
+      this.$emit("clicked", course.id);
     }
   }
 };

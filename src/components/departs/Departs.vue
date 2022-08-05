@@ -27,6 +27,7 @@
         class="d-flex flex-column justify-stretch flex-grow-1 flex-shrink-1 pa-2 pr-4 pt-10"
         style="overflow-x: hidden; position: absolute; top: 0; left: 0; bottom: 0; width: 300px;"
         :value="coursesTodayUnplanified"
+        handle=".handle"
         :sort="true"
         group="courses"
         fill-height
@@ -97,6 +98,7 @@
               :value="chauffeur.courses"
               :sort="true"
               group="courses"
+              handle=".handle"
               :style="{
                 position: 'absolute',
                 top: 0,
