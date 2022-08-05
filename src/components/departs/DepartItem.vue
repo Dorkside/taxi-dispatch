@@ -18,7 +18,8 @@
       style="overflow:visible; position: relative;"
       :style="{
         borderLeft:
-          !compact || isClicked ? `solid 54px ${course.color}` : 'none'
+          !compact || isClicked ? `solid 54px ${course.color}` : 'none',
+        opacity: course.doneDate ? '0.7' : '1'
       }"
       @click.stop="clickCourse(course)"
     >
