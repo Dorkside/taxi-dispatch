@@ -101,7 +101,7 @@
                 <v-spacer />
               </div>
               <template v-if="!hideDetails">
-                <div class="d-flex flex-row mb-2">
+                <div class="d-flex flex-row flex-wrap mb-2">
                   <div
                     v-if="course.patient && course.patient.note"
                     class="d-flex flex-column flex-grow-1"
@@ -122,9 +122,9 @@
                   </a>
                 </div>
 
-                <div class="d-flex flex-row">
+                <div class="d-flex flex-row flex-wrap">
                   <div
-                    class="d-flex col-12 pa-0 flex-grow-0 flex-shrink-1"
+                    class="d-flex pa-0 flex-grow-1 flex-shrink-1"
                     style="margin-left: -42px;"
                     :class="{
                       'flex-column': course.direction === 'Aller',
@@ -136,7 +136,7 @@
                       class="wrap-span"
                       :style="{
                         minWidth: '100px',
-                        maxWidth: '100%',
+                        maxWidth: '300px',
                         height: 'auto'
                       }"
                       @click="openMap(course.patient.adresse)"
@@ -146,13 +146,13 @@
                         {{ course.patient.adresse || "???" }}
                       </span>
                     </v-chip>
-                    <div class="pointilles"></div>
+                    <div class="pointilles" style="max-width: 300px;"></div>
                     <v-chip
                       v-if="course.patient && course.patient.place"
                       class="wrap-span d-flex"
                       :style="{
                         minWidth: '100px',
-                        maxWidth: '100%',
+                        maxWidth: '300px',
                         height: 'auto'
                       }"
                       @click="openMap(course.patient.place.adresse)"
@@ -165,7 +165,7 @@
                     </v-chip>
                   </div>
 
-                  <div class="pl-4 d-flex flex-row align-center">
+                  <div class="pl-4 mt-2 d-flex flex-row align-center">
                     <v-icon
                       v-if="admin"
                       class="mr-2"

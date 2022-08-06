@@ -1,11 +1,12 @@
 <template>
   <div
     class="pa-0 ma-0 d-flex flex-grow-1 align-stretch flex-column day-container"
+    style="position: relative; overflow:hidden; max-width: 100%;"
   >
     <div
       ref="coursesList"
       class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch col-12 pa-0"
-      style="position: relative; overflow:hidden;"
+      style="position: relative; overflow:hidden; max-width: 100%;"
     >
       <v-tabs
         v-model="tab"
