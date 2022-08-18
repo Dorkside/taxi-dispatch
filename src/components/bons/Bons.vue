@@ -109,6 +109,7 @@ export default {
             "Consultation",
             "Chimiothérapie",
             "Entrée d'hôpital",
+            "Sortie d'hôpital",
             "Radiothérapie"
           ].includes(course.type)
         );
