@@ -2,8 +2,19 @@
   <v-lazy :min-height="lazySize" class="col-12 pa-0">
     <v-card
       class="mx-auto"
-      :style="
-        `border-left: solid 82px ${course.color} !important; max-width: 600px;`
+      :style="{
+        'border-style': 'solid',
+        'border-width':
+          selectedCourse === course.ref ? '5px 5px 5px 82px' : '0 0 0 82px',
+        'border-color': course.color,
+        'max-width': '600px'
+      }"
+      :class="{ selected: selectedCourse === course.ref }"
+      @click.stop="
+        $store.commit(
+          'setSelectedCourse',
+          selectedCourse === course.ref ? null : course.ref
+        )
       "
     >
       <v-chip
@@ -30,7 +41,7 @@
                   text
                   class="time-btn white--text"
                   v-on="on"
-                  @click="newTime = course.time"
+                  @clicks.stop="newTime = course.time"
                 >
                   <span :class="`subtitle-1 font-weight-bold`">
                     {{ course.prettyTime }}
@@ -100,8 +111,8 @@
                 >
                 <v-spacer />
               </div>
-              <template v-if="!hideDetails">
-                <div class="d-flex flex-row flex-wrap mb-2">
+              <template>
+                <div v-if="!hideDetails" class="d-flex flex-row flex-wrap mb-2">
                   <div
                     v-if="course.patient && course.patient.note"
                     class="d-flex flex-column flex-grow-1"
@@ -124,6 +135,7 @@
 
                 <div class="d-flex flex-row flex-wrap">
                   <div
+                    v-if="!hideDetails"
                     class="d-flex pa-0 flex-grow-1 flex-shrink-1"
                     style="margin-left: -42px;"
                     :class="{
@@ -139,7 +151,7 @@
                         maxWidth: '300px',
                         height: 'auto'
                       }"
-                      @click="openMap(course.patient.adresse)"
+                      @click.stop="openMap(course.patient.adresse)"
                     >
                       <v-icon>mdi-home-map-marker</v-icon>
                       <span class="flex-1">
@@ -155,7 +167,7 @@
                         maxWidth: '300px',
                         height: 'auto'
                       }"
-                      @click="openMap(course.patient.place.adresse)"
+                      @click.stop="openMap(course.patient.place.adresse)"
                     >
                       <v-icon>mdi-hospital-marker</v-icon>
                       <span class="flex-1">
@@ -165,7 +177,12 @@
                     </v-chip>
                   </div>
 
-                  <div class="pl-4 mt-2 d-flex flex-row align-center">
+                  <v-spacer></v-spacer>
+
+                  <div
+                    class="pl-4 mt-2 d-flex flex-row align-center"
+                    @click.native.stop
+                  >
                     <v-icon
                       v-if="admin"
                       class="mr-2"
@@ -192,6 +209,7 @@
                       autocomplete="off"
                       outlined
                       clearable
+                      @click.stop
                       @click:clear="changeChauffeur(null, course)"
                       @change="changeChauffeur($event, course)"
                     ></v-combobox>
@@ -245,7 +263,12 @@
               </v-card>
             </v-dialog>
 
-            <v-btn v-else text color="black" @click="undeleteCourse(course)">
+            <v-btn
+              v-else
+              text
+              color="black"
+              @click.stop="undeleteCourse(course)"
+            >
               <v-icon>mdi-restore</v-icon> Restaurer
             </v-btn>
           </template>
@@ -301,20 +324,37 @@
             text
             :color="!course.doneDate ? 'green' : 'grey'"
             :disabled="!course.chauffeur || !course.time"
-            @click="doCourse(course)"
+            @click.stop="doCourse(course)"
           >
             {{ !course.doneDate ? "Valider" : "Annuler" }}
           </v-btn>
           <v-btn
-            v-if="!admin"
-            :disabled="course.isRead"
+            v-if="
+              course.isRead &&
+                course.chauffeur &&
+                course.chauffeur.id === chauffeurId
+            "
+            disabled
             small
             outlined
             color="green"
-            @click="viewCourse(course)"
           >
             <v-icon class="mr-2">mdi-eye-check</v-icon>
-            {{ course.isRead ? "Vu" : "Marquer comme vu" }}
+            Vu
+          </v-btn>
+          <v-btn
+            v-if="
+              !course.isRead &&
+                course.chauffeur &&
+                course.chauffeur.id === chauffeurId
+            "
+            small
+            outlined
+            color="green"
+            @click.stop="viewCourse(course)"
+          >
+            <v-icon class="mr-2">mdi-eye-check</v-icon>
+            "Marquer comme vu"
           </v-btn>
         </template>
       </v-card-actions>
@@ -334,9 +374,7 @@ export default {
   props: {
     course: { type: Object, default: undefined },
     hideChauffeur: { type: Boolean, default: false },
-    preventUpdate: { type: Boolean, default: false },
-    hideDetails: { type: Boolean, default: false },
-    lazySize: { type: Number, default: 170 }
+    preventUpdate: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -345,11 +383,12 @@ export default {
       newTime: this.course ? this.course.time : "",
       types: Object.keys(Types),
       societes: ["OKA", "Cicciu", "TAP"],
-      mdiHumanWheelchair
+      mdiHumanWheelchair,
+      hideDetails: true
     };
   },
   computed: {
-    ...mapState(["admin"]),
+    ...mapState(["admin", "chauffeurId", "selectedCourse"]),
     patients() {
       return Patient.query()
         .with("place")
@@ -359,6 +398,24 @@ export default {
       return Chauffeur.query()
         .where("deleted", "")
         .get();
+    },
+    lazySize() {
+      if (this.hideDetails) {
+        if (this.course.isRead || this.admin) {
+          return 98;
+        }
+        return 122;
+      }
+      return 170;
+    }
+  },
+  watch: {
+    selectedCourse() {
+      if (this.course.ref === this.selectedCourse) {
+        this.hideDetails = false;
+      } else {
+        this.hideDetails = true;
+      }
     }
   },
   methods: {
@@ -489,5 +546,10 @@ export default {
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
+}
+.selected {
+  border-top-width: 5px;
+  border-right-width: 5px;
+  border-bottom-width: 5px;
 }
 </style>

@@ -8,7 +8,9 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     currentDate: new Date(),
-    admin: false
+    admin: false,
+    chauffeurId: null,
+    selectedCourse: null
   },
   mutations: {
     setDate(state, date) {
@@ -21,6 +23,12 @@ const store = new Vuex.Store({
     },
     setAdmin(state, admin) {
       state.admin = admin;
+    },
+    setChauffeurId(state, id) {
+      state.chauffeurId = id;
+    },
+    setSelectedCourse(state, courseRef) {
+      state.selectedCourse = courseRef;
     }
   },
   plugins: [VuexORM.install(database)]

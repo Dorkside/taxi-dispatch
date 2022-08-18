@@ -253,7 +253,6 @@
                   <course-item
                     :course="course"
                     :index="index"
-                    :hide-details="true"
                     :lazy-size="132"
                   ></course-item>
                 </v-list-item-content>
@@ -275,7 +274,6 @@
                   <course-item
                     :course="course"
                     :index="index"
-                    :hide-details="true"
                     :lazy-size="84"
                   ></course-item>
                 </v-list-item-content>

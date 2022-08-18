@@ -64,7 +64,11 @@ export default class Course extends FirebaseModel {
       doneDate: this.string(""),
       societe: this.string(""),
       isRead: this.boolean(false),
-      overlap: this.number(0)
+      overlap: this.number(0),
+      passageRecupere: this.boolean(false),
+      passageControle: this.boolean(false),
+      transportRecupere: this.boolean(false),
+      transportControle: this.boolean(false)
     };
   }
 
@@ -154,6 +158,38 @@ export default class Course extends FirebaseModel {
 
   undone() {
     super.update({ doneDate: "" });
+  }
+
+  recupererTransport(value) {
+    if (value) {
+      super.update({ transportRecupere: true });
+    } else {
+      super.update({ transportRecupere: false, transportControle: false });
+    }
+  }
+
+  controlerTransport(value) {
+    if (value) {
+      super.update({ transportRecupere: true, transportControle: true });
+    } else {
+      super.update({ transportControle: false });
+    }
+  }
+
+  recupererPassage(value) {
+    if (value) {
+      super.update({ passageRecupere: true });
+    } else {
+      super.update({ passageRecupere: false, passageControle: false });
+    }
+  }
+
+  controlerPassage(value) {
+    if (value) {
+      super.update({ passageRecupere: true, passageControle: true });
+    } else {
+      super.update({ passageControle: false });
+    }
   }
 
   get fullRef() {

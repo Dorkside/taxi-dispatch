@@ -2,6 +2,7 @@ import Chauffeurs from "@/components/chauffeurs/Chauffeurs.vue";
 import Places from "@/components/places/Places.vue";
 import Departs from "@/components/departs/Departs.vue";
 import Facturation from "@/components/facturation/Facturation.vue";
+import Bons from "@/components/bons/Bons.vue";
 import Societes from "@/components/administration/Societes.vue";
 import Admins from "@/components/administration/Admins.vue";
 import Categories from "@/components/administration/Categories.vue";
@@ -46,6 +47,10 @@ const routes = [
   {
     path: "/stats",
     component: StatsPage
+  },
+  {
+    path: "/bons",
+    component: Bons
   }
 ];
 export default routes;

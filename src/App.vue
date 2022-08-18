@@ -74,6 +74,12 @@
                 Départs
               </span>
             </v-tab>
+            <v-tab to="/bons">
+              <v-icon>mdi-file</v-icon>
+              <span v-if="menuDeployed" class="ml-2">
+                Bons
+              </span>
+            </v-tab>
             <v-spacer />
             <v-tab disabled>
               <span v-if="menuDeployed && admin">Annuaire</span>
@@ -259,11 +265,13 @@ export default {
   mounted() {
     const auth = getAuth();
     this.$store.commit("setAdmin", false);
+    this.$store.commit("setChauffeurId", null);
 
     onAuthStateChanged(auth, user => {
       if (!user) {
         this.$store.commit("setAdmin", false);
         this.loggedIn = false;
+        this.$store.commit("setChauffeurId", null);
       } else {
         this.loggedIn = true;
         const { driver } = this.$route.query;
@@ -296,6 +304,19 @@ export default {
             },
             { immediate: true }
           );
+
+          getDocFromServer(doc(this.$db(), "phones", user.phoneNumber)).then(
+            phoneDoc => {
+              if (phoneDoc) {
+                if (phoneDoc.data()) {
+                  const { chauffeur_id } = phoneDoc.data();
+                  if (chauffeur_id) {
+                    this.$store.commit("setChauffeurId", chauffeur_id);
+                  }
+                }
+              }
+            }
+          );
         } else {
           getDocFromServer(doc(this.$db(), "phones", user.phoneNumber)).then(
             phoneDoc => {
@@ -303,6 +324,7 @@ export default {
                 if (phoneDoc.data()) {
                   const { chauffeur_id } = phoneDoc.data();
                   if (chauffeur_id) {
+                    this.$store.commit("setChauffeurId", chauffeur_id);
                     onSnapshot(
                       doc(this.$db(), "chauffeurs", chauffeur_id),
                       function(chauffeurDoc) {
