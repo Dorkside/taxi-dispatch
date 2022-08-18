@@ -8,7 +8,7 @@
       class="d-flex flex-grow-1 flex-shrink-1 flex-column align-stretch col-12 pa-0"
       style="position: relative; overflow:hidden; max-width: 100%;"
     >
-      <v-list class="transparent pa-2 col-12" dense>
+      <v-list class="transparent pa-2 col-12 courses" dense>
         <template v-if="admin && coursesTodayValidated.length > 0">
           <transition-group name="list" tag="div">
             <v-list-item
@@ -20,6 +20,7 @@
               <v-list-item-content
                 class="show-overflow justify-center align-center col-12"
               >
+                {{ course.type }}
                 <bons-item
                   :course="course"
                   :index="index"
@@ -103,7 +104,15 @@ export default {
           if (b.time === "") return 0;
           if (a.time < b.time) return -1;
           return 1;
-        });
+        })
+        .filter(course =>
+          [
+            "Consultation",
+            "Chimiothérapie",
+            "Entrée d'hôpital",
+            "Radiothérapie"
+          ].includes(course.type)
+        );
     },
     currentDay() {
       return this.days[new Date(this.currentDate).getDay()].toLowerCase();
@@ -127,6 +136,11 @@ export default {
   width: 6px;
   border-left: solid 1px;
   position: relative;
+}
+
+.courses {
+  max-height: 100%;
+  overflow-y: scroll;
 }
 
 .day-container {
