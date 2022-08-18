@@ -20,7 +20,6 @@
               <v-list-item-content
                 class="show-overflow justify-center align-center col-12"
               >
-                {{ course.type }}
                 <bons-item
                   :course="course"
                   :index="index"
