@@ -110,7 +110,7 @@ export default {
             "Chimiothérapie",
             "Entrée d'hôpital",
             "Sortie d'hôpital",
-            "Radiothérapie"
+            "Ambulatoire"
           ].includes(course.type)
         );
     },
