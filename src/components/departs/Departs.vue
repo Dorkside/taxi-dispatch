@@ -383,7 +383,6 @@ export default {
       this.dragging = e.item._underlying_vm_.id;
     },
     moveCourse(event, chauffeur) {
-      console.log(event, chauffeur);
       if (event.added) {
         event.added.element.update({
           chauffeur_id: chauffeur ? chauffeur.id : deleteField()

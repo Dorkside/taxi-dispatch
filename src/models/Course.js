@@ -19,10 +19,14 @@ const subscribeToChanges = (Model, querySnapshot) => {
   Model.insertOrUpdate({
     data: docChanges
       .filter(change => change.type === "modified")
-      .map(change => ({
-        ...change.doc.data(),
-        id: change.doc.id
-      }))
+      .map(change => {
+        const data = change.doc.data();
+        return {
+          ...data,
+          chauffeur_id: data.chauffeur_id,
+          id: change.doc.id
+        };
+      })
   });
   Model.delete({
     data: docChanges

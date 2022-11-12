@@ -181,7 +181,7 @@
 
                   <div
                     class="pl-4 mt-2 d-flex flex-row align-center"
-                    @click.native.stop
+                    @click.stop
                   >
                     <v-icon
                       v-if="admin"
