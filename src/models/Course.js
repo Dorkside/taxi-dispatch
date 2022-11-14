@@ -28,14 +28,11 @@ const subscribeToChanges = (Model, querySnapshot) => {
         };
       })
   });
-  Model.delete({
-    data: docChanges
-      .filter(change => change.type === "removed")
-      .map(change => ({
-        id: change.doc.id
-      }))
-  });
-
+  docChanges
+    .filter(change => change.type === "removed")
+    .forEach(change => {
+      Model.delete(change.doc.id);
+    });
   docChanges.forEach(change => {
     if (change.doc.data().patient) {
       const patient_id = change.doc.data().patient.id;
