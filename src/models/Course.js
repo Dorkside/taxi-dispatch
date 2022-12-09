@@ -46,6 +46,8 @@ const subscribeToChanges = (Model, querySnapshot) => {
 export default class Course extends FirebaseModel {
   static entity = "courses";
   static refs = {};
+  static daysSub = [];
+  static monthsSub = [];
 
   static fields() {
     return {
@@ -80,9 +82,13 @@ export default class Course extends FirebaseModel {
         filters.push(["chauffeur_id", "==", chauffeur_id]);
       }
       Course.refs[date] = this.queryFirebase(filters);
-      onSnapshot(Course.refs[date], function(querySnapshot) {
+      const daySub = onSnapshot(Course.refs[date], function(querySnapshot) {
         subscribeToChanges(Course, querySnapshot);
       });
+      Course.daysSub.push(daySub);
+      if (Course.daysSub.length > 7) {
+        Course.daysSub.shift().unsubscribe();
+      }
     }
   }
 
@@ -92,9 +98,13 @@ export default class Course extends FirebaseModel {
         ["date", ">=", `${date}-00`],
         ["date", "<=", `${date}-32`]
       ]);
-      onSnapshot(Course.refs[date], function(querySnapshot) {
+      const monthSub = onSnapshot(Course.refs[date], function(querySnapshot) {
         subscribeToChanges(Course, querySnapshot);
       });
+      Course.monthsSub.push(monthSub);
+      if (Course.monthsSub.length > 2) {
+        Course.monthsSub.shift().unsubscribe();
+      }
     }
   }
 
@@ -128,6 +138,11 @@ export default class Course extends FirebaseModel {
         ...data
       });
     });
+  }
+
+  ubsubscribe() {
+    this.daysSub.forEach(sub => sub.unsubscribe());
+    this.monthsSub.forEach(sub => sub.unsubscribe());
   }
 
   delete(skipCreate = false) {

@@ -225,7 +225,12 @@ export default {
       dialog: false,
       menuDeployed: false,
       loggedIn: false,
-      mdiAccountCog
+      mdiAccountCog,
+      phonesSub: undefined,
+      chauffeursSub: undefined,
+      chauffeurSub: undefined,
+      patientsSub: undefined,
+      placesSub: undefined
     };
   },
   computed: {
@@ -254,14 +259,6 @@ export default {
       return this.currentDate.toISOString().substring(0, 10);
     }
   },
-  // watch: {
-  //   currentDate: {
-  //     handler() {
-  //       Course.fetch(this.date);
-  //     },
-  //     immediate: true
-  //   }
-  // },
   mounted() {
     const auth = getAuth();
     this.$store.commit("setAdmin", false);
@@ -285,15 +282,19 @@ export default {
         if (isAdmin && !driver) {
           this.$store.commit("setAdmin", true);
 
-          onSnapshot(collection(this.$db(), "phones"), function(querySnapshot) {
-            subscribeToChanges(Phone, querySnapshot);
-          });
+          this.phonesSub = onSnapshot(
+            collection(this.$db(), "phones"),
+            function(querySnapshot) {
+              subscribeToChanges(Phone, querySnapshot);
+            }
+          );
 
-          onSnapshot(collection(this.$db(), "chauffeurs"), function(
-            querySnapshot
-          ) {
-            subscribeToChanges(Chauffeur, querySnapshot);
-          });
+          this.chauffeursSub = onSnapshot(
+            collection(this.$db(), "chauffeurs"),
+            function(querySnapshot) {
+              subscribeToChanges(Chauffeur, querySnapshot);
+            }
+          );
 
           User.fetchAll();
 
@@ -325,7 +326,7 @@ export default {
                   const { chauffeur_id } = phoneDoc.data();
                   if (chauffeur_id) {
                     this.$store.commit("setChauffeurId", chauffeur_id);
-                    onSnapshot(
+                    this.chauffeurSub = onSnapshot(
                       doc(this.$db(), "chauffeurs", chauffeur_id),
                       function(chauffeurDoc) {
                         Chauffeur.insert({
@@ -343,15 +344,6 @@ export default {
                       },
                       { immediate: true }
                     );
-                    // onSnapshot(
-                    //   Course.queryFirebase([
-                    //     ["chauffeur_id", "==", chauffeur_id],
-                    //     ["deleted", "==", ""]
-                    //   ]),
-                    //   function(querySnapshot) {
-                    //     subscribeToChanges(Course, querySnapshot);
-                    //   }
-                    // );
                   }
                 }
               }
@@ -359,17 +351,30 @@ export default {
           );
         }
 
-        onSnapshot(collection(this.$db(), "patients"), function(querySnapshot) {
-          subscribeToChanges(Patient, querySnapshot);
-        });
+        this.patientsSub = onSnapshot(
+          collection(this.$db(), "patients"),
+          function(querySnapshot) {
+            subscribeToChanges(Patient, querySnapshot);
+          }
+        );
 
-        onSnapshot(collection(this.$db(), "places"), function(querySnapshot) {
+        this.placesSub = onSnapshot(collection(this.$db(), "places"), function(
+          querySnapshot
+        ) {
           subscribeToChanges(Place, querySnapshot);
         });
       }
 
       this.setDate(new Date());
     });
+  },
+  destroyed() {
+    this.phonesSub && this.phonesSub();
+    this.chauffeursSub && this.chauffeursSub();
+    this.chauffeurSub && this.chauffeurSub();
+    this.patientsSub && this.patientsSub();
+    this.placesSub && this.placesSub();
+    Course.unsubscribe();
   },
   methods: {
     setDate(event) {
